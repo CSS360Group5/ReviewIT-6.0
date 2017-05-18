@@ -52,7 +52,6 @@ public class UserProfile implements Serializable {
         if(myUserID.isEmpty() || myUserName.isEmpty()) {
             throw new IllegalArgumentException();
         }
-
     }
 
     /**
@@ -72,6 +71,9 @@ public class UserProfile implements Serializable {
      * conference.
      * @param theConferenceID Unique identifier for particular conference
      * @param theRole Role enum to be assigned to this user
+     */
+    /* TODO: Add logic to return information regarding whether or not
+     * the role was assigned, and why.
      */
     public void assignRole(final String theConferenceID,
                         final Role theRole) {
