@@ -19,7 +19,15 @@ public class UserProfile implements Serializable {
 
     private String myUserID;
     private String myUserName;
+
+    /**
+     * Maps conferences to this user's roles for each conference.
+     */
     private Map<String, ArrayList<Role>> myUserRoles;
+
+    /**
+     * List of user's roles for selected conference.
+     */
     private transient List<Role> myCurrentConferenceRoles;
 
     /**
