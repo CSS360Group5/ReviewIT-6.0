@@ -1,8 +1,10 @@
-package modelTests;
+package deprecated;
 
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
+
+import modelTests.TestSuite;
 
 /**
  * This class will run the TestSuite and print the string message of the failure tests, this class is

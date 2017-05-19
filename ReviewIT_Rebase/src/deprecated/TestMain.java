@@ -1,4 +1,4 @@
-package modelTests;
+package deprecated;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import model.Conference;

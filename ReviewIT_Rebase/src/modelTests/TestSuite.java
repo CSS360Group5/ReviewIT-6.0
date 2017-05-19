@@ -6,9 +6,11 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 
 @Suite.SuiteClasses({
+	ConferenceAuthorSubmissionTests.class,
+	ConferenceControllerTest.class,
 	ConferenceSubprogramChairAssignReviewerTests.class,
-	ConferenceAuthorSubmissionTests.class
-	
+	ConferenceTest.class,
+	ManuscriptTest.class
 })
 
 /**
