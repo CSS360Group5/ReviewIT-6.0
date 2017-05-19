@@ -1,11 +1,14 @@
 package view;
 
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.JFrame;
@@ -78,10 +81,31 @@ public class PanelManager extends JPanel {
 		
 		final ResizeListener listener = new ResizeListener();
 		this.addComponentListener(listener);
+		
+		myFrame.addWindowStateListener(new WindowStateListener() {
+	        public void windowStateChanged(final WindowEvent event) {
+	        	//its hacky but it works...except the first time.
+	        	myFrame.setVisible(false);
+	    		myFrame.setVisible(true);
+	    		alertResize();
+	    		myFrame.setVisible(false);
+	    		myFrame.setVisible(true);
+	        }
+		});
 	}
 	
+	private void alertResize(){
+		final Dimension newDimension = this.getSize(); 
+		PanelManager.this.firePropertyChange(
+				PanelManager.RESIZE_EVENT,
+				null,
+				newDimension
+				);
+		PanelManager.this.invalidate();		
+//		repaint();	
+	}
 	/**
-	 * Fires a property change listener from ReviewITPanel alerting of my new size.
+	 * Fires a property change listener from PanelManager alerting of my new size when resized.
 	 * @author Dimitar Kumanov
 	 *
 	 */
@@ -90,12 +114,7 @@ public class PanelManager extends JPanel {
         @Override
         public void componentResized(final ComponentEvent theEvent)
         {
-			final Dimension newDimension = ((JPanel) theEvent.getComponent()).getSize(); 
-			PanelManager.this.firePropertyChange(
-					PanelManager.RESIZE_EVENT,
-					null,
-					newDimension
-					);
+        	PanelManager.this.alertResize();
         }
     }
 	
