@@ -34,8 +34,8 @@ public class PanelManager extends JPanel {
 		this.setLayout(new GridBagLayout());
 		
 		final GridBagConstraints constraints = new GridBagConstraints();
-		constraints.weightx = 0.5;
-		constraints.weighty = 0.5;
+		constraints.weightx = 0.05;
+		constraints.weighty = 0.05;
 		
 		constraints.gridwidth = 100;
 		constraints.gridheight = 20;

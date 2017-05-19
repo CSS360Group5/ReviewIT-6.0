@@ -31,6 +31,10 @@ public abstract class AutoSizeablePanel extends JPanel implements PropertyChange
 	}
 	
 	private void autosize(final Dimension theNewSize){
+		setMinimumSize(new Dimension(
+				(int) (theNewSize.getWidth() * myXRatio),
+				(int) (theNewSize.getHeight() * myYRatio)
+				));
 		setPreferredSize(new Dimension(
 				(int) (theNewSize.getWidth() * myXRatio),
 				(int) (theNewSize.getHeight() * myYRatio)

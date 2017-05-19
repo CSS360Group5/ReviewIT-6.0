@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Dimension;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -33,7 +34,7 @@ public class GUIMain {
                 window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 window.setContentPane(mainPanel);
                 window.pack();
-//                window.setMinimumSize(window.getSize());
+                window.setMinimumSize(new Dimension(750, 350));
                 window.setLocationRelativeTo(null);
                 window.setVisible(true);
             }
