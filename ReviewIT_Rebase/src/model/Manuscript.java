@@ -38,6 +38,9 @@ public class Manuscript implements Serializable {
 	/* The list of myReviews assigned to the myManuscript.*/
 	private List<Review> myReviews;
 	
+	/* The list of of persons who are assigned as reviewers to this manuscript. */
+	
+	
 
 	/**
 	 * Creates a new myManuscript object holding the myAuthors, the date and time of
@@ -57,9 +60,9 @@ public class Manuscript implements Serializable {
 	 */
 	public Manuscript(String theTitle, String theSubmitter, List<String> theAuthors,
 					  ZonedDateTime theSubmissionDate, File theManuscript ) {
-		myReviews = new List<>();
+		myReviews = new ArrayList<>();
 		mySubmitter = theSubmitter;
-		myAuthors = new List<>();
+		myAuthors = new ArrayList<>();
 		if(theAuthors == null) {
 			myAuthors.add(theSubmitter);
 		} else {
@@ -111,7 +114,7 @@ public class Manuscript implements Serializable {
 	 * be more than 3 myReviews assigned to one myManuscript.
 	 */
 	public void setReviewer(String theUserID) throws IllegalArgumentException {
-		if(myReviews.size() < MAX_REVIEWERS) {
+		if(myReviews.size() < 3) {
 			
 			if(myAuthors.contains(theUserID)) {
 				throw new IllegalArgumentException("Reviewer cannot be author");
@@ -119,7 +122,7 @@ public class Manuscript implements Serializable {
 				myReviews.add(new Review(theUserID));
 			}
 		} else {
-			throw new IllegalArgumentException(String.format("Maximum of %d reviewers already assigned", MAX_REVIEWERS));
+			throw new IllegalArgumentException(String.format("Maximum of %d reviewers already assigned", 3));
 		}
 
 	}

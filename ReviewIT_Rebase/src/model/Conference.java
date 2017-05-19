@@ -29,6 +29,7 @@ public class Conference implements Serializable {
 
 	private static final int MAX_NUMBER_OF_MANUSCRIPT_SUBMISSIONS = 5;
 	private static final int MAX_NUMBER_OF_MANUSCRIPTS_ASSIGNED = 8;
+	public static final int MIN_NUM_REVIEWS = 3;
 
 	private ArrayList<String> myAuthors; // list of Authors in this conference.
 	private ArrayList<String> myReviewers; // list of Reviewers in this conference.
