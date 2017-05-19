@@ -1,4 +1,4 @@
-package view;
+package deprecated;
 import model.Conference;
 
 import java.util.HashMap;

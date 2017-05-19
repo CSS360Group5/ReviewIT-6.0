@@ -1,10 +1,10 @@
 package model;
-import view.RoleView;
-
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import deprecated.RoleView;
 
 /**
  * 

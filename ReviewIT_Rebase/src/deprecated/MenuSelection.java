@@ -1,4 +1,4 @@
-package view;
+package deprecated;
 
 import java.util.Scanner;
 
