@@ -146,8 +146,8 @@ public class ConferenceControllerTest {
 	 * Testing attempt to create a new conference without a proper name.
 	 * @throws IllegalArgumentException when conference name is a null
 	 */
-	@Test (expected = IllegalArgumentException.class)
-	public void createNewConference_StringNameIsNull_ThrowsException() throws IllegalArgumentException {
+	@Test (expected = NullPointerException.class)
+	public void createNewConference_StringNameIsNull_ThrowsException() throws NullPointerException {
 		controller = new ConferenceController();
 		controller.createNewConference(null, timeNow);
 	}
@@ -166,8 +166,8 @@ public class ConferenceControllerTest {
 	 * Testing attempt to create a add conference that is null.
 	 * @throws IllegalArgumentException when conference is null
 	 */
-	@Test (expected = IllegalArgumentException.class)
-	public void addConference_PassInNullConference_ThrowsException() throws IllegalArgumentException {
+	@Test (expected = NullPointerException.class)
+	public void addConference_PassInNullConference_ThrowsException() throws NullPointerException {
 		controller = new ConferenceController();
 		controller.addConference(null);
 	}

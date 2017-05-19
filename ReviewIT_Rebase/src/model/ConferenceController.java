@@ -3,6 +3,7 @@ import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import deprecated.RoleView;
 
@@ -93,11 +94,15 @@ public class ConferenceController implements Serializable {
 	/**
 	 * Create a new conference and add to ArrayList of myConferences.
 	 * 
-	 * @param s - conference Name
+	 * @param confName - conference Name
 	 * @param theSubmissionDeadline - deadline for authors
+	 * @throws IllegalArgumentException
 	 */
-	public void createNewConference(String s, ZonedDateTime theSubmissionDeadline) {
-		Conference newConference = new Conference(s, theSubmissionDeadline);
+	public void createNewConference(String confName, ZonedDateTime theSubmissionDeadline) throws IllegalArgumentException{
+		if(confName.isEmpty()){
+			throw new IllegalArgumentException();
+		}
+		Conference newConference = new Conference(confName, theSubmissionDeadline);
 		int i = myConferences.size();
 		myConferences.add(i, newConference);
 	}
@@ -109,7 +114,7 @@ public class ConferenceController implements Serializable {
 	 */
 	public void addConference(Conference c) {
 		int i = myConferences.size();
-		myConferences.add(i, c);
+		myConferences.add(i, Objects.requireNonNull(c));
     }
 
 	/**
