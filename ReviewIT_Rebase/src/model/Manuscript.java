@@ -11,51 +11,32 @@ import java.util.List;
  * myReviews are assigned to the myManuscript, the reviews, and if the paper is
  * accepted.
  * 
- * @author Lorenzo Pacis
- * @version 4.29.2017
+ * @author Harlan Stewart
+ * @version 1.0
  */
 public class Manuscript implements Serializable {
 
-	/**
-	 * Max reviewers allowed to be assigned.
-	 */
-	private static final int MAX_REVIEWERS = 3;
-
-	/**
-	 *  A serializable object  id
-	 */
+	/*A serializable object  id.*/
 	private static final long serialVersionUID = -154138662878164818L;
 
-	/**
-	 * Title of the paper
-	 */
+	/** Title of the paper*/
 	private String myTitle;
 
-	/**
-	 * The date and time of the submission.
-	 */
+	/* The date and time of the submission.*/
 	private ZonedDateTime mySubmissionDate;
 
-	/**
-	 * File holding the myManuscript;
-	 */
+	/*File holding the myManuscript*/
 	private File myManuscript;
 
-	/**
-	 * The list of myAuthors.
-	 */
+	/*The list of myAuthors.*/
 	private List<String> myAuthors;
 
 	
-	/**
-	 * The user who submitted the myManuscript.
-	 */
+	/*The user who submitted the myManuscript.*/
 	private String mySubmitter;
 	
-	/**
-	 * The list of myReviews assigned to the myManuscript.
-	 */
-	private ArrayList<Review> myReviews;
+	/* The list of myReviews assigned to the myManuscript.*/
+	private List<Review> myReviews;
 	
 
 	/**
@@ -76,9 +57,9 @@ public class Manuscript implements Serializable {
 	 */
 	public Manuscript(String theTitle, String theSubmitter, List<String> theAuthors,
 					  ZonedDateTime theSubmissionDate, File theManuscript ) {
-		myReviews = new ArrayList<>();
+		myReviews = new List<>();
 		mySubmitter = theSubmitter;
-		myAuthors = new ArrayList<>();
+		myAuthors = new List<>();
 		if(theAuthors == null) {
 			myAuthors.add(theSubmitter);
 		} else {
