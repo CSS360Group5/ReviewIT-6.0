@@ -25,6 +25,8 @@ public class ConferenceController implements Serializable {
 	private Conference myCurrentConference;
 	
 	private ArrayList<Conference> myConferences;
+
+	private ArrayList<UserProfile> myUserProfiles;
 	
 	private RoleView myView;
 
@@ -43,6 +45,8 @@ public class ConferenceController implements Serializable {
 	public Conference getCurrentConference() {
 		return myCurrentConference;
 	}
+
+
 
 	/**
 	 * Set conference by passing in a conference. (Will add conference to end of

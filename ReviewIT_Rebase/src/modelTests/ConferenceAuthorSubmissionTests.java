@@ -1,17 +1,16 @@
 package modelTests;
 
-import static org.junit.Assert.*;
+import model.Conference;
+import model.Manuscript;
+import org.junit.Before;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import model.Conference;
-import model.Manuscript;
+import static org.junit.Assert.*;
 
 /**
  * This class tests the business rule regarding the number of author submissions to a conference.

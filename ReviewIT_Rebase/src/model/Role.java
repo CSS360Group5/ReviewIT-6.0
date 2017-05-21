@@ -8,5 +8,4 @@ public enum Role {
     SUBPROGRAM,
     PROGRAM_CHAIR,
     REVIEWER;
-
 }
