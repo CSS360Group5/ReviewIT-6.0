@@ -1,11 +1,11 @@
 package model;
+import deprecated.RoleView;
+
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import deprecated.RoleView;
 
 /**
  * 
@@ -24,9 +24,9 @@ public class ConferenceController implements Serializable {
 
 	private Conference myCurrentConference;
 	
-	private ArrayList<Conference> myConferences;
+	private List<Conference> myConferences;
 
-	private ArrayList<UserProfile> myUserProfiles;
+	private List<UserProfile> myUserProfiles;
 	
 	private RoleView myView;
 
@@ -34,7 +34,8 @@ public class ConferenceController implements Serializable {
 	 * Constructor. Initializes the ArrayList.
 	 */
 	public ConferenceController() {
-        myConferences = new ArrayList<>();
+        myUserProfiles = new ArrayList<>();
+		myConferences = new ArrayList<>();
     }
 
 	/**
