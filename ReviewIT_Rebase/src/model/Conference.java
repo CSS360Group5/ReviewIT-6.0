@@ -26,10 +26,11 @@ public class Conference implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 8924081621903486980L;
+	private final int DEFAULT_MAX_NUMBER_OF_MANUSCRIPT_SUBMISSIONS = 5;
+	private final int DEFAULT_MAX_NUMBER_OF_MANUSCRIPTS_ASSIGNED = 8;
 
-	private static final int MAX_NUMBER_OF_MANUSCRIPT_SUBMISSIONS = 5;
-	private static final int MAX_NUMBER_OF_MANUSCRIPTS_ASSIGNED = 8;
-
+	private int MAX_NUMBER_OF_MANUSCRIPT_SUBMISSIONS;
+	private int MAX_NUMBER_OF_MANUSCRIPTS_ASSIGNED;
 	private ArrayList<String> myAuthors; // list of Authors in this conference.
 	private ArrayList<String> myReviewers; // list of Reviewers in this conference.
 	private ArrayList<String> mySubProgramChairs;
@@ -49,6 +50,8 @@ public class Conference implements Serializable {
 	 */
 	public Conference(String theConferenceName, ZonedDateTime theSubmissionDeadline) {
 		
+		setMaxNumberOfManuscriptSubmissions(DEFAULT_MAX_NUMBER_OF_MANUSCRIPT_SUBMISSIONS);
+		setMaxNumberOfManuscriptsAssigned(DEFAULT_MAX_NUMBER_OF_MANUSCRIPTS_ASSIGNED);
 		this.myConferenceName = theConferenceName;
 		this.mySubProgramChairs = new ArrayList<>();
 		this.myAuthors = new ArrayList<>();
@@ -138,7 +141,7 @@ public class Conference implements Serializable {
 		boolean isUnder = true;
 		for(String theUserId : theManuscript.getAuthors()) {
 			if(mySubmittedManuscripts.containsKey(theUserId)) { 
-				if(mySubmittedManuscripts.get(theUserId).size() >= MAX_NUMBER_OF_MANUSCRIPT_SUBMISSIONS) {
+				if(mySubmittedManuscripts.get(theUserId).size() >= getMaxNumberOfManuscriptSubmissions()) {
 					isUnder = false;
 					throw new IllegalArgumentException("Manuscript not submitted over five submitted manuscripts for " + theUserId + "\n");
 				}
@@ -311,7 +314,7 @@ public class Conference implements Serializable {
 		// Business rule 1: A reviewer must have no more than MAX_NUMBER_OF_MANUSCRIPTS_ASSIGNED.
 		if(myAssignedReviewers.containsKey(theReviewerId)) {
 			
-			if(myAssignedReviewers.get(theReviewerId).size() >=  MAX_NUMBER_OF_MANUSCRIPTS_ASSIGNED){
+			if(myAssignedReviewers.get(theReviewerId).size() >=  getMaxNumberOfManuscriptsAssigned()){
 				eligible = false;
 			throw new IllegalArgumentException("Manuscript not assigned, Reviewer " + theReviewerId + " cannot be assigned more than eight manuscripts!");
 
@@ -447,6 +450,40 @@ public class Conference implements Serializable {
 		}
 		else if(myAssignedReviewers.containsKey(theUserId)) return Role.REVIEWER;
 		return Role.AUTHOR;
+	}
+	
+
+	/**
+	 * getter of MAX_NUMBER_OF_MANUSCRIPT_SUBMISSIONS
+	 * @return MAX_NUMBER_OF_MANUSCRIPT_SUBMISSIONS
+	 */
+	public int getMaxNumberOfManuscriptSubmissions() {
+		return MAX_NUMBER_OF_MANUSCRIPT_SUBMISSIONS;
+	}
+	
+	
+	/**
+	 * setter of MAX_NUMBER_OF_MANUSCRIPT_SUBMISSIONS
+	 * @param MaxNumberOfManuscriptSubmissions The Max Number Of Manuscript Submissions
+	 */
+	public void setMaxNumberOfManuscriptSubmissions(int MaxNumberOfManuscriptSubmissions) {
+		this.MAX_NUMBER_OF_MANUSCRIPT_SUBMISSIONS = MaxNumberOfManuscriptSubmissions;
+	}
+	
+	/**
+	 * getter of MAX_NUMBER_OF_MANUSCRIPTS_ASSIGNED
+	 * @return MAX_NUMBER_OF_MANUSCRIPTS_ASSIGNED
+	 */
+	public int getMaxNumberOfManuscriptsAssigned() {
+		return MAX_NUMBER_OF_MANUSCRIPTS_ASSIGNED;
+	}
+	
+	/**
+	 * setter of MAX_NUMBER_OF_MANUSCRIPTS_ASSIGNED
+	 * @param MaxNumberOfManuscriptsAssigned The Max Number Of Manuscripts Assigned
+	 */
+	public void setMaxNumberOfManuscriptsAssigned(int MaxNumberOfManuscriptsAssigned) {
+		this.MAX_NUMBER_OF_MANUSCRIPTS_ASSIGNED = MaxNumberOfManuscriptsAssigned;
 	}
 	
 
