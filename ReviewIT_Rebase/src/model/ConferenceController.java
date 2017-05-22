@@ -1,5 +1,4 @@
 package model;
-import deprecated.RoleView;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
@@ -26,15 +25,11 @@ public class ConferenceController implements Serializable {
 	
 	private List<Conference> myConferences;
 
-	private List<UserProfile> myUserProfiles;
-	
-	private RoleView myView;
 
 	/**
 	 * Constructor. Initializes the ArrayList.
 	 */
 	public ConferenceController() {
-        myUserProfiles = new ArrayList<>();
 		myConferences = new ArrayList<>();
     }
 
@@ -169,29 +164,6 @@ public class ConferenceController implements Serializable {
 		return found;
 	}
 
-	/**
-	 * Setter for RoleView
-	 * 
-	 * @param view - the new RoleView being set.
-     * @throws IllegalArgumentException if parameter is not the right type!
-	 */
-	public void setRoleView(RoleView view) throws IllegalArgumentException {
-		if(view != null) {
-            this.myView = view;
-        } else {
-		    throw new IllegalArgumentException("Parameter is Null!");
-        }
-
-	}
-
-	/**
-	 * Getter for RoleView
-	 * 
-	 * @return RoleView
-	 */
-	public RoleView getRoleView() {
-		return myView;
-	}
 
 	/**
 	 * Removes all myConferences from the list.
@@ -209,18 +181,6 @@ public class ConferenceController implements Serializable {
 	public boolean isConferenceSet() {
 		boolean set = false;
 		if (myCurrentConference != null)
-			set = true;
-		return set;
-	}
-
-	/**
-	 * Boolean to see if Role myView is set.
-	 * 
-	 * @return true if role myView is set.
-	 */
-	public boolean isRoleViewSet() {
-		boolean set = false;
-		if (myView != null)
 			set = true;
 		return set;
 	}

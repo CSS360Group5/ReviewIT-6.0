@@ -6,6 +6,7 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/ReviewIT_Rebase/src" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/ReviewIT_Rebase/src/deprecated" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
