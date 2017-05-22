@@ -11,51 +11,35 @@ import java.util.List;
  * myReviews are assigned to the myManuscript, the reviews, and if the paper is
  * accepted.
  * 
- * @author Lorenzo Pacis
- * @version 4.29.2017
+ * @author Harlan Stewart
+ * @version 1.0
  */
 public class Manuscript implements Serializable {
 
-	/**
-	 * Max reviewers allowed to be assigned.
-	 */
-	private static final int MAX_REVIEWERS = 3;
-
-	/**
-	 *  A serializable object  id
-	 */
+	/*A serializable object  id.*/
 	private static final long serialVersionUID = -154138662878164818L;
 
-	/**
-	 * Title of the paper
-	 */
+	/** Title of the paper*/
 	private String myTitle;
 
-	/**
-	 * The date and time of the submission.
-	 */
+	/* The date and time of the submission.*/
 	private ZonedDateTime mySubmissionDate;
 
-	/**
-	 * File holding the myManuscript;
-	 */
+	/*File holding the myManuscript*/
 	private File myManuscript;
 
-	/**
-	 * The list of myAuthors.
-	 */
+	/*The list of myAuthors.*/
 	private List<String> myAuthors;
 
 	
-	/**
-	 * The user who submitted the myManuscript.
-	 */
+	/*The user who submitted the myManuscript.*/
 	private String mySubmitter;
 	
-	/**
-	 * The list of myReviews assigned to the myManuscript.
-	 */
-	private ArrayList<Review> myReviews;
+	/* The list of myReviews assigned to the myManuscript.*/
+	private List<Review> myReviews;
+	
+	/* The list of of persons who are assigned as reviewers to this manuscript. */
+	
 	
 
 	/**
@@ -130,7 +114,7 @@ public class Manuscript implements Serializable {
 	 * be more than 3 myReviews assigned to one myManuscript.
 	 */
 	public void setReviewer(String theUserID) throws IllegalArgumentException {
-		if(myReviews.size() < MAX_REVIEWERS) {
+		if(myReviews.size() < 3) {
 			
 			if(myAuthors.contains(theUserID)) {
 				throw new IllegalArgumentException("Reviewer cannot be author");
@@ -138,7 +122,7 @@ public class Manuscript implements Serializable {
 				myReviews.add(new Review(theUserID));
 			}
 		} else {
-			throw new IllegalArgumentException(String.format("Maximum of %d reviewers already assigned", MAX_REVIEWERS));
+			throw new IllegalArgumentException(String.format("Maximum of %d reviewers already assigned", 3));
 		}
 
 	}
