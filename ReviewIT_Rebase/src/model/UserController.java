@@ -61,7 +61,6 @@ public class UserController implements Serializable {
      */
     public void createNewUserProfile(final String theUserID,
                                         final String theUserName) {
-
         myUserProfiles.add(new UserProfile(theUserID, theUserName));
     }
 
@@ -176,7 +175,7 @@ public class UserController implements Serializable {
     /**
      * Assigns a Role to a user for the designated Conference.
      * @param theConferenceName The designated Conference
-     * @param theRole The designated Role
+     * @param theRole The appointed Role
      * @param theUserID The user's ID
      */
     public void assignConferenceRoleToUser(final String theConferenceName,
