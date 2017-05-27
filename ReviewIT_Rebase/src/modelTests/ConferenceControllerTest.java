@@ -1,7 +1,6 @@
 package modelTests;
 import model.Conference;
-import model.ConferenceController;
-import org.junit.Before;
+import model.ConferenceStateManager;
 import org.junit.Test;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -18,7 +17,7 @@ public class ConferenceControllerTest {
 	private Conference conference1 = new Conference("The first Conference", timeNow);
 	private Conference conference2;
 	private Conference conference3;
-	private ConferenceController controller;
+	private ConferenceStateManager controller;
 
 
 
@@ -39,7 +38,7 @@ public class ConferenceControllerTest {
 	 */
 	@Test
 	public void getCurrentConference_CurrentConferenceNotInitiated_ReturnsNull() {
-		controller = new ConferenceController();
+		controller = new ConferenceStateManager();
 		assertNull("Conference Controller not initiated", controller.getCurrentConference());
 	}
 
@@ -48,7 +47,7 @@ public class ConferenceControllerTest {
 	 */
 	@Test
 	public void setCurrentConference_SettingAConference_ReturnsConference() {
-		controller = new ConferenceController();
+		controller = new ConferenceStateManager();
 		controller.setCurrentConference(conference1);
 		assertEquals("Didnt return correct Conference.", controller.getCurrentConference(), conference1);
 	}
@@ -58,7 +57,7 @@ public class ConferenceControllerTest {
 	 */
 	@Test
 	public void setCurrentConference_ChangeCurrentConference_ReturnsNewConference() {
-		controller = new ConferenceController();
+		controller = new ConferenceStateManager();
 		controller.addConference(conference2);
 		controller.setCurrentConference(conference1);
 		assertEquals("Didnt return correct Conference.", controller.getCurrentConference(), conference1);
@@ -71,7 +70,7 @@ public class ConferenceControllerTest {
 	 */
 	@Test (expected = IllegalArgumentException.class)
 	public void setCurrentConference_passInNullConference_ThrowsException() throws IllegalArgumentException {
-		controller = new ConferenceController();
+		controller = new ConferenceStateManager();
 		controller.setCurrentConference(null);
 	}
 
@@ -80,7 +79,7 @@ public class ConferenceControllerTest {
 	 */
 	@Test
 	public void setCurrentConference_IntegerRepresentationOfConference_ReturnsSpecifiedConferenceInArrayList() {
-		controller = new ConferenceController();
+		controller = new ConferenceStateManager();
 		controller.addConference(conference1);
 		controller.setCurrentConference(0);
 		assertEquals("Didnt return correct Conference.", controller.getCurrentConference(), conference1);
@@ -92,7 +91,7 @@ public class ConferenceControllerTest {
 	 */
 	@Test (expected = IndexOutOfBoundsException.class)
 	public void setCurrentConference_passInOutOfBoundsInt_ThrowsException() throws IndexOutOfBoundsException {
-		controller = new ConferenceController();
+		controller = new ConferenceStateManager();
 		controller.setCurrentConference(0);
 		controller.setCurrentConference(100);
 	}
@@ -103,7 +102,7 @@ public class ConferenceControllerTest {
 	 */
 	@Test (expected = IndexOutOfBoundsException.class)
 	public void getConference_passTooSmallInt_ThrowsException() throws IndexOutOfBoundsException {
-		controller = new ConferenceController();
+		controller = new ConferenceStateManager();
 		controller.addConference(conference1);
 		controller.getConference(-1);
 	}
@@ -114,7 +113,7 @@ public class ConferenceControllerTest {
 	 */
 	@Test (expected = IndexOutOfBoundsException.class)
 	public void getConference_passInTooLargeInt_ThrowsException() throws IndexOutOfBoundsException {
-		controller = new ConferenceController();
+		controller = new ConferenceStateManager();
 		controller.addConference(conference1);
 		controller.getConference(100);
 	}
@@ -125,7 +124,7 @@ public class ConferenceControllerTest {
 	 */
 	@Test
 	public void getConference_passInInt_GetConferenceAtRequestedLocation() {
-		controller = new ConferenceController();
+		controller = new ConferenceStateManager();
 		controller.addConference(conference1);
 		controller.addConference(conference2);
 		assertEquals("Returned Wrong Conference",controller.getConference(0), conference1);
@@ -138,7 +137,7 @@ public class ConferenceControllerTest {
 	 */
 	@Test (expected = IllegalArgumentException.class)
 	public void createNewConference_StringNameIsEmpty_ThrowsException() throws IllegalArgumentException {
-		controller = new ConferenceController();
+		controller = new ConferenceStateManager();
 		controller.createNewConference("", timeNow);
 	}
 
@@ -148,7 +147,7 @@ public class ConferenceControllerTest {
 	 */
 	@Test (expected = NullPointerException.class)
 	public void createNewConference_StringNameIsNull_ThrowsException() throws NullPointerException {
-		controller = new ConferenceController();
+		controller = new ConferenceStateManager();
 		controller.createNewConference(null, timeNow);
 	}
 
@@ -157,7 +156,7 @@ public class ConferenceControllerTest {
 	 */
 	@Test
 	public void createNewConference_ProperNameAndTime_ConferenceCreatedProperly() {
-		controller = new ConferenceController();
+		controller = new ConferenceStateManager();
 		controller.createNewConference("The New Conference", timeNow);
 		assertEquals("Conference not created Properly.", "The New Conference", controller.getConference(0).getMyConferenceName());
 	}
@@ -168,7 +167,7 @@ public class ConferenceControllerTest {
 	 */
 	@Test (expected = NullPointerException.class)
 	public void addConference_PassInNullConference_ThrowsException() throws NullPointerException {
-		controller = new ConferenceController();
+		controller = new ConferenceStateManager();
 		controller.addConference(null);
 	}
 
@@ -178,7 +177,7 @@ public class ConferenceControllerTest {
 	 */
 	@Test
 	public void addConference_LegitConfernce_CreatedSuccessfully() {
-		controller = new ConferenceController();
+		controller = new ConferenceStateManager();
 		controller.addConference(conference1);
 		assertEquals("Conference was not added properly", controller.getConference(0), conference1);
 	}
@@ -188,7 +187,7 @@ public class ConferenceControllerTest {
 	 */
 	@Test
 	public void getNumberOfConferences() {
-		controller = new ConferenceController();
+		controller = new ConferenceStateManager();
 		controller.addConference(conference1);
 		controller.addConference(conference2);
 		assertEquals("Didnt return right number of conferences", controller.getNumberOfConferences(), 2);
@@ -199,7 +198,7 @@ public class ConferenceControllerTest {
 	 */
 	@Test
 	public void containsConference() {
-		controller = new ConferenceController();
+		controller = new ConferenceStateManager();
 		controller.addConference(conference1);
 		assertTrue("Couldnt find the conference", controller.containsConference("The first Conference"));
 		assertFalse("Found non-existing conference", controller.containsConference("No Conference Here"));
