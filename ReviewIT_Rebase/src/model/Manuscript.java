@@ -30,7 +30,6 @@ public class Manuscript implements Serializable {
 
 	/*The list of myAuthors.*/
 	private List<String> myAuthors;
-
 	
 	/*The user who submitted the myManuscript.*/
 	private String mySubmitter;
@@ -117,7 +116,7 @@ public class Manuscript implements Serializable {
 		if(myReviews.size() < 3) {
 			
 			if(myAuthors.contains(theUserID)) {
-				throw new IllegalArgumentException("Reviewer cannot be author");
+				throw new IllegalArgumentException("Reviewer cannot be author.");
 			} else {
 				myReviews.add(new Review(theUserID));
 			}

@@ -11,7 +11,7 @@ import java.util.NoSuchElementException;
  * @author Kevin Ravana
  * @version 5/21/2017
  */
-public class UserController implements Serializable {
+public class UserProfileStateManager implements Serializable {
 
     /*
     Current User's UserProfile
@@ -24,7 +24,7 @@ public class UserController implements Serializable {
     private List<UserProfile> myUserProfiles;
 
 
-    public UserController() {
+    public UserProfileStateManager() {
         myUserProfiles = new ArrayList<>();
     }
 
@@ -37,7 +37,7 @@ public class UserController implements Serializable {
     }
 
     /**
-     * This UserController Object is made aware of the current user.
+     * This UserProfileStateManager Object is made aware of the current user.
      * @param theUserID The ID of the user that is currently logged in
      */
     public void setCurrentUser(final String theUserID) {

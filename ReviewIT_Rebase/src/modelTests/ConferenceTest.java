@@ -6,7 +6,6 @@ import java.io.File;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -172,11 +171,11 @@ public class ConferenceTest {
 		
 		
 		for(int i = 0; i  < 7; i++) {
-			conference.assignReviewer(new Manuscript("Intro to Crytography", submissionUserID, manuscriptAuthors,
+			conference.assignManuscriptToReviewer(new Manuscript("Intro to Crytography", submissionUserID, manuscriptAuthors,
 					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")), reviewerUserID);
 		}
 		
-		assertTrue(conference.assignReviewer(new Manuscript("Intro to Crytography", submissionUserID, manuscriptAuthors,
+		assertTrue(conference.assignManuscriptToReviewer(new Manuscript("Intro to Crytography", submissionUserID, manuscriptAuthors,
 					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")), reviewerUserID));
 
 	}
@@ -189,10 +188,10 @@ public class ConferenceTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testAssignReviewerThrowsIllegalArgumentExceptionWithEightManuscriptsAssigned() {
 		for(int i = 0; i < 9; i++) {
-			conference.assignReviewer(new Manuscript("Intro to Crytography", submissionUserID, manuscriptAuthors,
+			conference.assignManuscriptToReviewer(new Manuscript("Intro to Crytography", submissionUserID, manuscriptAuthors,
 					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")), reviewerUserID);
 		}
-		conference.assignReviewer(new Manuscript("Intro to Crytography", submissionUserID, manuscriptAuthors,
+		conference.assignManuscriptToReviewer(new Manuscript("Intro to Crytography", submissionUserID, manuscriptAuthors,
 				ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")), reviewerUserID);
 		
 	}
@@ -227,18 +226,18 @@ public class ConferenceTest {
 	@Test (expected = IllegalArgumentException.class)
 	public void testAssignReviewerManuscriptThrowsIllegalArgumentExceptionOnThatTheyAuthored() {
 		conference.submitManuscript(manuscript);
-		conference.assignReviewer(manuscript, submissionUserID);
+		conference.assignManuscriptToReviewer(manuscript, submissionUserID);
 		
 	}
 	
 	/**
 	 * @author Lorenzo Pacis
-	 * This method tests that assignReviewer throws an IllegalArgumentException if the reviewer is a co author of the manuscript.
+	 * This method tests that assignManuscriptToReviewer throws an IllegalArgumentException if the reviewer is a co author of the manuscript.
 	 */
 	@Test (expected = IllegalArgumentException.class)
 	public void testAssignReivewerThrowsIllegalArgumentExceptionOnManuscriptThatTheyCoAuthored() {
 		conference.submitManuscript(manuscript);
-		conference.assignReviewer(manuscript, coAuthorUserID);
+		conference.assignManuscriptToReviewer(manuscript, coAuthorUserID);
 		
 	}
 	
@@ -248,8 +247,8 @@ public class ConferenceTest {
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testAssignedReviewerHasBeenPreviouslyAssignedToThisManuscriptThrowsIllegalArgumentException() {
-		conference.assignReviewer(manuscript, reviewerUserID);
-		conference.assignReviewer(manuscript, reviewerUserID);
+		conference.assignManuscriptToReviewer(manuscript, reviewerUserID);
+		conference.assignManuscriptToReviewer(manuscript, reviewerUserID);
 
 	}
 	
@@ -303,43 +302,43 @@ public class ConferenceTest {
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testGetSubProgramChairAssignedManuscriptsThrowsIllegalArgumentExceptiontIfNonAssigned() {
-		conference.getSubManuscripts(subProgramChairUserID);
+		conference.getAllSubmittedManuscripts(subProgramChairUserID);
 	}
 	
 	/**
 	 * @author Lorenzo Pacis
-	 * This method tests that getSubManuscripts will return an array list of manuscripts containing
+	 * This method tests that getAllSubmittedManuscripts will return an array list of manuscripts containing
 	 * the manuscript that the sub program chair has been assigned to.
 	 */
 	@Test
 	public void testSubProgramChairAssignedManuscriptsForPopulatedArrayListContainingOneAssignedManuscript() {
 		conference.submitManuscript(manuscript);
-		conference.assignSubManuscripts(manuscript, subProgramChairUserID);
-		assertTrue(conference.getSubManuscripts(subProgramChairUserID).size() == 1);
+		conference.assignManuscriptToSubprogramChair(manuscript, subProgramChairUserID);
+		assertTrue(conference.getAllSubmittedManuscripts(subProgramChairUserID).size() == 1);
 	}
 	
 	/**
 	 * @author Lorenzo Pacis
-	 * This method tests that assignSubManuscripts will return false if the sub program chair being assigned the 
+	 * This method tests that assignManuscriptToSubprogramChair will return false if the sub program chair being assigned the
 	 * manuscript is the author of the manuscript.
 	 */
 	@Test
 	public void testSubProgramChairIsTheAuthorOfTheManuscript() {
 		conference.submitManuscript(manuscript);
-		assertFalse(conference.assignSubManuscripts(manuscript, submissionUserID));
+		assertFalse(conference.assignManuscriptToSubprogramChair(manuscript, submissionUserID));
 		
 	}
 
 	/**
 	 * @author Lorenzo Pacis
-	 * This method tests that assignSubManuscripts will return false if the sub program chair has
+	 * This method tests that assignManuscriptToSubprogramChair will return false if the sub program chair has
 	 * already been assigned this manuscript.
 	 */
 	@Test
 	public void testSubProgramChairHasAlreadyBeenAssignedThisManuscript() {
 		conference.submitManuscript(manuscript);
-		conference.assignSubManuscripts(manuscript, subProgramChairUserID);
-		assertFalse(conference.assignSubManuscripts(manuscript, subProgramChairUserID));
+		conference.assignManuscriptToSubprogramChair(manuscript, subProgramChairUserID);
+		assertFalse(conference.assignManuscriptToSubprogramChair(manuscript, subProgramChairUserID));
 	}
 	
 	
@@ -351,33 +350,33 @@ public class ConferenceTest {
 	@Test
 	public void testSubProgramChairIsAssignedManuscriptAndTheyAreEiligableIsTrue() {
 		conference.submitManuscript(manuscript);
-		conference.assignSubManuscripts(manuscript, subProgramChairUserID); 
+		conference.assignManuscriptToSubprogramChair(manuscript, subProgramChairUserID);
 		conference.submitManuscript(manuscriptTwo);
-		assertTrue(conference.assignSubManuscripts(manuscriptTwo, subProgramChairUserID));
+		assertTrue(conference.assignManuscriptToSubprogramChair(manuscriptTwo, subProgramChairUserID));
 
 	}
 	
 	/**
 	 * @author Lorenzo Pacis
-	 * This method tests that assignSubManuscripts will assign a sub program chair a manuscript
+	 * This method tests that assignManuscriptToSubprogramChair will assign a sub program chair a manuscript
 	 * even if they are an author, but not of this manuscript.
 	 */
 	@Test
 	public void testSubProgramChairIsAnAuthorButNotOfThisManuscriptReturnsTrue() {
 		conference.submitManuscript(subProgramChairManuscript);
 		conference.submitManuscript(manuscript);
-		assertTrue(conference.assignSubManuscripts(subProgramChairManuscript, submissionUserID));
+		assertTrue(conference.assignManuscriptToSubprogramChair(subProgramChairManuscript, submissionUserID));
 	}
 	
 	/**
 	 * @author Lorenzo Pacis
-	 * This method tests that assignSubManuscripts will return false if the sub program chair
+	 * This method tests that assignManuscriptToSubprogramChair will return false if the sub program chair
 	 * is a co author of this manuscript.
 	 */
 	@Test
 	public void testSubProgramChairIsTheCoAuthorOfTheManuscript() {
 		conference.submitManuscript(subProgramChairIsCoAuthorManuscript);
-		assertFalse(conference.assignSubManuscripts(subProgramChairIsCoAuthorManuscript, subProgramChairUserID));
+		assertFalse(conference.assignManuscriptToSubprogramChair(subProgramChairIsCoAuthorManuscript, subProgramChairUserID));
 		
 	}
 	
@@ -389,7 +388,7 @@ public class ConferenceTest {
 	@Test
 	public void testGetNumAssignedManuscriptsReturnsOne() {
 		conference.submitManuscript(manuscript);
-		conference.assignReviewer(manuscript, reviewerUserID);
+		conference.assignManuscriptToReviewer(manuscript, reviewerUserID);
 		assertTrue(conference.getNumAssignedManuscripts(reviewerUserID) == 1);
 	}
 	

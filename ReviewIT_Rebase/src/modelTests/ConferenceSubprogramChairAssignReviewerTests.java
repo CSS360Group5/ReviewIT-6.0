@@ -64,85 +64,85 @@ public class ConferenceSubprogramChairAssignReviewerTests {
 	
 	/**
 	 * @author Lorenzo Pacis
-	 * This method will test that {@link model.Conference#assignReviewer(String) assignReviewer} returns true
+	 * This method will test that {@link model.Conference#assignReviewer(String) assignManuscriptToReviewer} returns true
 	 * if the reviewer is not the author of the manuscript.
 	 */
 	@Test
 	public void assignReviewerReturnsTrueIfTheReviewerIsNotTheAuthorOfTheManuscript() {
 		conference.submitManuscript(manuscript);
 		assertTrue("Testing that assign reviewer returns true if the reviewer is not the author", 
-				conference.assignReviewer(manuscript, reviewerUserID));
+				conference.assignManuscriptToReviewer(manuscript, reviewerUserID));
 	}
 	
 	/**
 	 * @author Lorenzo Pacis
-	 * This method will test that {@link model.Conference#assignReviewer(String) assignReviewer} returns false
+	 * This method will test that {@link model.Conference#assignReviewer(String) assignManuscriptToReviewer} returns false
 	 * if the reviewer is the author of the manuscript.
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void assignReviewerThrowsIllegalArgumentExceptionIfTheReviewerIsTheAuthorOfTheManuscript() {
 		conference.submitManuscript(manuscript);
-		conference.assignReviewer(manuscript, submissionUserID);
+		conference.assignManuscriptToReviewer(manuscript, submissionUserID);
 	}
 	
 	/**
 	 * @author Lorenzo Pacis
-	 * This method will test that {@link model.Conference#assignReviewer(String) assignReviewer} 
+	 * This method will test that {@link model.Conference#assignReviewer(String) assignManuscriptToReviewer}
 	 * throws an IllegalArgumentException if the reviewer is a co author of the manuscript.
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void assignReviewerThrowsIllegalArgumentExceptionIfTheReviewerIsCoAuthorOfTheManuscript() {
 		conference.submitManuscript(manuscript);
 
-		conference.assignReviewer(manuscript, coAuthorUserID);
+		conference.assignManuscriptToReviewer(manuscript, coAuthorUserID);
 	}
 	
 	/**
 	 * @author Lorenzo Pacis
-	 * This method will test that {@link model.Conference#assignReviewer(String) assignReviewer} returns true
+	 * This method will test that {@link model.Conference#assignReviewer(String) assignManuscriptToReviewer} returns true
 	 * if the reviewer has been assigned less than the MAX_NUM_REVIEWER_MANUSCRIPT_ASSIGNMENTS.
 	 */
 	@Test
 	public void assignReviewerReturnsTrueIfTheReviewerHasBeenAssignedMaxNumManuscriptsMinusNumManuscriptsLessThanMax() {
 		for(int i = 0; i < MAX_NUM_REVIEWER_MANUSCRIPT_ASSIGNMENTS - 6; i++) {
-			conference.assignReviewer(new Manuscript("Intro to Crytography", submissionUserID, manuscriptAuthors,
+			conference.assignManuscriptToReviewer(new Manuscript("Intro to Crytography", submissionUserID, manuscriptAuthors,
 				ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")), reviewerUserID);
 			
 		}
 		assertTrue("Testing that assign reviewer returns true if the reviewer has been assigned " + (MAX_NUM_REVIEWER_MANUSCRIPT_ASSIGNMENTS - NUM_REVIEWER_MANUSCRIPT_ASSIGNMENTS_LESS_THAN_MAX) + "manuscripts.",
-				conference.assignReviewer(manuscript, reviewerUserID));
+				conference.assignManuscriptToReviewer(manuscript, reviewerUserID));
 	}
 	
 	/**
 	 * @author Lorenzo Pacis
-	 * This method will test that {@link model.Conference#assignReviewer(String) assignReviewer} will return true
+	 * This method will test that {@link model.Conference#assignReviewer(String) assignManuscriptToReviewer} will return true
 	 * if the reviewer has been assigned one less than the MAX_NUM_REVIEWER_MANUSCRIPT_ASSIGNMENTS.
 	 */
 	@Test
 	public void assignReviewerReturnsTrueIfTheReviewerHasBeenAssignedMaxNumOfManuscriptsMinusOne() {
 		for(int i = 0; i < MAX_NUM_REVIEWER_MANUSCRIPT_ASSIGNMENTS - 1; i++) {
-			conference.assignReviewer(new Manuscript("Intro to Crytography", submissionUserID, manuscriptAuthors,
+			conference.assignManuscriptToReviewer(new Manuscript("Intro to Crytography", submissionUserID, manuscriptAuthors,
 				ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")), reviewerUserID);
 			
 		}
 		assertTrue("Testing that assign reviewer returns true if the reviewer has been assigned " + (MAX_NUM_REVIEWER_MANUSCRIPT_ASSIGNMENTS - 1) + "manuscripts.",
-		conference.assignReviewer(manuscript, reviewerUserID));
+		conference.assignManuscriptToReviewer(manuscript, reviewerUserID));
 		
 	}
 	
 	/**
 	 * @author Lorenzo Pacis
-	 * This method will test that {@link model.Conference#assignReviewer(String) assignReviewer} 
+	 * This method will test that {@link model.Conference#assignReviewer(String) assignManuscriptToReviewer}
 	 * throws an IllegalArgumentException if the reviewer has been assigned the MAX_NUM_REVIEWER_MANUSCRIPT_ASSIGNMENTS.
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void assignReviewerThrowsIllegalArgumentExceptionIfTheReviewerHasBeenAssignedMaxNumOfManuscripts() {
 		for(int i = 0; i < MAX_NUM_REVIEWER_MANUSCRIPT_ASSIGNMENTS + 1; i++) {
-			conference.assignReviewer(new Manuscript("Intro to Crytography", submissionUserID, manuscriptAuthors,
+			conference.assignManuscriptToReviewer(new Manuscript("Intro to Crytography", submissionUserID, manuscriptAuthors,
 				ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")), reviewerUserID);
 			
 		}
-				conference.assignReviewer(manuscript, reviewerUserID);
+				conference.assignManuscriptToReviewer(manuscript, reviewerUserID);
 		
 	}
 }
