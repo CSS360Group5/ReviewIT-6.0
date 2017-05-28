@@ -74,5 +74,6 @@ public class AuthorView extends RoleView {
         	
         }
         displayViewSubmittedManuscripts();
+        in.close();
     }
 }

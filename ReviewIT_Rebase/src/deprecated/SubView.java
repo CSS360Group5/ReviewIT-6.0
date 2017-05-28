@@ -1,12 +1,10 @@
 package deprecated;
-import model.Conference;
-import model.Manuscript;
-import model.Review;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Scanner;
+
+import model.Conference;
+import model.Manuscript;
 
 //import com.sun.org.apache.regexp.internal.recompile;
 
@@ -42,7 +40,6 @@ public class SubView extends AuthorView {
         System.out.printf(format,"ID", "Title", "Author","Co-Authos","Reviewers");
         System.out.println(String.join("", Collections.nCopies(203, "-")));
         for(Manuscript m: myConference.getSubManuscripts(myId)) {
-        	int i = 0;
         	ArrayList<String> reviewers = m.getReviewers();
         	List<String> coAuthors = m.getAuthors();
         	coAuthors.remove(m.getSubmissionUser());

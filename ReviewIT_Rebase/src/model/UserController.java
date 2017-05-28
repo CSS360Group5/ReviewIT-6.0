@@ -159,15 +159,13 @@ public class UserController implements Serializable {
      */
     public List<UserProfile> getEligibleReviewers(final String theConferenceName,
                                                   final Manuscript theManuscript) {
-        List<UserProfile> eligibleReviewers = getUsersByRole(Role.REVIEWER,
-                theConferenceName);
+        List<UserProfile> Reviewers = getUsersByRole(Role.REVIEWER, theConferenceName);
+        List<UserProfile> eligibleReviewers = new ArrayList<>();
         // TODO: Improve logic to check more than just author names
-        for (UserProfile up : myUserProfiles) {
-            for (String author : theManuscript.getAuthors()) {
-                if (!up.getName().equals(author)) {
-                    eligibleReviewers.add(up);
-                }
-            }
+        for (UserProfile up : Reviewers) {
+            if (!theManuscript.getAuthors().contains(up.getName())){
+                eligibleReviewers.add(up);
+            }  
         }
         return eligibleReviewers;
     }

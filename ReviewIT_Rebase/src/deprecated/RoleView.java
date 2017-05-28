@@ -43,6 +43,7 @@ public abstract class RoleView {
             displayView();
         }
         //If here, they've selected to exit, go back to list of conferences.
+        in.close();
     }
 
 

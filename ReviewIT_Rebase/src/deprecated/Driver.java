@@ -71,6 +71,7 @@ public class Driver {
 		String inputFromConsole;
 		System.out.print("Please enter your email address: ");
 		inputFromConsole = in.nextLine();
+		in.close();
 		return inputFromConsole;
 	}
 

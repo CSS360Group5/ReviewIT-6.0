@@ -2,9 +2,16 @@ package modelTests;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 
+import model.Manuscript;
+import model.Role;
 import model.UserController;
 import model.UserProfile;
 
@@ -17,10 +24,19 @@ public class UserControllerTest {
 
 	
 	private UserController testUserController;
+	String testUserID,testUserName,testUserID1,testUserName1,testUserID2,testUserName2;
 	
 	@Before
 	public void setUp() {
 		testUserController = new UserController();
+		testUserID = "testUserID";
+    	testUserName = "testUserName";
+    	testUserID1 = "testUserID1";
+    	testUserName1 = "testUserName1";
+    	testUserID2 = "not added testUserID2";
+    	testUserName2 = "not added testUserName2";
+    	testUserController.createNewUserProfile(testUserID, testUserName);
+    	testUserController.createNewUserProfile(testUserID1, testUserName1);
 	}
 
 
@@ -29,12 +45,6 @@ public class UserControllerTest {
 	 */
     @Test	
 	public void testsetCurrentUser() { 
-    	String testUserID = "testUserID";
-    	String testUserName = "testUserName";
-    	String testUserID1 = "testUserID1";
-    	String testUserName1 = "testUserName1";
-    	testUserController.createNewUserProfile(testUserID, testUserName);
-    	testUserController.createNewUserProfile(testUserID1, testUserName1);
     	testUserController.setCurrentUser(testUserID);
     	assertEquals(testUserController.getCurrentUser().getUserID(),testUserID);
     }
@@ -45,14 +55,13 @@ public class UserControllerTest {
 	 */
     @Test	
 	public void testcreateNewUserProfile() { 
-    	String testUserID = "testUserID";
-    	String testUserName = "testUserName";
-    	String testUserID1 = "testUserID1";
-    	String testUserName1 = "testUserName1";
-    	testUserController.createNewUserProfile(testUserID, testUserName);
-    	testUserController.createNewUserProfile(testUserID1, testUserName1);
-    	assertEquals(testUserController.getUser(testUserID),new UserProfile(testUserID, testUserName));
-    	assertEquals(testUserController.getUser(testUserID1),new UserProfile(testUserID1, testUserName1));
+    	if(testUserController.containsUserProfile(testUserID)){
+    		assertEquals(testUserController.getUser(testUserID),new UserProfile(testUserID, testUserName));
+    	}
+    	if(testUserController.containsUserProfile(testUserID1)){
+    		assertEquals(testUserController.getUser(testUserID1),new UserProfile(testUserID1, testUserName1));
+    	}
+    	
     }
     
     /**
@@ -60,17 +69,80 @@ public class UserControllerTest {
 	 */
     @Test	
 	public void testgetUser() { 
-    	String testUserID = "testUserID";
-    	String testUserName = "testUserName";
-    	String testUserID1 = "testUserID1";
-    	String testUserName1 = "testUserName1";
-    	String testUserID2 = "not added testUserID2";
-    	String testUserName2 = "not added testUserName2";
-    	testUserController.createNewUserProfile(testUserID, testUserName);
-    	testUserController.createNewUserProfile(testUserID1, testUserName1);
-    	assertEquals(testUserController.getUser(testUserID),new UserProfile(testUserID, testUserName));
-    	assertEquals(testUserController.getUser(testUserID1),new UserProfile(testUserID1, testUserName1));
+    	if(testUserController.containsUserProfile(testUserID)){
+    		assertEquals(testUserController.getUser(testUserID),new UserProfile(testUserID, testUserName));
+    	}
+    	if(testUserController.containsUserProfile(testUserID1)){
+    		assertEquals(testUserController.getUser(testUserID1),new UserProfile(testUserID1, testUserName1));
+    	}
     	assertNotEquals(testUserController.getUser(testUserID2),new UserProfile(testUserID2, testUserName2));
     }
+    
+    /**
+	 * Tests if the method can find if the user is already added to User Profile.
+	 */
+    @Test	
+	public void testcontainsUserProfile() { 
+    	assertTrue(testUserController.containsUserProfile(testUserID));
+    	assertTrue(testUserController.containsUserProfile(testUserID1));
+    	assertFalse(testUserController.containsUserProfile(testUserID2));
+    }
+    
+    /**
+	 * Tests if the method return all the user's ID is already added to User Profile.
+	 */
+    @Test	
+	public void testgetAllUserIDs() { 
+    	List<String> testallUserIDs = new ArrayList<>();
+    	testallUserIDs.add(testUserID);
+    	testallUserIDs.add(testUserID1);
+    	assertEquals(testUserController.getAllUserIDs(),testallUserIDs);
+    }
+    
+    /**
+   	 * Tests if the method return all the user's name is already added to User Profile.
+   	 */
+    @Test	
+   	public void testgetAllUserNames() { 
+       	List<String> testallUserNames = new ArrayList<>();
+       	testallUserNames.add(testUserName);
+       	testallUserNames.add(testUserName1);
+       	assertEquals(testUserController.getAllUserNames(), testallUserNames);
+    }
+
+    /**
+   	 * Tests if the method return all the user's with same role.
+   	 */
+    @Test	
+   	public void testgetUsersByRole() { 
+       	List<UserProfile> testusersWithTheRoles = new ArrayList<>();
+       	testUserController.getUser(testUserID).assignRole("theConferenceID", Role.AUTHOR);
+       	testUserController.getUser(testUserID1).assignRole("theConferenceID", Role.AUTHOR);
+       	testusersWithTheRoles.add(testUserController.getUser(testUserID));
+       	testusersWithTheRoles.add(testUserController.getUser(testUserID1));
+       	assertEquals(testUserController.getUsersByRole(Role.AUTHOR, "theConferenceID"), testusersWithTheRoles);
+    }
+    
+    /**
+   	 * Tests if the method return all the user's name is already added to User Profile.
+   	 */
+    @Test	
+   	public void testgetEligibleReviewers() { 
+    	testUserController.createNewUserProfile(testUserID2, testUserName2);
+       	testUserController.getUser(testUserID2).assignRole("theConferenceID", Role.REVIEWER);
+    	testUserController.getUser(testUserID).assignRole("theConferenceID", Role.REVIEWER);
+       	testUserController.getUser(testUserID1).assignRole("theConferenceID", Role.REVIEWER);
+       	List<String> testAuthors = new ArrayList<> ();
+       	testAuthors.add(testUserName1);
+       	ZonedDateTime testSubmissionDate = ZonedDateTime.now();
+       	File testFile = new File("SomePath");
+       	Manuscript testManuscript = new Manuscript("Title", testUserName, testAuthors, testSubmissionDate, testFile);
+       	List<UserProfile> eligibleReviewers = new ArrayList<> ();
+       	eligibleReviewers.add(testUserController.getUser(testUserID2));
+       	List<UserProfile> testeligibleReviewers = testUserController.getEligibleReviewers("theConferenceID", testManuscript);
+       	assertEquals(testeligibleReviewers, eligibleReviewers);
+    }
+
 
 }
+
