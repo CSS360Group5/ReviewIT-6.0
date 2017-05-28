@@ -3,6 +3,8 @@ import java.io.File;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -12,10 +14,13 @@ import java.util.List;
  * accepted.
  * 
  * @author Harlan Stewart
+ * @author Dimitar Kumanov
  * @version 1.0
  */
 public class Manuscript implements Serializable {
 
+	public static int MAX_REVIEWERS = 3;
+	
 	/*A serializable object  id.*/
 	private static final long serialVersionUID = -154138662878164818L;
 
@@ -29,13 +34,16 @@ public class Manuscript implements Serializable {
 	private File myManuscript;
 
 	/*The list of myAuthors.*/
-	private List<String> myAuthors;
+	private Collection<String> myAuthors;
 	
 	/*The user who submitted the myManuscript.*/
-	private String mySubmitter;
+	private UserProfile mySubmitter;
 	
 	/* The list of myReviews assigned to the myManuscript.*/
-	private List<Review> myReviews;
+	private Collection<UserProfile> myReviewers;
+	
+//	/* The list of myReviews assigned to the myManuscript.*/
+//	private Collection<Review> myReviews;
 	
 	/* The list of of persons who are assigned as reviewers to this manuscript. */
 	
@@ -47,7 +55,7 @@ public class Manuscript implements Serializable {
 	 * acceptance, and the recommendation.
 	 * 
 	 * @param theSubmitter
-	 *            The author of the paper. This will be added to the list of
+	 *            The submiter of the paper. This will be added to the list of
 	 *            myAuthors and stored as the main author to be referenced as the
 	 *            person who submitted the myManuscript.
 	 * @param theAuthors
@@ -56,21 +64,22 @@ public class Manuscript implements Serializable {
 	 *            The date and time the myManuscript was submitted.
 	 * @param theManuscript
 	 *            The file containing the myManuscript.
+	 * @author Harlan Stewart
+	 * @author Dimitar Kumanov
+	 * 
 	 */
-	public Manuscript(String theTitle, String theSubmitter, List<String> theAuthors,
+	public Manuscript(String theTitle, UserProfile theSubmitter, List<String> theAuthors,
 					  ZonedDateTime theSubmissionDate, File theManuscript ) {
-		myReviews = new ArrayList<>();
+		myReviewers = new HashSet<>();
+//		myReviews = new ArrayList<>();
 		mySubmitter = theSubmitter;
-		myAuthors = new ArrayList<>();
-		if(theAuthors == null) {
-			myAuthors.add(theSubmitter);
-		} else {
-			myAuthors.add(theSubmitter);
-			for(String co : theAuthors) {
-				myAuthors.add(co);
-			}
+		myAuthors = new HashSet<>();
+		
+		myAuthors.add(theSubmitter.getName());
+		for(String co : theAuthors) {
+			myAuthors.add(co);
 		}
-
+		
 		mySubmissionDate = theSubmissionDate;
 		myManuscript = theManuscript;
 		myTitle = theTitle;
@@ -91,7 +100,7 @@ public class Manuscript implements Serializable {
 	 * 
 	 * @return All of the myAuthors of the paper.
 	 */
-	public List<String> getAuthors() {
+	public Collection<String> getAuthors() {
 		//deep copy of the authors list
 		List<String> authors = new ArrayList<>();
 		for(String auth :myAuthors) {
@@ -109,57 +118,80 @@ public class Manuscript implements Serializable {
 	}
 	
 	/**
-	 * Adds a reviewer to the myManuscript, there cannot
-	 * be more than 3 myReviews assigned to one myManuscript.
+	 * Adds a Reviewer to this manuscript.
+	 * @throws IllegalArgumentException if getReviewers().size() >= this.MAX_REVIEWERS || this.getAuthors().contains(theReviewerProfile.getName())
 	 */
-	public void setReviewer(String theUserID) throws IllegalArgumentException {
-		if(myReviews.size() < 3) {
-			
-			if(myAuthors.contains(theUserID)) {
-				throw new IllegalArgumentException("Reviewer cannot be author.");
-			} else {
-				myReviews.add(new Review(theUserID));
-			}
-		} else {
+	public void addReviewer(final UserProfile theReviewerProfile) throws IllegalArgumentException {
+		if(myReviewers.size() >= MAX_REVIEWERS) {
 			throw new IllegalArgumentException(String.format("Maximum of %d reviewers already assigned", 3));
 		}
-
+		if(myAuthors.contains(theReviewerProfile)) 
+			throw new IllegalArgumentException("Reviewer cannot be author.");
+		
+		myReviewers.add(theReviewerProfile);
 	}
 	
-	/**
-	 * Gets the list of reviewers assigned to the myManuscript.
-	 * @return
-	 */
-	public ArrayList<String> getReviewers() {
-		ArrayList<String> reviewers = new ArrayList<>();
-		for(Review r :myReviews) {
-			reviewers.add(r.getUserID());
+	public Collection<UserProfile> getReviewers() {
+		Collection<UserProfile> reviewers = new HashSet<>();
+		for(UserProfile currentReviewer :myReviewers) {
+			reviewers.add(currentReviewer);
 		}
 		return reviewers;
 	}
 	
-	/**
-	 * Tests to see if the list of myReviews on the myManuscript contains the
-	 * user passed in.
-	 * @param theUserID The userID of the person to be checked if they are in the
-	 * list of myReviews.
-	 * @return True if the user is in the list, or false if they are not.
-	 */
-	public boolean hasReviewer(String theUserID) {
-		for(Review rev : myReviews){
-			if (rev.getUserID().equals(theUserID)) {
-				return true;
-			}
-		}
-		return false;
-	}
+	
+//	/**
+//	 * Adds a reviewer to the myManuscript, there cannot
+//	 * be more than 3 myReviews assigned to one myManuscript.
+//	 */
+//	public void setReviewer(String theUserID) throws IllegalArgumentException {
+//		if(myReviews.size() < 3) {
+//			
+//			if(myAuthors.contains(theUserID)) {
+//				throw new IllegalArgumentException("Reviewer cannot be author.");
+//			} else {
+//				myReviews.add(new Review(theUserID));
+//			}
+//		} else {
+//			throw new IllegalArgumentException(String.format("Maximum of %d reviewers already assigned", 3));
+//		}
+//
+//	}
+//	
+//	/**
+//	 * Gets the list of reviewers assigned to the myManuscript.
+//	 * @return
+//	 */
+//	public ArrayList<String> getReviewers() {
+//		ArrayList<String> reviewers = new ArrayList<>();
+//		for(Review r :myReviews) {
+//			reviewers.add(r.getUserID());
+//		}
+//		return reviewers;
+//	}
+//	
+//	/**
+//	 * Tests to see if the list of myReviews on the myManuscript contains the
+//	 * user passed in.
+//	 * @param theUserID The userID of the person to be checked if they are in the
+//	 * list of myReviews.
+//	 * @return True if the user is in the list, or false if they are not.
+//	 */
+//	public boolean hasReviewer(String theUserID) {
+//		for(Review rev : myReviews){
+//			if (rev.getUserID().equals(theUserID)) {
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
 
 	/**
 	 * Gets the author name
 	 * 
 	 * @return the author
 	 */
-	public String getSubmissionUser() {
+	public UserProfile getSubmissionUser() {
 		return mySubmitter;
 
 	}

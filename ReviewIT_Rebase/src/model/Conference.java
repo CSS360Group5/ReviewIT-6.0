@@ -3,6 +3,7 @@ package model;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,30 +27,30 @@ public class Conference implements Serializable {
 	 */
 	private static final long serialVersionUID = 8924081621903486980L;
 
-	private static final int MAX_NUMBER_OF_MANUSCRIPT_SUBMISSIONS = 5;
-	private static final int MAX_NUMBER_OF_MANUSCRIPTS_ASSIGNED = 8;
-	private static final int MIN_NUM_REVIEWS = 5;
+	public static final int MAX_NUMBER_OF_MANUSCRIPT_SUBMISSIONS = 5;
+	public static final int MAX_NUMBER_OF_MANUSCRIPTS_ASSIGNED = 8;
+	public static final int MIN_NUM_REVIEWS = 5;
 
 	/**
 	 * List of all Manuscripts submitted to this Conference.
 	 */
-	private List<Manuscript> myConferenceManuscripts;
+	private Collection<Manuscript> myConferenceManuscripts;
 
 	/**
-	 * Map of an Author's user ID to a List of Manuscripts that the author has submitted to this Conference.
+	 * Map of an Author's name to a List of Manuscripts that the author has submitted to this Conference.
 	 */
-	private Map<String, List<Manuscript>> myActiveAuthorSubmitterMap;
+	private Map<String, Collection<Manuscript>> myAuthorManuscriptMap;
 
 	/**
 	 * Map of a Subprogram Chair's user ID to a List of Manuscripts for which they have been designated responsible
 	 * for this Conference.
 	 */
-	private Map<String, List<Manuscript>> myActiveSubprogramChairAssignmentMap;
+	private Map<UserProfile, Collection<Manuscript>> myActiveSubprogramChairAssignmentMap;
 
-	/**
-	 * Map of a Reviewer's user ID to a List of Manuscripts to which they have been assigned to create Reviews for.
-	 */
-	private Map<String, List<Manuscript>> myActiveReviewerAssignmentMap;
+//	/**
+//	 * Map of a Reviewer's user ID to a List of Manuscripts to which they have been assigned to create Reviews for.
+//	 */
+//	private Map<UserProfile, Collection<Manuscript>> myActiveReviewerAssignmentMap;
 
 	/**
 	 * This Conference's designated deadline for Manuscript submissions.
@@ -69,9 +70,9 @@ public class Conference implements Serializable {
 		
 		this.myConferenceName = theConferenceName;
 		this.myConferenceManuscripts = new ArrayList<>();
-		this.myActiveAuthorSubmitterMap = new HashMap<>();
+		this.myAuthorManuscriptMap = new HashMap<>();
 		this.myActiveSubprogramChairAssignmentMap = new HashMap<>();
-		this.myActiveReviewerAssignmentMap = new HashMap<>();
+//		this.myActiveReviewerAssignmentMap = new HashMap<>();
 		
 		this.myManuscriptSubmissionDeadline = theSubmissionDeadline;
 		
@@ -79,7 +80,6 @@ public class Conference implements Serializable {
 
 	
 	/**
-	 * @author Lorenzo Pacis
 	 * Submits a manuscript to a conference. (Business rules apply):
 	 * 		* Authors cannot submit more than MAX_NUMBER_OF_MANUSCRIPT_SUBMISSIONS per conference.
 	 * 		* Manuscripts must be submitted before the submission deadline.
@@ -92,115 +92,42 @@ public class Conference implements Serializable {
 	 * 
 	 * @param theManuscript - the manuscript to be added to this conference.
 	 * 		* Cannot be submitted more than once.
-	 * 
+	 * @author Lorenzo Pacis
+	 * @author Dimitar Kumanov
 	 */
-	public boolean submitManuscript(final Manuscript theManuscript,
-									final String theUserID) {
-		boolean returnValue = false;
-
-		if (theManuscript != null && isSubmittable(theManuscript, theUserID)) {
-			if (!handleDuplicateManuscript(theManuscript)) {
-				myConferenceManuscripts.add(theManuscript);
-			}
-			returnValue = true;
+	public boolean submitManuscript(final Manuscript theManuscript) {
+		if (theManuscript != null && isManuscriptSubmittable(theManuscript)) {
+			myConferenceManuscripts.add(theManuscript);
+			return true;
 		}
-
-//
-//		if(theManuscript != null) {
-//
-//			if(isBeforeSubmission(theManuscript, getSubmissionDeadline())) {
-//
-//				if(!myConferenceManuscripts.contains(theManuscript)){
-//
-//					if(mySubmittedManuscripts.containsKey(theManuscript.getSubmissionUser())) {
-//
-//						if(isUnderManuscriptSubmissionLimit(theManuscript)) {
-//							mySubmittedManuscripts.get(theManuscript.getSubmissionUser()).add(theManuscript);
-//							myConferenceManuscripts.add(theManuscript);
-//							addCoAuthorSubmission(theManuscript);
-//							returnValue = true;
-//						}
-//
-//
-//					} else {
-//
-//						if(isUnderManuscriptSubmissionLimit(theManuscript)) {
-//							mySubmittedManuscripts.put(theManuscript.getSubmissionUser(), new ArrayList<Manuscript>());
-//							mySubmittedManuscripts.get(theManuscript.getSubmissionUser()).add(theManuscript);
-//							myConferenceManuscripts.add(theManuscript);
-//							myAuthors.add(theManuscript.getSubmissionUser());
-//							addCoAuthorSubmission(theManuscript);
-//							returnValue = true;
-//						}
-//
-//					}
-//				}
-//
-//			} else {
-//				returnValue = false;
-//				throw new IllegalArgumentException("The deadline for submitting a manuscript was " + myManuscriptSubmissionDeadline +"\n" +
-//				"It is now " + ZonedDateTime.of(LocalDateTime.of(LocalDate.now(), LocalTime.now()), ZoneId.of("UTC-12")) + "\n"
-//						+ "Your current time is " + ZonedDateTime.now());
-//			}
-//
-//		} else {
-//			returnValue = false;
-//			throw new IllegalArgumentException("Error manuscript object is null \n");
-//
-//
-//		}
-//
-
-
-		return returnValue;
+		return false;
 	}
 
-	/**
-	 * Method that handles cases of duplicate Manuscripts being submitted.
-	 *
-	 * Currently, if a prior existing Manuscript shares a title with the
-	 * Manuscript to be submitted, the older Manuscript is replaced by the
-	 * newer.
-	 * @param theManuscript The Manuscript to be submitted
-	 * @return true if a duplicate title was found.
-	 */
-	private boolean handleDuplicateManuscript(final Manuscript theManuscript) {
-		boolean duplicateFound = false;
-		for (Manuscript m : myConferenceManuscripts) {
-			if (m.getTitle().equals(theManuscript.getTitle())) {
-				duplicateFound = true;
-				myConferenceManuscripts.remove(m);
-				myConferenceManuscripts.add(theManuscript);
-			}
-		}
-		return duplicateFound;
-	}
-
+//	/
 	/**
 	 * Method that determines whether a Manuscript may be submitted to this Conference.
 	 * @param theManuscript The Manuscript to be submitted
 	 * @param theUserID The submitting Author
 	 * @return true if the Manuscript is submittable.
+	 * @author Dimitar Kumanov
 	 */
-	private boolean isSubmittable(final Manuscript theManuscript,
-								  final String theUserID) {
-		boolean isSubmittable = isUnderManuscriptSubmissionLimit(theUserID)
-				&& submittedPriorToDeadline(theManuscript);
-		return isSubmittable;
+	private boolean isManuscriptSubmittable(final Manuscript theManuscript) {
+		if(!submittedPriorToDeadline(theManuscript)){
+			return false;
+		}
+		for(final String currentAuthorName: theManuscript.getAuthors()){
+			if(!isAuthorUnderManuscriptSubmissionLimit(currentAuthorName)){
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
-	 * Method that checks an authors total distinct manuscript submissions
-	 * to determine whether they may submit another manuscript.
-	 * @param theUserID The submitting Author
-	 * @return true if the submitting Author has not met the submission limit.
+	 * @return true iff getManuscriptsByName(theAuthorName).size() < this.MAX_NUMBER_OF_MANUSCRIPT_SUBMISSIONS
 	 */
-	private boolean isUnderManuscriptSubmissionLimit(final String theUserID) {
-		boolean isUnder = true;
-		if (getNumSubmissions(theUserID) >= MAX_NUMBER_OF_MANUSCRIPT_SUBMISSIONS ) {
-			isUnder = false;
-		}
-		return isUnder;
+	public boolean isAuthorUnderManuscriptSubmissionLimit(final String theAuthorName) {
+		return getManuscriptsByName(theAuthorName).size() < MAX_NUMBER_OF_MANUSCRIPT_SUBMISSIONS;
 	}
 	
 	/**
@@ -224,100 +151,62 @@ public class Conference implements Serializable {
 		return myManuscriptSubmissionDeadline;
 	}
 	
-	/**
-	 * User ID refers to the author which is stored in the authors list of this class
-	 *
-	 * @return the number of submissions from a specified Author.
-	 * @author Lorenzo Pacis
-	 */
-	public int getNumSubmissions(final String theUserID) {
-		int numberOfSubmissions = 0;
-		if(myActiveAuthorSubmitterMap.containsKey(theUserID)) {
-			numberOfSubmissions = myActiveAuthorSubmitterMap.get(theUserID).size();
-		}
-		return numberOfSubmissions;
-	}
 	
 	/**
-	 * Will get the manuscripts that have been submitted by the user, if it is found that the user has
-	 * not submitted a manuscript the method will throw an IllegalArgumentException which must be
-	 * handled by the caller.
-	 * @param theUserId is the specified Author to obtain the list of manuscripts.
-	 * @return the manuscripts submitted by a specified Author.
+	 * Returns a non-null Collection of Manuscript associate with theAuthorName for this Conference.
 	 */
-	public List<Manuscript> getManuscripts(final String theUserId) {
-		if(myActiveAuthorSubmitterMap.containsKey(theUserId)) {
-			return myActiveAuthorSubmitterMap.get(theUserId);
-		} else {
-			throw new IllegalArgumentException("No submitted manuscripts");
-		}
+	public Collection<Manuscript> getManuscriptsByName(final String theAuthorName) {
+		if(myAuthorManuscriptMap.containsKey(theAuthorName))
+			return myAuthorManuscriptMap.get(theAuthorName);
+		return new ArrayList<>();
 	}
 	
 	
-	/**
-	 * PRECONDITION: theUserId of the intended Reviewer must exist in the List
-	 * generated by UserProfileStateManager.getEligibleReviewers(String c, Manuscript m),
-	 * where c is this Conference's name and m is the Manuscript to be reviewed.
-	 *
-	 * Adds theManuscript to the List of Manuscripts associated with the Reviewer's
-	 * user ID. If the Reviewer has not yet been assigned a Manuscript, their ID is
-	 * put() in myActiveReviewerAssignmentMap and theManuscript is added to the List value.
-	 * 
-	 * @param theManuscript the manuscript to be assigned to a reviewer
-	 * @param theUserProfile the intended Reviewer's UserProfile Object
-	 */
-	public void assignManuscriptToReviewer(final Manuscript theManuscript,
-										   final UserProfile theUserProfile) {
-		/*
-		Ensure that the intended Reviewer holds a Reviewer Role for this Conference.
-		 */
-		if (theUserProfile.getRoles(myConferenceName).contains(Role.REVIEWER)) {
-			final String theUserID = theUserProfile.getUserID();
-
-			/*
-			If the intended Reviewer is not already assigned to the Manuscript, then set
-			them as a Reviewer of that Manuscript.
-			 */
-			if (!theManuscript.getReviewers().contains(theUserProfile.getUserID())) {
-				theManuscript.setReviewer(theUserProfile.getUserID());
-			}
-
-			/*
-			If this Reviewer has not already been assigned a Manuscript to review for this
-			Conference, add them and the Manuscript to myActiveReviewerAssignmentMap.
-
-			Else, if this Reviewer HAS been assigned a Manuscript for this Conference, and
-			the Manuscript is not already associated with them under myActiveReviewerAssignmentMap,
-			add theManuscript to their assignment List.
-			 */
-			if (!myActiveReviewerAssignmentMap.containsKey(theUserID)) {
-				myActiveReviewerAssignmentMap.put(theUserID, new ArrayList<>());
-				myActiveReviewerAssignmentMap.get(theUserID).add(theManuscript);
-			} else if (!myActiveReviewerAssignmentMap.get(theUserID).contains(theManuscript)) {
-				myActiveReviewerAssignmentMap.get(theUserID).add(theManuscript);
-			}
-		}
-	}
 	
-
-
-	/**
-	 * This method will return the manuscripts of for the userID for the subprogram chair.
-	 * If the userID is not found as a key in the hashmap, the method will throw an IllegalArgumentException
-	 * that must be handled by the caller.
-	 * @author Myles Haynes
-	 * @author Lorenzo Pacis
-	 * @param theId - id to get the
-	 * @return a list of Manuscripts assigned to a specified Subprogram Chair, otherwise returns a new list of manuscripts.
-	 */
-	public List<Manuscript> getAllSubmittedManuscripts(final String theId) {
-		if(myActiveAuthorSubmitterMap.containsKey(theId)) {
-			return myActiveAuthorSubmitterMap.get(theId);
-			
-		} else {
-			throw new IllegalArgumentException("This user has not submitted any Manuscripts to this Conference");
-		}
-	}
+//	/**
+//	 * PRECONDITION: theUserId of the intended Reviewer must exist in the List
+//	 * generated by UserProfileStateManager.getEligibleReviewers(String c, Manuscript m),
+//	 * where c is this Conference's name and m is the Manuscript to be reviewed.
+//	 *
+//	 * Adds theManuscript to the List of Manuscripts associated with the Reviewer's
+//	 * user ID. If the Reviewer has not yet been assigned a Manuscript, their ID is
+//	 * put() in myActiveReviewerAssignmentMap and theManuscript is added to the List value.
+//	 * 
+//	 * @param theManuscript the manuscript to be assigned to a reviewer
+//	 * @param theUserProfile the intended Reviewer's UserProfile Object
+//	 */
+//	public void assignManuscriptToReviewer(final Manuscript theManuscript,
+//										   final UserProfile theUserProfile) {
+//		/*
+//		Ensure that the intended Reviewer holds a Reviewer Role for this Conference.
+//		 */
+//		if (theUserProfile.getRoles(myConferenceName).contains(Role.REVIEWER)) {
+//			final String theUserID = theUserProfile.getUserID();
+//
+//			/*
+//			If the intended Reviewer is not already assigned to the Manuscript, then set
+//			them as a Reviewer of that Manuscript.
+//			 */
+//			if (!theManuscript.getReviewers().contains(theUserProfile.getUserID())) {
+//				theManuscript.addReviewer(theUserProfile);
+//			}
+//
+//			/*
+//			If this Reviewer has not already been assigned a Manuscript to review for this
+//			Conference, add them and the Manuscript to myActiveReviewerAssignmentMap.
+//
+//			Else, if this Reviewer HAS been assigned a Manuscript for this Conference, and
+//			the Manuscript is not already associated with them under myActiveReviewerAssignmentMap,
+//			add theManuscript to their assignment List.
+//			 */
+//			if (!myActiveReviewerAssignmentMap.containsKey(theUserID)) {
+//				myActiveReviewerAssignmentMap.put(theUserID, new ArrayList<>());
+//				myActiveReviewerAssignmentMap.get(theUserID).add(theManuscript);
+//			} else if (!myActiveReviewerAssignmentMap.get(theUserID).contains(theManuscript)) {
+//				myActiveReviewerAssignmentMap.get(theUserID).add(theManuscript);
+//			}
+//		}
+//	}
 
 	/**
 	 * PRECONDITION: The UserProfile of the intended Subprogram Chair must provide evidence
@@ -340,7 +229,7 @@ public class Conference implements Serializable {
 					assignedManuscript = true;
 				}
 			} else {
-				myActiveSubprogramChairAssignmentMap.put(userId, new ArrayList<>());
+				myActiveSubprogramChairAssignmentMap.put(theUserProfile, new ArrayList<>());
 				myActiveSubprogramChairAssignmentMap.get(userId).add(theManuscript);
 				assignedManuscript = true;
 			}
@@ -359,8 +248,8 @@ public class Conference implements Serializable {
 		if(theManuscript.getSubmissionUser().equals(theId)) {
 			validSubChair = false;
 		}
-		if(myActiveAuthorSubmitterMap.containsKey(theId)) {
-			if(myActiveAuthorSubmitterMap.get(theId).contains(theManuscript)) {
+		if(myAuthorManuscriptMap.containsKey(theId)) {
+			if(myAuthorManuscriptMap.get(theId).contains(theManuscript)) {
 				validSubChair = false;
 			}
 		}
@@ -380,10 +269,12 @@ public class Conference implements Serializable {
 	 * @return the number of Manuscripts assigned to this reviewer.
 	 * @author Lorenzo Pacis
 	 */
-	public int getNumAssignedManuscripts(String theReviewerId) {
+	public int getNumAssignedManuscripts(final UserProfile theReviewerProfile) {
 		int numAssigned = 0;
-		if(myActiveReviewerAssignmentMap.containsKey(theReviewerId)) {
-			numAssigned = myActiveReviewerAssignmentMap.get(theReviewerId).size();
+		for(final Manuscript currentManuscript: myConferenceManuscripts){
+			if(currentManuscript.getReviewers().contains(theReviewerProfile)){
+				++numAssigned;
+			}
 		}
 		return numAssigned;
 	}
