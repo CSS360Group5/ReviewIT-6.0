@@ -10,7 +10,8 @@ import org.junit.runners.Suite;
 	ConferenceControllerTest.class,
 	ConferenceSubprogramChairAssignReviewerTests.class,
 	ConferenceTest.class,
-	ManuscriptTest.class
+	ManuscriptTest.class,
+	UserControllerTest.class
 })
 
 /**
