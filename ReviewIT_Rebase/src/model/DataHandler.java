@@ -18,7 +18,7 @@ public class DataHandler {
 	private String mySaveFile;
 
 	
-	private ConferenceController myController;
+	private ConferenceStateManager myController;
 	
 	/**
 	 * The constructor takes a file location and a conference controller to be
@@ -28,7 +28,7 @@ public class DataHandler {
 	 * @param theSaveFile
 	 * @param theController
 	 */
-	public DataHandler(String theSaveFile, ConferenceController theController) {
+	public DataHandler(String theSaveFile, ConferenceStateManager theController) {
 		mySaveFile = theSaveFile;
 
 		myController = theController;
@@ -55,14 +55,14 @@ public class DataHandler {
 	 * the serailized object from a .ser file.
 	 * @author Lorenzo Pacis
 	 */
-	public ConferenceController loadData() {
-		ConferenceController conferenceController = null;
+	public ConferenceStateManager loadData() {
+		ConferenceStateManager conferenceController = null;
 		FileInputStream fin = null;
 		ObjectInputStream ois = null;
 		try {
 			fin = new FileInputStream(mySaveFile);
 			ois = new ObjectInputStream(fin);
-			conferenceController = (ConferenceController) ois.readObject();
+			conferenceController = (ConferenceStateManager) ois.readObject();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {

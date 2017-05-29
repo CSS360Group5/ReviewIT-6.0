@@ -11,7 +11,7 @@ import java.util.NoSuchElementException;
  * @author Kevin Ravana
  * @version 5/21/2017
  */
-public class UserController implements Serializable {
+public class UserProfileStateManager implements Serializable {
 
     /*
     Current User's UserProfile
@@ -24,7 +24,7 @@ public class UserController implements Serializable {
     private List<UserProfile> myUserProfiles;
 
 
-    public UserController() {
+    public UserProfileStateManager() {
         myUserProfiles = new ArrayList<>();
     }
 
@@ -37,7 +37,7 @@ public class UserController implements Serializable {
     }
 
     /**
-     * This UserController Object is made aware of the current user.
+     * This UserProfileStateManager Object is made aware of the current user.
      * @param theUserID The ID of the user that is currently logged in
      */
     public void setCurrentUser(final String theUserID) {
@@ -142,6 +142,34 @@ public class UserController implements Serializable {
             }
         }
         return usersWithTheRole;
+    }
+
+    /**
+     * Creates a List of users who are eligible to review a
+     * manuscript based on the relations assessed in the method.
+     *
+     * (Currently, the method fills a List of users who perform
+     * the Reviewer Role for the specified conference, and whose
+     * names are not identical to any of the manuscripts coauthors'
+     * names.)
+     *
+     * @param theConferenceName
+     * @param theManuscript
+     * @return
+     */
+    public List<UserProfile> getEligibleReviewers(final String theConferenceName,
+                                                  final Manuscript theManuscript) {
+        List<UserProfile> eligibleReviewers = getUsersByRole(Role.REVIEWER,
+                theConferenceName);
+        // TODO: Improve logic to check more than just author names
+        for (UserProfile up : myUserProfiles) {
+            for (String author : theManuscript.getAuthors()) {
+                if (!up.getName().equals(author)) {
+                    eligibleReviewers.add(up);
+                }
+            }
+        }
+        return eligibleReviewers;
     }
 
     /**

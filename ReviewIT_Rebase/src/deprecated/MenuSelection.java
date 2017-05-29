@@ -36,7 +36,6 @@ public class MenuSelection {
                 System.out.println("You didn't enter a number, please try again.");
             }
         }
-        in.close();
         return selection;
     }
 }
