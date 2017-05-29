@@ -32,24 +32,29 @@ public class ConferenceTest {
 	private static ArrayList<String> manuscriptAuthors;
 	
 	private static String submissionUserID = "John117";
+	private static String submissionUserNames = "submission John Doe";
 
-	private static UserProfile submissionUser = new UserProfile(submissionUserID, "submission John Doe");
+	private static UserProfile submissionUser = new UserProfile(submissionUserID, submissionUserNames);
 	
 	private static String reviewerUserID = "Kelly087";
+	private static String reviewerUserNames = "reviewer John Doe";
 
-	private static UserProfile reviewerUser = new UserProfile(reviewerUserID, "reviewer John Doe");
+	private static UserProfile reviewerUser = new UserProfile(reviewerUserID, reviewerUserNames);
 	
 	private static String coAuthorUserID = "Samuel034";
+	private static String coAuthorUserName = "coAuthor John Doe";
 
-	private static UserProfile coAuthorUser = new UserProfile(coAuthorUserID, "coAuthor John Doe");
+	private static UserProfile coAuthorUser = new UserProfile(coAuthorUserID, coAuthorUserName);
 	
 	private static String subProgramChairUserID = "Linda058";
+	private static String subProgramChairUserName = "subProgramChair John Doe";
 
-	private static UserProfile subProgramChairUser = new UserProfile(subProgramChairUserID, "subProgramChair John Doe");
+	private static UserProfile subProgramChairUser = new UserProfile(subProgramChairUserID, subProgramChairUserName);
 	
 	private static String secondCoAuthorID = "Frederoc104";
+	private static String secondCoAuthorName = "second John Doe";
 
-	private static UserProfile secondCoAuthor = new UserProfile(secondCoAuthorID, "second John Doe");
+	private static UserProfile secondCoAuthor = new UserProfile(secondCoAuthorID, secondCoAuthorName);
 	
 	private static Manuscript manuscript;
 	
@@ -65,6 +70,8 @@ public class ConferenceTest {
 	
 	private Conference conference;
 	
+	private Manuscript nullManuscript = null;
+	
 	/**
 	 * @author lorenzo pacis
 	 * This method sets up any test furniture prior to tests executing.
@@ -74,9 +81,9 @@ public class ConferenceTest {
 		manuscriptAuthors = new ArrayList<String>();
 		manuscriptAuthorsTwo = new ArrayList<String>();
 		manuscriptAuthorsThree = new ArrayList<String>();
-		manuscriptAuthors.add(coAuthorUserID);
-		manuscriptAuthorsTwo.add(secondCoAuthorID);
-		manuscriptAuthorsThree.add(subProgramChairUserID);
+		manuscriptAuthors.add(coAuthorUserName);
+		manuscriptAuthorsTwo.add(secondCoAuthorName);
+		manuscriptAuthorsThree.add(subProgramChairUserName);
 		conference = new Conference(conferenceName, conferenceSubmissionDeadline);
 		manuscript = new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
 				ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path"));
@@ -135,12 +142,12 @@ public class ConferenceTest {
 	/**
 	 * @author Lorenzo Pacis
 	 * @author Dimitar Kumanov
+	 * @author Dongsheng Han
 	 * This method tests that submitManuscript will throw IllegalArgumentException
 	 * if a null manuscript is submitted.
 	 */
-	@Test(expected = IllegalArgumentException.class)
+	@Test(expected = NullPointerException.class)
 	public void submitManuscriptThrowsIllegalArgumentExceptionOnNullManuscriptObject() {
-		Manuscript nullManuscript = null;
 		conference.submitManuscript(nullManuscript);
 	}
 	
@@ -291,6 +298,7 @@ public class ConferenceTest {
 	
 	/**
 	 * @author Dimitar Kumanov
+	 * @author Dongsheng Han
 	 */
 	@Test
 	public void testGetNumSubmissionsReturnsFourForCoAuthor() {

@@ -86,9 +86,15 @@ public class Conference implements Serializable {
 	 * 		* Cannot be submitted more than once.
 	 * @author Lorenzo Pacis
 	 * @author Dimitar Kumanov
+	 * @author Dongsheng Han
 	 */
 	public boolean submitManuscript(final Manuscript theManuscript) {
-		if (theManuscript != null && isManuscriptSubmittable(theManuscript)) {
+		if (theManuscript.getAuthors() != null 
+				&& theManuscript.getManuscript() != null 
+				&& theManuscript.getMySubmissionDate() != null 
+				&& theManuscript.getSubmissionUser() != null 
+				&& theManuscript.getTitle() != null 
+				&& isManuscriptSubmittable(theManuscript)) {
 			myConferenceManuscripts.add(theManuscript);
 			return true;
 		}
