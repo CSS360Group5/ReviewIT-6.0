@@ -99,7 +99,7 @@ public class ConferenceTest {
 	@Test
 	public void conferenceConstructorSetsFieldsToParameterValue() {
 		assertTrue(conference.getSubmissionDeadline().equals(conferenceSubmissionDeadline));
-		assertTrue(conference.getMyConferenceName().equals(conferenceName));
+		assertTrue(conference.getName().equals(conferenceName));
 		
 	}
 	

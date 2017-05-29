@@ -94,7 +94,7 @@ public class ConferenceStateManager implements Serializable {
 	public boolean containsConference(String conferenceName) {
 		boolean found = false;
         for (Conference myConference : myConferences)
-            if (myConference.getMyConferenceName().equals(conferenceName)) {
+            if (myConference.getName().equals(conferenceName)) {
                 found = true;
             }
 		return found;
