@@ -27,13 +27,21 @@ public class ConferenceStateManager implements Serializable {
 	
 	private Collection<Conference> myConferences;
 
+	private static ConferenceStateManager myInstance;
 
 	/**
 	 * Constructor. Initializes the ArrayList.
 	 */
-	public ConferenceStateManager() {
+	private ConferenceStateManager() {
 		myConferences = new HashSet<>();
     }
+	
+	public ConferenceStateManager getInstance(){
+		if(myInstance == null){
+			myInstance = new ConferenceStateManager();
+		}
+		return myInstance;
+	}
 
 	/**
 	 * Returns the current Conference.
