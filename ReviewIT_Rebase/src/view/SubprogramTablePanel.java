@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.font.TextAttribute;
 import java.io.File;
 import java.time.ZonedDateTime;
@@ -21,6 +22,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import cotroller.SubprogramSelectManuscriptActionListener;
 import model.Conference;
@@ -129,6 +131,7 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 				));
 		for(final JTextArea currentArea: headerAreas){
 			currentArea.setFont(new Font("Times New Roman", Font.BOLD, 25));
+			currentArea.setBackground(this.getBackground());
 			currentArea.setEditable(false);
 			currentArea.setHighlighter(null);
 			currentArea.setWrapStyleWord(true);
@@ -136,6 +139,7 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 		}
 		for(final JTextArea currentArea: rowTextAreas){
 			currentArea.setFont(new Font("Times New Roman", Font.BOLD, 25));
+			currentArea.setBackground(this.getBackground());
 			currentArea.setEditable(false);
 			currentArea.setHighlighter(null);
 			currentArea.setWrapStyleWord(true);
@@ -197,12 +201,16 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 			constraints.gridx = 0;
 			constraints.gridy = 50 + i * 50;
 			titleButton.setSize(750, 50);
-			titleButton.setBorderPainted(false);
 			Font buttonFont = new Font("Times New Roman", Font.PLAIN, 25);
 			final Map attributes = buttonFont.getAttributes();
 			attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
 			titleButton.setFont(buttonFont.deriveFont(attributes));
 			titleButton.setSize(750, 50);
+			titleButton.setFocusPainted(false);
+			titleButton.setMargin(new Insets(0, 0, 0, 0));
+			titleButton.setContentAreaFilled(false);
+			titleButton.setBorderPainted(false);
+			titleButton.setOpaque(false);
 			add(titleButton, constraints);
 			
 			
@@ -252,13 +260,13 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 	private static String formatTitleName(String theTitle){
 		final int maxCharacters = 55;
 		final StringBuilder formattedTitle = new StringBuilder();
-		formattedTitle.append("<html>");
+		formattedTitle.append("<html><u>");
 		while(theTitle.length() > maxCharacters){
 			formattedTitle.append(theTitle.substring(0, maxCharacters) + "<br>");
 			theTitle = theTitle.substring(maxCharacters, theTitle.length());
 		}
 		formattedTitle.append(theTitle);
-		formattedTitle.append("</html>");
+		formattedTitle.append("</u></html>");
 		return formattedTitle.toString();
 	}
 	

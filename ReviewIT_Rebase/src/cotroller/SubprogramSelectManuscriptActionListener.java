@@ -18,7 +18,7 @@ public class SubprogramSelectManuscriptActionListener implements ActionListener 
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
+		System.out.println("THIS WORKS");
 	}
 
 }
