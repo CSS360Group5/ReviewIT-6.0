@@ -203,9 +203,9 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 			final JTextArea reviewsSubmittedArea = new JTextArea();
 			rowTextAreas.add(reviewsSubmittedArea);
 			reviewsSubmittedArea.setText(
-					currentManuscript.getReviewers().size() +
+					currentManuscript.getReviews() +
 					" / " + 
-					ConferenceStateManager.getInstance().getCurrentConference().MIN_NUM_REVIEWS);
+					currentManuscript.getReviewers().size());
 			constraints.gridwidth = 200;
 			constraints.gridheight = 50;
 			constraints.gridx = 1700;

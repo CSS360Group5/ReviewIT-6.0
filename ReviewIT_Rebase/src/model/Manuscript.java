@@ -72,7 +72,7 @@ public class Manuscript implements Serializable {
 	public Manuscript(String theTitle, UserProfile theSubmitter, List<String> theAuthors,
 					  ZonedDateTime theSubmissionDate, File theManuscript ) {
 		myReviewers = new HashSet<>();
-//		myReviews = new ArrayList<>();
+		myReviews = new HashSet<>();
 		mySubmitter = theSubmitter;
 		myAuthors = new HashSet<>();
 		
