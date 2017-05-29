@@ -33,7 +33,6 @@ public class Conference implements Serializable {
 	 * List of all Manuscripts submitted to this Conference.
 	 */
 	private Collection<Manuscript> myConferenceManuscripts;
-
 //	/**
 //	 * Map of an Author's name to a List of Manuscripts that the author has submitted to this Conference.
 //	 */
@@ -151,7 +150,9 @@ public class Conference implements Serializable {
 	}
 	
 	/**
-	 * Returns a non-null Collection of Manuscript submitted by theSubmitterUserProfile to this Conference.
+	 * Returns a non-null Collection of Manuscript associate with theAuthorName for this Conference.
+	 * @author Dongsheng Han
+	 * could be improved by holding info in a map while submission
 	 */
 	public Collection<Manuscript> getManuscriptsSubmittedBy(final UserProfile theSubmitterUserProfile){
 		Collection<Manuscript> manuscriptsSubmitted = new HashSet<>();
