@@ -23,12 +23,7 @@ public class UserProfile implements Serializable {
     /**
      * Maps conferences to this user's roles for each conference.
      */
-    private Map<String, ArrayList<Role>> myUserRoles;
-
-    /**
-     * List of user's roles for selected conference.
-     */
-    private transient List<Role> myCurrentConferenceRoles;
+    private Map<Conference, Collection<Role>> myConferenceRoleMap;
 
     /**
      * Creates a UserProfile Object with the given
@@ -47,50 +42,25 @@ public class UserProfile implements Serializable {
 
         myUserID = Objects.requireNonNull(theUserID);
         myUserName = Objects.requireNonNull(theUserName);
-        myUserRoles = new HashMap<>();
+        myConferenceRoleMap = new HashMap<>();
 
         if(myUserID.isEmpty() || myUserName.isEmpty()) {
             throw new IllegalArgumentException();
         }
     }
 
-    /**
-     * Private method used to acquire this user's roles for a particular
-     * conference.
-     * @param theConferenceID Unique identifier for particular conference
-     */
-    private void getRoleListForConference(final String theConferenceID) {
-        if (!myUserRoles.containsKey(theConferenceID)) {
-            myUserRoles.put(theConferenceID, new ArrayList<>());
-        }
-        myCurrentConferenceRoles = myUserRoles.get(theConferenceID);
+    public Collection<Role> getRolesForConference(final Conference theConference){
+    	if(!myConferenceRoleMap.containsKey(theConference)){
+    		return new HashSet<>();
+    	}
+    	return myConferenceRoleMap.get(theConference);
     }
 
-    /**
-     * Public method used to assign a role to this user for a particular
-     * conference.
-     * @param theConferenceID Unique identifier for particular conference
-     * @param theRole Role enum to be assigned to this user
-     */
-    /* TODO: Add logic to return information regarding whether or not
-     * the role was assigned, and why.
-     */
-    public void assignRole(final String theConferenceID,
-                        final Role theRole) {
-        getRoleListForConference(theConferenceID);
-        if (!myCurrentConferenceRoles.contains(theRole)) {
-            myCurrentConferenceRoles.add(theRole);
-        }
-    }
-
-    /**
-     * Returns a list of this  user's roles for a particular conference.
-     * @param theConferenceID Unique identifier for particular conference
-     * @return List of user's designated roles for a particular conference
-     */
-    public List<Role> getRoles(final String theConferenceID) {
-        getRoleListForConference(theConferenceID);
-        return myCurrentConferenceRoles;
+    public void addRole(final Role theRole, final Conference theConference){
+    	if(!myConferenceRoleMap.containsKey(theConference)){
+    		myConferenceRoleMap.put(theConference, new HashSet<>());
+    	}
+    	myConferenceRoleMap.get(theConference).add(theRole);
     }
 
     /**
