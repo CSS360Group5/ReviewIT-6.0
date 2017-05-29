@@ -33,7 +33,7 @@ public class Conference implements Serializable {
 	 * List of all Manuscripts submitted to this Conference.
 	 */
 	private Collection<Manuscript> myConferenceManuscripts;
-//
+
 //	/**
 //	 * Map of an Author's name to a List of Manuscripts that the author has submitted to this Conference.
 //	 */
@@ -164,16 +164,21 @@ public class Conference implements Serializable {
 	}
 	
 	/**
-	 * Returns a non-null Collection of Manuscript associated with theAuthorName for this Conference.
+	 * Returns a non-null Collection of Manuscript associate with theAuthorName for this Conference.
+	 * @author Dongsheng Han
+	 * could be improved by holding info in a map while submission
 	 */
 	public Collection<Manuscript> getManuscriptsByName(final String theAuthorName) {
-		Collection<Manuscript> manuscriptsSubmitted = new HashSet<>();
-		for(final Manuscript currentManuscript: myConferenceManuscripts){
-			if(currentManuscript.getAuthors().contains(theAuthorName)){
-				manuscriptsSubmitted.add(currentManuscript);
+		Collection<Manuscript> AuthorManuscripts = new ArrayList<>();
+		for(Manuscript manuscript:myConferenceManuscripts){
+			if(manuscript.getAuthors().contains(theAuthorName)){
+				AuthorManuscripts.add(manuscript);
 			}
 		}
-		return manuscriptsSubmitted;
+//		if(myAuthorManuscriptMap.containsKey(theAuthorName))
+//			return myAuthorManuscriptMap.get(theAuthorName);
+//		return new ArrayList<>();
+		return AuthorManuscripts;
 	}
 
 	public void assignManuscriptToSubprogramChair(
