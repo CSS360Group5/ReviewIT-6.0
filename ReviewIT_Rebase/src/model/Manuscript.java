@@ -42,8 +42,9 @@ public class Manuscript implements Serializable {
 	/* The list of myReviews assigned to the myManuscript.*/
 	private Collection<UserProfile> myReviewers;
 	
-//	/* The list of myReviews assigned to the myManuscript.*/
-//	private Collection<Review> myReviews;
+	/* The list of myReviews assigned to this Manuscript.*/
+	private Collection<Review> myReviews;
+	
 	
 	/* The list of of persons who are assigned as reviewers to this manuscript. */
 	
@@ -142,6 +143,13 @@ public class Manuscript implements Serializable {
 		return reviewers;
 	}
 	
+	public void addReview(final Review theReview){
+		myReviews.add(theReview);
+	}
+	
+	public Collection<Review> getReviews(){
+		return myReviews;
+	}
 	
 	public boolean hasReviewer(UserProfile theReviewerProfile) {
 		return myReviewers.contains(theReviewerProfile);

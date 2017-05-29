@@ -5,12 +5,14 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.font.TextAttribute;
 import java.io.File;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -33,6 +35,7 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 
 	private final JTextArea titleHeaderArea;
 	private final JTextArea reviewersAssignedHeaderArea;
+	private final JTextArea reviewsSubmittedArea;
 	private final JTextArea recommendedHeaderArea;
 
 	private final Collection<JTextArea> rowTextAreas;
@@ -92,6 +95,7 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 		titleHeaderArea = new JTextArea();
 		reviewersAssignedHeaderArea = new JTextArea();
 		recommendedHeaderArea = new JTextArea();
+		reviewsSubmittedArea = new JTextArea();
 		rowTextAreas = new ArrayList<>();
 		initialize();
 	}
@@ -108,6 +112,7 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 		final Collection<JTextArea> headerAreas = new ArrayList<>(Arrays.asList(
 				titleHeaderArea,
 				reviewersAssignedHeaderArea,
+				reviewsSubmittedArea,
 				recommendedHeaderArea
 				));
 		for(final JTextArea currentArea: headerAreas){
@@ -121,30 +126,40 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 
 	private void createTable() {
 		titleHeaderArea.setText("Manuscript Title");
-		reviewersAssignedHeaderArea.setText("Reviewers Assigned");
+		reviewersAssignedHeaderArea.setText("Reviewers\nAssigned");
+		reviewsSubmittedArea.setText("Reviews\nSubmitted");
 		recommendedHeaderArea.setText("Recommended?");
 		
 		final GridBagConstraints constraints = new GridBagConstraints();
-		constraints.weightx = 0.9;
-		constraints.weighty = 0.9;
 		
-		constraints.gridwidth = 1600;
+		constraints.fill = GridBagConstraints.HORIZONTAL;
+		constraints.weightx = 0.01;
+		constraints.weighty = 0.01;
+		
+		constraints.gridwidth = 1500;
 		constraints.gridheight = 50;
 		constraints.gridx = 0;
 		constraints.gridy = 0;
 		titleHeaderArea.setSize(750, 50);
 		add(titleHeaderArea, constraints);
 		
-		constraints.gridwidth = 250;
+		constraints.gridwidth = 200;
 		constraints.gridheight = 50;
-		constraints.gridx = 1600;
+		constraints.gridx = 1500;
 		constraints.gridy = 0;
 		reviewersAssignedHeaderArea.setSize(200, 50);
 		add(reviewersAssignedHeaderArea, constraints);
 		
-		constraints.gridwidth = 250;
+		constraints.gridwidth = 200;
 		constraints.gridheight = 50;
-		constraints.gridx = 1850;
+		constraints.gridx = 1700;
+		constraints.gridy = 0;
+		reviewsSubmittedArea.setSize(200, 50);
+		add(reviewsSubmittedArea, constraints);
+		
+		constraints.gridwidth = 200;
+		constraints.gridheight = 50;
+		constraints.gridx = 1900;
 		constraints.gridy = 0;
 		recommendedHeaderArea.setSize(200, 50);
 		add(recommendedHeaderArea, constraints);
@@ -153,17 +168,52 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 		Collection<Manuscript> assignedManuscripts = 
 				ConferenceStateManager.getInstance().getCurrentConference().getManuscriptAssignedToSubprogram(
 				UserProfileStateManager.getInstance().getCurrentUserProfile());
-//		System.out.println(ConferenceStateManager.getInstance().getCurrentConference().getManuscriptAssignedToSubprogram(
-//				UserProfileStateManager.getInstance().getCurrentUserProfile()).size());
+//		
 		for(final Manuscript currentManuscript: assignedManuscripts){
-			final JButton titleButton = new JButton();
+			final JButton titleButton = new JButton(currentManuscript.getTitle());
 			titleButton.addActionListener(new SubprogramSelectManuscriptActionListener(currentManuscript));
 			constraints.gridwidth = 1600;
 			constraints.gridheight = 50;
 			constraints.gridx = 0;
-			constraints.gridy = 0;
+			constraints.gridy = 50;
+			titleButton.setSize(750, 50);
+			titleButton.setBorderPainted(false);
+			Font buttonFont = new Font("Times New Roman", Font.PLAIN, 25);
+			final Map attributes = buttonFont.getAttributes();
+			attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+			titleButton.setFont(buttonFont.deriveFont(attributes));
 			titleButton.setSize(750, 50);
 			add(titleButton, constraints);
+			
+			
+			final JTextArea reviewersAssignedArea = new JTextArea();
+			rowTextAreas.add(reviewersAssignedArea);
+			reviewersAssignedArea.setText(
+					currentManuscript.getReviewers().size() +
+					" / " + 
+					ConferenceStateManager.getInstance().getCurrentConference().MIN_NUM_REVIEWS);
+			constraints.gridwidth = 200;
+			constraints.gridheight = 50;
+			constraints.gridx = 1500;
+			constraints.gridy = 50;
+			reviewersAssignedArea.setSize(200, 50);
+			this.add(reviewersAssignedArea, constraints);
+			
+			
+			final JTextArea reviewsSubmittedArea = new JTextArea();
+			rowTextAreas.add(reviewsSubmittedArea);
+			reviewsSubmittedArea.setText(
+					currentManuscript.getReviewers().size() +
+					" / " + 
+					ConferenceStateManager.getInstance().getCurrentConference().MIN_NUM_REVIEWS);
+			constraints.gridwidth = 200;
+			constraints.gridheight = 50;
+			constraints.gridx = 1700;
+			constraints.gridy = 50;
+			reviewsSubmittedArea.setSize(200, 50);
+			this.add(reviewsSubmittedArea, constraints);
+//			this.add(titleButton);
+			
 		}
 	}
 	
@@ -171,12 +221,6 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 		//Not sure if i need these yet:
 //		ConferenceStateManager.getInstance().addObserver(this);
 //		UserProfileStateManager.getInstance().addObserver(this);
-	}
-	
-	private void addLabels(){
-		
-//		add(myReviewITTextArea, constraints);
-		
 	}
 	
 	@Override
