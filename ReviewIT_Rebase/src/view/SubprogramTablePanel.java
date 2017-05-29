@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -20,6 +21,7 @@ import java.util.Observer;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -35,10 +37,10 @@ import model.UserProfileStateManager;
 public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 	private static final long serialVersionUID = 8098693823655450146L;
 
-	private final JTextArea titleHeaderArea;
-	private final JTextArea reviewersAssignedHeaderArea;
-	private final JTextArea reviewsSubmittedArea;
-	private final JTextArea recommendedHeaderArea;
+	private final JLabel titleHeaderArea;
+	private final JLabel reviewersAssignedHeaderArea;
+	private final JLabel reviewsSubmittedArea;
+	private final JLabel recommendedHeaderArea;
 
 	private final Collection<JTextArea> rowTextAreas;
 	public static void main(String[] args){
@@ -90,7 +92,7 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
             public void run() 
             {
                 final JFrame window = new JFrame();
-                final JPanel mainPanel = new SubprogramTablePanel(0.6, 0.4, new Dimension(2100, 1600));
+                final JPanel mainPanel = new SubprogramTablePanel(0.6, 0.4, new Dimension(2100, 700));
                 window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 window.setContentPane(mainPanel);
                 window.pack();
@@ -106,10 +108,10 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 			final Dimension theStartingSize
 			){
 		super(theXRatio, theYRatio, theStartingSize);
-		titleHeaderArea = new JTextArea();
-		reviewersAssignedHeaderArea = new JTextArea();
-		recommendedHeaderArea = new JTextArea();
-		reviewsSubmittedArea = new JTextArea();
+		titleHeaderArea = new JLabel();
+		reviewersAssignedHeaderArea = new JLabel();
+		recommendedHeaderArea = new JLabel();
+		reviewsSubmittedArea = new JLabel();
 		rowTextAreas = new ArrayList<>();
 		initialize();
 	}
@@ -123,19 +125,15 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 	
 
 	private void formatTextAreas() {
-		final Collection<JTextArea> headerAreas = new ArrayList<>(Arrays.asList(
+		final Collection<JLabel> headerAreas = new ArrayList<>(Arrays.asList(
 				titleHeaderArea,
 				reviewersAssignedHeaderArea,
 				reviewsSubmittedArea,
 				recommendedHeaderArea
 				));
-		for(final JTextArea currentArea: headerAreas){
+		for(final JLabel currentArea: headerAreas){
 			currentArea.setFont(new Font("Times New Roman", Font.BOLD, 25));
 			currentArea.setBackground(this.getBackground());
-			currentArea.setEditable(false);
-			currentArea.setHighlighter(null);
-			currentArea.setWrapStyleWord(true);
-			currentArea.setLineWrap(true);
 		}
 		for(final JTextArea currentArea: rowTextAreas){
 			currentArea.setFont(new Font("Times New Roman", Font.BOLD, 25));
@@ -148,7 +146,8 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 	}
 
 	private void createTable() {
-		titleHeaderArea.setText("Manuscript Title");
+		titleHeaderArea.setText("                               Manuscript Title                                ");
+		titleHeaderArea.setHorizontalAlignment(JLabel.CENTER);
 		reviewersAssignedHeaderArea.setText("Reviewers\nAssigned");
 		reviewsSubmittedArea.setText("Reviews\nSubmitted");
 		recommendedHeaderArea.setText("Recommended?");
@@ -163,7 +162,8 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 		constraints.gridheight = 50;
 		constraints.gridx = 0;
 		constraints.gridy = 0;
-		titleHeaderArea.setSize(750, 50);
+		titleHeaderArea.setSize(2000, 50);
+		titleHeaderArea.setBackground(Color.RED);
 		add(titleHeaderArea, constraints);
 		
 		constraints.gridwidth = 200;
@@ -258,7 +258,7 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 	}
 	
 	private static String formatTitleName(String theTitle){
-		final int maxCharacters = 55;
+		final int maxCharacters = 45;
 		final StringBuilder formattedTitle = new StringBuilder();
 		formattedTitle.append("<html><u>");
 		while(theTitle.length() > maxCharacters){
