@@ -19,6 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+import cotroller.SampleActionListener;
 import model.Conference;
 import model.ConferenceStateManager;
 import model.Role;
@@ -88,11 +89,7 @@ public class HeaderPanel extends AutoSizeablePanel implements Observer{
 		UserProfileStateManager.getInstance().addUserProfile(aUserProfile);
 		
 		JButton tempButton = new JButton("Change current user!"); 
-		tempButton.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent evt) {
-		        UserProfileStateManager.getInstance().setCurrentUser(aUserProfile);
-		    }
-		});
+		tempButton.addActionListener(new SampleActionListener(aUserProfile));
 		this.add(tempButton);
 	}
 
