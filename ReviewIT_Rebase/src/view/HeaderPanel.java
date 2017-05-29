@@ -44,11 +44,11 @@ public class HeaderPanel extends AutoSizeablePanel implements Observer{
 
 	private void initialize() {
 		setLayout(new GridBagLayout());
-		myReviewitLabel.setText("ReviewIT");
-		myConferenceLabel.setText("myConferenceLabel");
-		myUserIDLabel.setText("myUserIDLabel");
-		myUserNameLabel.setText("myUserNameLabel");
-		myUserRoleLabel.setText("myUserRoleLabel");
+		myReviewitLabel.setText("placeholder ReviewIT");
+		myConferenceLabel.setText("placeholder myConferenceLabel");
+		myUserIDLabel.setText("placeholder myUserIDLabel");
+		myUserNameLabel.setText("placeholder myUserNameLabel");
+		myUserRoleLabel.setText("placeholder myUserRoleLabel");
 		addLabels();
 		formatLabels();
 	}
@@ -98,7 +98,7 @@ public class HeaderPanel extends AutoSizeablePanel implements Observer{
 	}
 	
 	@Override
-	public void update(Observable theObservable, Object theObject) {
+	public void update(final Observable theObservable, final Object theObject) {
 		if(theObservable instanceof UserProfileStateManager){
 			if(theObject instanceof UserProfile){
 				updateLabelsText();
@@ -107,17 +107,20 @@ public class HeaderPanel extends AutoSizeablePanel implements Observer{
 			if(theObject instanceof Conference){
 				updateLabelsText();
 			}
-		}
-		
+		}	
 	}
 
 	private void updateLabelsText() {
-		myConferenceLabel.setText("Conference: " + ConferenceStateManager.getInstance().getCurrentConference().getName());
-		myUserIDLabel.setText("ID: " + UserProfileStateManager.getInstance().getCurrentUserProfile().getUserID());
-		myUserNameLabel.setText("Name: " + UserProfileStateManager.getInstance().getCurrentUserProfile().getName());
-		myUserRoleLabel.setText("as: " + ConferenceStateManager.getInstance().getCurrentConference().getName());
-		
+		if(ConferenceStateManager.getInstance().isCurrentConferenceSet()){
+			myConferenceLabel.setText("Conference: " + ConferenceStateManager.getInstance().getCurrentConference().getName());
+		}
+		if(UserProfileStateManager.getInstance().isCurrentUserProfileSet()){
+			myUserIDLabel.setText("ID: " + UserProfileStateManager.getInstance().getCurrentUserProfile().getUserID());
+			myUserNameLabel.setText("Name: " + UserProfileStateManager.getInstance().getCurrentUserProfile().getName());
+		}
+		if(UserProfileStateManager.getInstance().isCurrentRoleSet()){
+			myUserRoleLabel.setText("as: " + ConferenceStateManager.getInstance().getCurrentConference().getName());
+		}
 	}
-	
 }
 

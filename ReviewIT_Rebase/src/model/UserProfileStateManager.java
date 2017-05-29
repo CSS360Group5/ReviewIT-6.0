@@ -85,6 +85,13 @@ public class UserProfileStateManager extends Observable implements Serializable 
     	return myUserProfiles;
     }
 
+    public boolean isCurrentUserProfileSet(){
+    	return myCurrentUserProfile != null;
+    }
+    
+    public boolean isCurrentRoleSet(){
+    	return myCurrentRole != null;
+    }
 //    /**
 //		THIS SHOULD BE IN CONFERENCE!
 //     * Creates a List of users who are eligible to review a
