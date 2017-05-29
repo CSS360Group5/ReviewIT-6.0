@@ -112,10 +112,10 @@ public class HeaderPanel extends AutoSizeablePanel implements Observer{
 	}
 
 	private void updateLabelsText() {
-		myConferenceLabel.setText(ConferenceStateManager.getInstance().getCurrentConference().getName());
-		myUserIDLabel.setText("myUserIDLabel");
-		myUserNameLabel.setText("myUserNameLabel");
-		myUserRoleLabel.setText("myUserRoleLabel");
+		myConferenceLabel.setText("Conference: " + ConferenceStateManager.getInstance().getCurrentConference().getName());
+		myUserIDLabel.setText("ID: " + UserProfileStateManager.getInstance().getCurrentUserProfile().getUserID());
+		myUserNameLabel.setText("Name: " + UserProfileStateManager.getInstance().getCurrentUserProfile().getName());
+		myUserRoleLabel.setText("as: " + ConferenceStateManager.getInstance().getCurrentConference().getName());
 		
 	}
 	

@@ -22,6 +22,8 @@ public class UserProfileStateManager extends Observable implements Serializable 
     Current User's UserProfile
      */
     private UserProfile myCurrentUserProfile;
+    
+    private Role myCurrentRole;
 
     /*
     List of all registered UserProfiles
@@ -56,6 +58,14 @@ public class UserProfileStateManager extends Observable implements Serializable 
     
     public UserProfile getCurrentUserProfile() {
         return myCurrentUserProfile;
+    }
+    
+    public void setCurrentRole(final Role theCurrentRole){
+    	myCurrentRole = theCurrentRole;
+    }
+    
+    public Role getCurrentRole(){
+    	return myCurrentRole;
     }
 
     /**
