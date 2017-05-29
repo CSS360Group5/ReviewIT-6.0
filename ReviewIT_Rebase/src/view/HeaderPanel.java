@@ -9,6 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -84,7 +87,6 @@ public class HeaderPanel extends AutoSizeablePanel implements Observer{
 		
 		
 		//Example of Observer pattern in action:
-		
 		final UserProfile aUserProfile = new UserProfile("jill32@uw.edu", "Jill Howard");
 		UserProfileStateManager.getInstance().addUserProfile(aUserProfile);
 		
@@ -96,9 +98,9 @@ public class HeaderPanel extends AutoSizeablePanel implements Observer{
 	private void initialize() {
 		setLayout(new GridBagLayout());
 		initObservers();
-		addLabels();
-		formatLabels();
-		updateLabelsText();
+		addTextAreas();
+		formatTextAreas();
+		updateText();
 	}
 	
 	private void initObservers(){
@@ -106,12 +108,12 @@ public class HeaderPanel extends AutoSizeablePanel implements Observer{
 		UserProfileStateManager.getInstance().addObserver(this);
 	}
 	
-	private void addLabels(){
+	private void addTextAreas(){
 		final GridBagConstraints constraints = new GridBagConstraints();
 		constraints.weightx = 0.9;
 		constraints.weighty = 0.9;
 		
-		constraints.gridwidth = 100;
+		constraints.gridwidth = 25;
 		constraints.gridheight = 40;
 		constraints.gridx = 0;
 		constraints.gridy = 0;
@@ -119,17 +121,17 @@ public class HeaderPanel extends AutoSizeablePanel implements Observer{
 		
 		constraints.gridwidth = 200;
 		constraints.gridheight = 40;
-		constraints.gridx = 100;
+		constraints.gridx = 25;
 		constraints.gridy = 0;
 		add(myConferenceTextArea, constraints);
 		
-		constraints.gridwidth = 100;
+		constraints.gridwidth = 150;
 		constraints.gridheight = 30;
 		constraints.gridx = 0;
 		constraints.gridy = 40;
 		add(myUserIDTextArea, constraints);
 		
-		constraints.gridwidth = 100;
+		constraints.gridwidth = 150;
 		constraints.gridheight = 30;
 		constraints.gridx = 0;
 		constraints.gridy = 70;
@@ -142,35 +144,47 @@ public class HeaderPanel extends AutoSizeablePanel implements Observer{
 		add(myUserRoleTextArea, constraints);
 	}
 
-	private void formatLabels(){
+	private void formatTextAreas(){
+		Collection<JTextArea> textAreas = new ArrayList<>(Arrays.asList(
+				myReviewITTextArea,
+				myConferenceTextArea,
+				myUserIDTextArea,
+				myUserNameTextArea,
+				myUserRoleTextArea
+				));
 		myReviewITTextArea.setFont(new Font("Times New Roman", Font.BOLD + Font.ITALIC, 35));
+		myReviewITTextArea.setSize(200, 200);
 		myConferenceTextArea.setFont(new Font("Times New Roman", Font.BOLD, 40));
-		myConferenceTextArea.setSize(800, 200);
-		myConferenceTextArea.setEditable(false);
-		myConferenceTextArea.setHighlighter(null);
-		myConferenceTextArea.setWrapStyleWord(true);
-		myConferenceTextArea.setLineWrap(true);
-		
+		myConferenceTextArea.setSize(1000, 200);
 		myUserIDTextArea.setFont(new Font("Times New Roman", Font.BOLD, 25));
+		myUserIDTextArea.setSize(650, 200);
 		myUserNameTextArea.setFont(new Font("Times New Roman", Font.BOLD, 25));
+		myUserNameTextArea.setSize(650, 200);
 		myUserRoleTextArea.setFont(new Font("Times New Roman", Font.BOLD, 25));
+		myUserRoleTextArea.setSize(200, 200);
+		
+		for(final JTextArea currentArea: textAreas){
+			currentArea.setEditable(false);
+			currentArea.setHighlighter(null);
+			currentArea.setWrapStyleWord(true);
+			currentArea.setLineWrap(true);
+		}
 	}
 	
 	@Override
 	public void update(final Observable theObservable, final Object theObject) {
-		
 		if(theObservable instanceof UserProfileStateManager){
 			if(theObject instanceof UserProfile){
-				updateLabelsText();
+				updateText();
 			}
 		}else if(theObservable instanceof ConferenceStateManager){
 			if(theObject instanceof Conference){
-				updateLabelsText();
+				updateText();
 			}
 		}	
 	}
 
-	private void updateLabelsText() {
+	private void updateText() {
 		myReviewITTextArea.setText("ReviewIT");
 		if(ConferenceStateManager.getInstance().isCurrentConferenceSet()){
 			myConferenceTextArea.setText("Conference: " + ConferenceStateManager.getInstance().getCurrentConference().getName());
@@ -178,7 +192,7 @@ public class HeaderPanel extends AutoSizeablePanel implements Observer{
 			myConferenceTextArea.setText("No Conference selected.");
 		}
 		if(UserProfileStateManager.getInstance().isCurrentUserProfileSet()){
-			myUserIDTextArea.setText("ID: " + UserProfileStateManager.getInstance().getCurrentUserProfile().getUserID());
+			myUserIDTextArea.setText("User ID: " + UserProfileStateManager.getInstance().getCurrentUserProfile().getUserID());
 			myUserNameTextArea.setText("Name: " + UserProfileStateManager.getInstance().getCurrentUserProfile().getName());
 		}else{
 			myUserIDTextArea.setText("No UserID; No User logged in.");
