@@ -7,7 +7,6 @@ import org.junit.runners.Suite;
 
 @Suite.SuiteClasses({
 	ConferenceAuthorSubmissionTests.class,
-	ConferenceControllerTest.class,
 	ConferenceSubprogramChairAssignReviewerTests.class,
 	ConferenceTest.class,
 	ManuscriptTest.class
