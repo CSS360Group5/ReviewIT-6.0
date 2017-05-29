@@ -54,7 +54,7 @@ public class TestMain {
 		
 		System.out.println("Get Conference Info on Conference 4: " + control.getConference(4));
 		
-		System.out.println("Current Role View: " + control.getRoleView());
+//		System.out.println("Current Role View: " + control.getRoleView());
 		
 		System.out.println("\n\n ------------- Trial 2 for Conference Controller ------------------- \n");
 		
