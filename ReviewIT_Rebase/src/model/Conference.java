@@ -33,11 +33,11 @@ public class Conference implements Serializable {
 	 * List of all Manuscripts submitted to this Conference.
 	 */
 	private Collection<Manuscript> myConferenceManuscripts;
-
-	/**
-	 * Map of an Author's name to a List of Manuscripts that the author has submitted to this Conference.
-	 */
-	private Map<String, Collection<Manuscript>> myAuthorManuscriptMap;
+//
+//	/**
+//	 * Map of an Author's name to a List of Manuscripts that the author has submitted to this Conference.
+//	 */
+//	private Map<String, Collection<Manuscript>> myAuthorManuscriptMap;
 
 	/**
 	 * Map of a Subprogram Chair's user ID to a List of Manuscripts for which they have been designated responsible
@@ -63,7 +63,7 @@ public class Conference implements Serializable {
 		
 		this.myConferenceName = theConferenceName;
 		this.myConferenceManuscripts = new ArrayList<>();
-		this.myAuthorManuscriptMap = new HashMap<>();
+//		this.myAuthorManuscriptMap = new HashMap<>();
 		this.mySubprogramChairAssignmentMap = new HashMap<>();
 //		this.myActiveReviewerAssignmentMap = new HashMap<>();
 		
@@ -89,7 +89,9 @@ public class Conference implements Serializable {
 	 * @author Dimitar Kumanov
 	 * @author Dongsheng Han
 	 */
-	public boolean submitManuscript(final Manuscript theManuscript) {
+	public void submitManuscript(final Manuscript theManuscript) {
+		//This needs to check bus. rules not just null fields of theManuscript
+		//This should be a void method, to check if a manuscript is submitted use the getters methods!
 		if (theManuscript.getAuthors() != null 
 				&& theManuscript.getManuscript() != null 
 				&& theManuscript.getMySubmissionDate() != null 
@@ -97,9 +99,7 @@ public class Conference implements Serializable {
 				&& theManuscript.getTitle() != null 
 				&& isManuscriptSubmittable(theManuscript)) {
 			myConferenceManuscripts.add(theManuscript);
-			return true;
 		}
-		return false;
 	}
 
 //	/
@@ -150,14 +150,30 @@ public class Conference implements Serializable {
 		return myManuscriptSubmissionDeadline;
 	}
 	
+	/**
+	 * Returns a non-null Collection of Manuscript submitted by theSubmitterUserProfile to this Conference.
+	 */
+	public Collection<Manuscript> getManuscriptsSubmittedBy(final UserProfile theSubmitterUserProfile){
+		Collection<Manuscript> manuscriptsSubmitted = new HashSet<>();
+		for(final Manuscript currentManuscript: myConferenceManuscripts){
+			if(currentManuscript.getSubmissionUser().equals(theSubmitterUserProfile)){
+				manuscriptsSubmitted.add(currentManuscript);}
+			
+		}
+		return manuscriptsSubmitted;
+	}
 	
 	/**
-	 * Returns a non-null Collection of Manuscript associate with theAuthorName for this Conference.
+	 * Returns a non-null Collection of Manuscript associated with theAuthorName for this Conference.
 	 */
 	public Collection<Manuscript> getManuscriptsByName(final String theAuthorName) {
-		if(myAuthorManuscriptMap.containsKey(theAuthorName))
-			return myAuthorManuscriptMap.get(theAuthorName);
-		return new ArrayList<>();
+		Collection<Manuscript> manuscriptsSubmitted = new HashSet<>();
+		for(final Manuscript currentManuscript: myConferenceManuscripts){
+			if(currentManuscript.getAuthors().contains(theAuthorName)){
+				manuscriptsSubmitted.add(currentManuscript);
+			}
+		}
+		return manuscriptsSubmitted;
 	}
 
 	public void assignManuscriptToSubprogramChair(
