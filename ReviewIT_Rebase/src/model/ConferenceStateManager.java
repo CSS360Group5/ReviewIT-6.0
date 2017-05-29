@@ -40,7 +40,7 @@ public class ConferenceStateManager extends Observable implements Serializable {
 		myConferences = new HashSet<>();
     }
 	
-	public ConferenceStateManager getInstance(){
+	public static ConferenceStateManager getInstance(){
 		if(myInstance == null){
 			myInstance = new ConferenceStateManager();
 		}
