@@ -56,18 +56,30 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 		UserProfileStateManager.getInstance().setCurrentRole(Role.AUTHOR);
 		
 		
-		final Manuscript aManuscript = new Manuscript(
+		final Manuscript aManuscript1 = new Manuscript(
 				"Intro to Crytography",
 				new UserProfile("userid@uw.edu","Johny Mnemonic"),
 				new ArrayList<>(),
 				ZonedDateTime.now(),
 				new File("Path")
 				);
-		ConferenceStateManager.getInstance().getCurrentConference().submitManuscript(aManuscript);
+		final Manuscript aManuscript2 = new Manuscript(
+				"Workload and Resource Aware Proactive Auto-scaler for PaaS Cloud",
+				new UserProfile("userid@uw.edu","Johny Mnemonic"),
+				new ArrayList<>(),
+				ZonedDateTime.now(),
+				new File("Path")
+				);
+		System.out.println(formatTitleName(aManuscript1.getTitle()));
+		System.out.println(formatTitleName(aManuscript2.getTitle()));
 		
+		ConferenceStateManager.getInstance().getCurrentConference().submitManuscript(aManuscript1);
+		ConferenceStateManager.getInstance().getCurrentConference().submitManuscript(aManuscript2);
 		
 		ConferenceStateManager.getInstance().getCurrentConference().
-			assignManuscriptToSubprogramChair(aManuscript, aUser);
+			assignManuscriptToSubprogramChair(aManuscript1, aUser);
+		ConferenceStateManager.getInstance().getCurrentConference().
+			assignManuscriptToSubprogramChair(aManuscript2, aUser);
 		
 		//Set up a JFrame to test our panel in:
 		EventQueue.invokeLater(new Runnable() 
@@ -122,6 +134,13 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 			currentArea.setWrapStyleWord(true);
 			currentArea.setLineWrap(true);
 		}
+		for(final JTextArea currentArea: rowTextAreas){
+			currentArea.setFont(new Font("Times New Roman", Font.BOLD, 25));
+			currentArea.setEditable(false);
+			currentArea.setHighlighter(null);
+			currentArea.setWrapStyleWord(true);
+			currentArea.setLineWrap(true);
+		}
 	}
 
 	private void createTable() {
@@ -169,13 +188,14 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 				ConferenceStateManager.getInstance().getCurrentConference().getManuscriptAssignedToSubprogram(
 				UserProfileStateManager.getInstance().getCurrentUserProfile());
 //		
+		int i = 0;
 		for(final Manuscript currentManuscript: assignedManuscripts){
-			final JButton titleButton = new JButton(currentManuscript.getTitle());
+			final JButton titleButton = new JButton(formatTitleName(currentManuscript.getTitle()));
 			titleButton.addActionListener(new SubprogramSelectManuscriptActionListener(currentManuscript));
-			constraints.gridwidth = 1600;
+			constraints.gridwidth = 1500;
 			constraints.gridheight = 50;
 			constraints.gridx = 0;
-			constraints.gridy = 50;
+			constraints.gridy = 50 + i * 50;
 			titleButton.setSize(750, 50);
 			titleButton.setBorderPainted(false);
 			Font buttonFont = new Font("Times New Roman", Font.PLAIN, 25);
@@ -195,26 +215,51 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 			constraints.gridwidth = 200;
 			constraints.gridheight = 50;
 			constraints.gridx = 1500;
-			constraints.gridy = 50;
+			constraints.gridy = 50 + i * 50;
 			reviewersAssignedArea.setSize(200, 50);
 			this.add(reviewersAssignedArea, constraints);
-			
 			
 			final JTextArea reviewsSubmittedArea = new JTextArea();
 			rowTextAreas.add(reviewsSubmittedArea);
 			reviewsSubmittedArea.setText(
-					currentManuscript.getReviews() +
+					currentManuscript.getReviews().size() +
 					" / " + 
 					currentManuscript.getReviewers().size());
 			constraints.gridwidth = 200;
 			constraints.gridheight = 50;
 			constraints.gridx = 1700;
-			constraints.gridy = 50;
+			constraints.gridy = 50 + i * 50;
 			reviewsSubmittedArea.setSize(200, 50);
 			this.add(reviewsSubmittedArea, constraints);
-//			this.add(titleButton);
 			
+			
+			final JTextArea recommendationArea = new JTextArea();
+			rowTextAreas.add(recommendationArea);
+			recommendationArea.setText(
+					currentManuscript.isRecommendedBy(
+							UserProfileStateManager.getInstance().getCurrentUserProfile()
+							) ? "Yes" : "No");
+			constraints.gridwidth = 200;
+			constraints.gridheight = 50;
+			constraints.gridx = 1900;
+			constraints.gridy = 50 + i * 50;
+			recommendationArea.setSize(200, 50);
+			this.add(recommendationArea, constraints);
+			++i;
 		}
+	}
+	
+	private static String formatTitleName(String theTitle){
+		final int maxCharacters = 55;
+		final StringBuilder formattedTitle = new StringBuilder();
+		formattedTitle.append("<html>");
+		while(theTitle.length() > maxCharacters){
+			formattedTitle.append(theTitle.substring(0, maxCharacters) + "<br>");
+			theTitle = theTitle.substring(maxCharacters, theTitle.length());
+		}
+		formattedTitle.append(theTitle);
+		formattedTitle.append("</html>");
+		return formattedTitle.toString();
 	}
 	
 	private void initObservers(){
