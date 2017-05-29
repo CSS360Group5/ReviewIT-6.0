@@ -119,11 +119,14 @@ public class Manuscript implements Serializable {
 	
 	/**
 	 * Adds a Reviewer to this manuscript.
-	 * @throws IllegalArgumentException if getReviewers().size() >= this.MAX_REVIEWERS || this.getAuthors().contains(theReviewerProfile.getName())
+	 * @throws IllegalArgumentException if this.getReviewers().contains(theReviewerProfile) || this.getReviewers().size() > this.MAX_REVIEWERS || this.getAuthors().contains(theReviewerProfile.getName())
 	 */
 	public void addReviewer(final UserProfile theReviewerProfile) throws IllegalArgumentException {
-		if(myReviewers.size() >= MAX_REVIEWERS) {
-			throw new IllegalArgumentException(String.format("Maximum of %d reviewers already assigned", 3));
+		if(myReviewers.contains(theReviewerProfile)){
+			throw new IllegalArgumentException("Reviewer already assigned to this manuscript.");
+		}
+		if(myReviewers.size() > MAX_REVIEWERS) {
+			throw new IllegalArgumentException("Maximum of reviewers already assigned.");
 		}
 		if(myAuthors.contains(theReviewerProfile)) 
 			throw new IllegalArgumentException("Reviewer cannot be author.");
@@ -140,51 +143,9 @@ public class Manuscript implements Serializable {
 	}
 	
 	
-//	/**
-//	 * Adds a reviewer to the myManuscript, there cannot
-//	 * be more than 3 myReviews assigned to one myManuscript.
-//	 */
-//	public void setReviewer(String theUserID) throws IllegalArgumentException {
-//		if(myReviews.size() < 3) {
-//			
-//			if(myAuthors.contains(theUserID)) {
-//				throw new IllegalArgumentException("Reviewer cannot be author.");
-//			} else {
-//				myReviews.add(new Review(theUserID));
-//			}
-//		} else {
-//			throw new IllegalArgumentException(String.format("Maximum of %d reviewers already assigned", 3));
-//		}
-//
-//	}
-//	
-//	/**
-//	 * Gets the list of reviewers assigned to the myManuscript.
-//	 * @return
-//	 */
-//	public ArrayList<String> getReviewers() {
-//		ArrayList<String> reviewers = new ArrayList<>();
-//		for(Review r :myReviews) {
-//			reviewers.add(r.getUserID());
-//		}
-//		return reviewers;
-//	}
-//	
-//	/**
-//	 * Tests to see if the list of myReviews on the myManuscript contains the
-//	 * user passed in.
-//	 * @param theUserID The userID of the person to be checked if they are in the
-//	 * list of myReviews.
-//	 * @return True if the user is in the list, or false if they are not.
-//	 */
-//	public boolean hasReviewer(String theUserID) {
-//		for(Review rev : myReviews){
-//			if (rev.getUserID().equals(theUserID)) {
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
+	public boolean hasReviewer(UserProfile theReviewerProfile) {
+		return myReviewers.contains(theReviewerProfile);
+	}
 
 	/**
 	 * Gets the author name
@@ -202,5 +163,4 @@ public class Manuscript implements Serializable {
 	public String getTitle() {
 		return myTitle;
 	}
-
 }

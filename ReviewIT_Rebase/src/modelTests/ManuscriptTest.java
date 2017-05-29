@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import model.Manuscript;
 import model.Review;
+import model.UserProfile;
 
 
 /**
@@ -26,9 +27,12 @@ public class ManuscriptTest {
 	private static String manuscriptTitle = "Technology";
 	
 	private static String submissionUserID = "John117";
+
+	private static UserProfile submissionUser = new UserProfile(submissionUserID, "submission John Doe");
 	
 	private static String reviewerUserID = "Kelly087";
-	
+
+	private static UserProfile reviewerUser = new UserProfile(reviewerUserID, "reviewer John Doe");
 	
 	private static String coAuthorUserID = "Samuel034";
 	
@@ -42,8 +46,8 @@ public class ManuscriptTest {
 	@Before
 	public void setUp() {
 		coAuthors.add(coAuthorUserID);
-		testManuscript = new Manuscript(manuscriptTitle, submissionUserID, coAuthors, submissionDate, manuscript);
-		testNullCoAuthorManuscript = new Manuscript(manuscriptTitle, submissionUserID, null, submissionDate, manuscript);
+		testManuscript = new Manuscript(manuscriptTitle, submissionUser, coAuthors, submissionDate, manuscript);
+		testNullCoAuthorManuscript = new Manuscript(manuscriptTitle, submissionUser, new ArrayList<>(), submissionDate, manuscript);
 		
 	}
 	/**
@@ -64,39 +68,62 @@ public class ManuscriptTest {
 
     /**
      * @author Lorenzo Pacis
+     * @author Dimitar Kumanov
      * This method tests that the reviewer is set
      */
     @Test
     public void ReveiwersAreSetToCorrectValues() {
-
-    	testManuscript.setReviewer("Bob");
-    	assertTrue(testManuscript.hasReviewer("Bob"));
-    	assertFalse(testManuscript.hasReviewer("John"));
+    	UserProfile aReviewer = new UserProfile("Bob", "Bob Reviewer");
+    	UserProfile aNonReviewer = new UserProfile("John", "John Not Reviewer");
+    	testManuscript.addReviewer(aReviewer);
+    	assertTrue(testManuscript.hasReviewer(aReviewer));
+    	assertFalse(testManuscript.hasReviewer(aNonReviewer));
     	
 
     }
     
     /**
      * @author Lorenzo Pacis
-     * This method tests that the manuscript is not assigned more than three reviewers.
+     * @author Dimitar Kumanov
+     * This method tests that the manuscript is not assigned more than Manuscript.MAX_REVIEWERS reviewers.
      */
-    @Test
-    public void manuscriptSetReviewerFailsWhenMoreThanThreeReviewersAssigned() {
-    	testManuscript.setReviewer("John");
-    	testManuscript.setReviewer("Billy");
-    	testManuscript.setReviewer("Jimmy");
-    	assertFalse(testManuscript.getReviewers().size() > 3);
-    	
+    @Test(expected = IllegalArgumentException.class)
+    public void manuscriptAddReviewerMAX_REVIEWERSThrowsException() {
+    	for(int i = 0; i < Manuscript.MAX_REVIEWERS; ++i){
+    		testManuscript.addReviewer(new UserProfile("Bob" + String.valueOf(i), "Bob Reviewer"+ String.valueOf(i)));
+    	}
     }
     
+    /**
+     * @author Dimitar Kumanov
+     * This method tests that the manuscript can be assigned Manuscript.MAX_REVIEWERS - 1 reviewers.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void manuscriptAddReviewerLessThenMAX_REVIEWERSThrowsException() {
+    	for(int i = 0; i < Manuscript.MAX_REVIEWERS - 1; ++i){
+    		testManuscript.addReviewer(new UserProfile("Bob" + String.valueOf(i), "Bob Reviewer"+ String.valueOf(i)));
+    	}
+    	assertEquals(testManuscript.getReviewers().size(), Manuscript.MAX_REVIEWERS - 1);
+    }
+    
+    /**
+     * @author Dimitar Kumanov
+     * This method tests that the manuscript can be assigned Manuscript.MAX_REVIEWERS - 1 reviewers.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void manuscriptAddReviewerMoreThenMAX_REVIEWERSThrowsException() {
+    	for(int i = 0; i < Manuscript.MAX_REVIEWERS + 2; ++i){
+    		testManuscript.addReviewer(new UserProfile("Bob" + String.valueOf(i), "Bob Reviewer"+ String.valueOf(i)));
+    	}
+    }
     
     /**
      * @author Lorenzo Pacis
      * This method tests that setReviewer the author as the reviewer returns false.
      */
     @Test (expected = IllegalArgumentException.class)
-    public void manuscriptSetReviewerFailsWhenReviewerIsTheSubmitter() {
-    	testManuscript.setReviewer(submissionUserID);
+    public void manuscriptAddReviewerFailsWhenReviewerIsTheSubmitter() {
+    	testManuscript.addReviewer(submissionUser);
     }
     
     /**
@@ -124,19 +151,22 @@ public class ManuscriptTest {
     
     /**
      * @author Lorenzo Pacis
+     * @author Dimitar Kumanov
      * This method tests that the getReviewers method returns the correct
      * reviewers set to the manuscript.
      */
     @Test
     public void manuscriptGetReviewersReturnsCorrectUserIDs() {
+    	UserProfile aReviewer1 = new UserProfile("Bob", "Bob Reviewer");
+    	UserProfile aReviewer2 = new UserProfile("John", "John Reviewer");
+    	UserProfile aReviewer3 = new UserProfile("Billy", "Billy Reviewer");
     	
-    	testManuscript.setReviewer("Bob");
-    	testManuscript.setReviewer("John");
-    	testManuscript.setReviewer("Billy");
-    	ArrayList<String> reviewers = testManuscript.getReviewers();
-    	assertTrue(reviewers.get(0).equals("Bob"));
-    	assertTrue(reviewers.get(1).equals("John"));
-    	assertTrue(reviewers.get(2).equals("Billy"));
+    	testManuscript.addReviewer(aReviewer1);
+    	testManuscript.addReviewer(aReviewer2);
+    	testManuscript.addReviewer(aReviewer3);
+    	assertTrue(testManuscript.getReviewers().contains(aReviewer1));
+    	assertTrue(testManuscript.getReviewers().contains(aReviewer2));
+    	assertTrue(testManuscript.getReviewers().contains(aReviewer3));
     }
     
     /**
@@ -155,22 +185,18 @@ public class ManuscriptTest {
      */
     @Test
     public void testGetReviewerReturnsAnArrayListContainingTheReviewer() {
-    	testManuscript.setReviewer(reviewerUserID);
+    	testManuscript.addReviewer(reviewerUser);
     	assertTrue(testManuscript.getReviewers().contains(reviewerUserID));
     }
     
     /**
-     * @author Lorenzo Pacis
-     * This method tests that setReviewer will return false if there are three reviewers already assigned
-     * to the manuscript.
+     * @author Dimitar Kumanov
+     * Manuscript should throw exception if you attempt to add the same Reviewer twice.
      */
     @Test (expected = IllegalArgumentException.class)
-    public void testSetReviewersReturnsFalseIfThereAreThreeReviewersAlreadyAssignedToThisManuscript() {
-    	testManuscript.setReviewer(reviewerUserID);
-    	testManuscript.setReviewer(reviewerUserID);
-    	testManuscript.setReviewer(reviewerUserID);
-    	//Error thrown here
-		testManuscript.setReviewer(reviewerUserID);
+    public void addReviewerReviewerAlreadyAddedThrowsException() {
+    	testManuscript.addReviewer(reviewerUser);
+    	testManuscript.addReviewer(reviewerUser);
     }
     
 
