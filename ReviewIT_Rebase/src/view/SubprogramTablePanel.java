@@ -5,19 +5,25 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.io.File;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.Action;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+import cotroller.SubprogramSelectManuscriptActionListener;
 import model.Conference;
 import model.ConferenceStateManager;
+import model.Manuscript;
 import model.Role;
 import model.UserProfile;
 import model.UserProfileStateManager;
@@ -29,7 +35,7 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 	private final JTextArea reviewersAssignedHeaderArea;
 	private final JTextArea recommendedHeaderArea;
 
-	private final Collection<Collection<JTextArea>> rowTextAreas;
+	private final Collection<JTextArea> rowTextAreas;
 	public static void main(String[] args){
 		
 		//Add some data:
@@ -45,6 +51,16 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 		UserProfileStateManager.getInstance().setCurrentUser(aUser);
 		
 		UserProfileStateManager.getInstance().setCurrentRole(Role.AUTHOR);
+		
+		
+		final Manuscript aManuscript = new Manuscript(
+				"Intro to Crytography",
+				new UserProfile("userid@uw.edu","Johny Mnemonic"),
+				new ArrayList<>(),
+				ZonedDateTime.now(),
+				new File("Path")
+				);
+		ConferenceStateManager.getInstance().getCurrentConference().submitManuscript(aManuscript);
 		
 		//Set up a JFrame to test our panel in:
 		EventQueue.invokeLater(new Runnable() 
@@ -83,6 +99,7 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 		initObservers();
 	}
 	
+
 	private void formatTextAreas() {
 		final Collection<JTextArea> headerAreas = new ArrayList<>(Arrays.asList(
 				titleHeaderArea,
@@ -128,7 +145,19 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 		recommendedHeaderArea.setSize(200, 50);
 		add(recommendedHeaderArea, constraints);
 		
-		
+		//for row add row...
+		Collection<Manuscript> assignedManuscripts = 
+				ConferenceStateManager.getInstance().getCurrentConference().getManuscriptAssignedToSubprogram(
+				UserProfileStateManager.getInstance().getCurrentUserProfile());
+		for(final Manuscript currentManuscript: assignedManuscripts){
+			final JButton titleButton = new JButton((Action) new SubprogramSelectManuscriptActionListener(currentManuscript));
+			constraints.gridwidth = 1600;
+			constraints.gridheight = 50;
+			constraints.gridx = 0;
+			constraints.gridy = 0;
+			titleButton.setSize(750, 50);
+			add(titleButton, constraints);
+		}
 	}
 	
 	private void initObservers(){
