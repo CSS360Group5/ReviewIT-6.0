@@ -3,6 +3,8 @@ package model;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,14 +25,14 @@ public class ConferenceStateManager implements Serializable {
 
 	private Conference myCurrentConference;
 	
-	private List<Conference> myConferences;
+	private Collection<Conference> myConferences;
 
 
 	/**
 	 * Constructor. Initializes the ArrayList.
 	 */
 	public ConferenceStateManager() {
-		myConferences = new ArrayList<>();
+		myConferences = new HashSet<>();
     }
 
 	/**
@@ -45,76 +47,32 @@ public class ConferenceStateManager implements Serializable {
 
 
 	/**
-	 * Set conference by passing in a conference. (Will add conference to end of
-	 * ArrayList if not already in it)
-	 * 
-	 * @param c - conference passed in to set as current.
-     * @throws IllegalArgumentException when parameter is null.
+     * @throws IllegalArgumentException iff !this.getConferences().contains(theCurrentConference)
 	 */
-	public void setCurrentConference(Conference c) throws IllegalArgumentException {
-        if (c != null) {
-            if (myConferences.contains(c)) {
-                myCurrentConference = c;
-            } else {
-                addConference(c);
-                setCurrentConference(myConferences.size() - 1);
-            }
-        } else {
-            throw new IllegalArgumentException();
-        }
-	}
-
-	/**
-	 * Set conference by passing in a integer for myConferences array list.
-	 * 
-	 * @param i - integer of conference desired.
-     * @throws IndexOutOfBoundsException if index is not in bounds of myConferences ArrayList
-	 */
-	public void setCurrentConference(int i) throws IndexOutOfBoundsException {
-        if ((i > myConferences.size() - 1) || i < 0) {
-            throw new IndexOutOfBoundsException("Index is out of Bounds!");
-        }
-		myCurrentConference = myConferences.get(i);
-	}
-
-	/**
-	 * Returns the desired conference
-	 * 
-	 * @param i - conference in ArrayList
-	 * @return conference [i] in arrayList
-     * @throws IndexOutOfBoundsException if index is not in bounds of ArrayList
-	 */
-	public Conference getConference(int i) throws IndexOutOfBoundsException {
-        if ((i > myConferences.size() - 1) || i < 0) {
-            throw new IndexOutOfBoundsException("Index is out of Bounds!");
-        }
-	    return myConferences.get(i);
-	}
-
-	/**
-	 * Create a new conference and add to ArrayList of myConferences.
-	 * 
-	 * @param confName - conference Name
-	 * @param theSubmissionDeadline - deadline for authors
-	 * @throws IllegalArgumentException
-	 */
-	public void createNewConference(String confName, ZonedDateTime theSubmissionDeadline) throws IllegalArgumentException{
-		if(confName.isEmpty()){
-			throw new IllegalArgumentException();
+	public void setCurrentConference(Conference theCurrentConference) throws IllegalArgumentException {
+		if(!this.getConferences().contains(theCurrentConference)){
+			throw new IllegalArgumentException("Can set theCurrentConference to a Conference not added.");
 		}
-		Conference newConference = new Conference(confName, theSubmissionDeadline);
-		int i = myConferences.size();
-		myConferences.add(i, newConference);
+        myCurrentConference = theCurrentConference;
 	}
 
-	/**
-	 * Add conference to ArrayList
-	 * 
-	 * @param c - conference to be added
-	 */
-	public void addConference(Conference c) {
-		int i = myConferences.size();
-		myConferences.add(i, Objects.requireNonNull(c));
+//	/**
+//	 * Create a new conference and add to ArrayList of myConferences.
+//	 * 
+//	 * @param confName - conference Name
+//	 * @param theSubmissionDeadline - deadline for authors
+//	 * @throws IllegalArgumentException iff confName.isEmpty()
+//	 */
+//	public void createNewConference(String confName, ZonedDateTime theSubmissionDeadline) throws IllegalArgumentException{
+//		if(confName.isEmpty()){
+//			throw new IllegalArgumentException();
+//		}
+//		Conference newConference = new Conference(confName, theSubmissionDeadline);
+//		myConferences.add(newConference);
+//	}
+
+	public void addConference(Conference theConference) {
+		myConferences.add(Objects.requireNonNull(theConference));
     }
 
 	/**
@@ -143,26 +101,26 @@ public class ConferenceStateManager implements Serializable {
 
 	}
 
-	/**
-	 * Returns Integer representation of conference..
-	 * 
-	 * @param conferenceName name of conference
-	 * @return integer representation of conference.
-	 * @throws IllegalArgumentException if parameter is not the right type!
-	 */
-	public int searchForConference(String conferenceName) throws IllegalArgumentException {
-        int found = 0;
-	    if ((conferenceName != null) && (!conferenceName.equals(""))) {
-            for (int i = 0; i < myConferences.size(); i++) {
-                if (myConferences.get(i).getMyConferenceName().equals(conferenceName)) {
-                    found = i;
-                }
-            }
-        } else {
-	        throw new IllegalArgumentException("Parameter is empty String!");
-        }
-		return found;
-	}
+//	/**
+//	 * Returns Integer representation of conference..
+//	 * 
+//	 * @param conferenceName name of conference
+//	 * @return integer representation of conference.
+//	 * @throws IllegalArgumentException if parameter is not the right type!
+//	 */
+//	public int searchForConference(String conferenceName) throws IllegalArgumentException {
+//        int found = 0;
+//	    if ((conferenceName != null) && (!conferenceName.equals(""))) {
+//            for (int i = 0; i < myConferences.size(); i++) {
+//                if (myConferences.get(i).getMyConferenceName().equals(conferenceName)) {
+//                    found = i;
+//                }
+//            }
+//        } else {
+//	        throw new IllegalArgumentException("Parameter is empty String!");
+//        }
+//		return found;
+//	}
 
 
 	/**
@@ -194,7 +152,7 @@ public class ConferenceStateManager implements Serializable {
 		return myConferences.isEmpty();
 	}
 
-	public List<Conference> getConferences() {
+	public Collection<Conference> getConferences() {
 		return myConferences;
 	}
 

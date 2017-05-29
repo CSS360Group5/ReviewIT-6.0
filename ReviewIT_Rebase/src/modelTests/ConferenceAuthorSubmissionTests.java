@@ -2,6 +2,8 @@ package modelTests;
 
 import model.Conference;
 import model.Manuscript;
+import model.UserProfile;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,9 +37,15 @@ public class ConferenceAuthorSubmissionTests {
 	
 	private static String submissionUserID = "John117";
 	
+	private static UserProfile submissionUser = new UserProfile(submissionUserID, "Author John Doe");
+	
 	private static String coAuthorUserID = "Samuel034";
 	
+	private static UserProfile coAuthornUser = new UserProfile(coAuthorUserID, "Co-Author John Doe");
+	
 	private static String secondCoAuthor = "Frederoc104";
+	
+	private static UserProfile secondCoAuthornUser = new UserProfile(secondCoAuthor, "Second Co-Author John Doe");
 	
 	private static ArrayList<String> secondCoAuthorList;
 	
@@ -64,14 +72,14 @@ public class ConferenceAuthorSubmissionTests {
 
 		manuscriptAuthors.add(coAuthorUserID);
 		conference = new Conference(conferenceName, conferenceSubmissionDeadline);
-		manuscript = new Manuscript("Intro to Crytography", submissionUserID, manuscriptAuthors,
+		manuscript = new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
 				ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path"));
-		justBeforeDeadlineManuscript = new Manuscript("Intro to Crytography", submissionUserID, manuscriptAuthors,
+		justBeforeDeadlineManuscript = new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
 				ZonedDateTime.of(2017, 11, 30, 23, 45, 58, 1234, zoneId), new File("Path"));
 
-		justAfterDeadlineManuscript = new Manuscript("Intro to Crytography", submissionUserID, manuscriptAuthors,
+		justAfterDeadlineManuscript = new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
 				ZonedDateTime.of(2017, 12, 1, 0, 0, 0, 0, zoneId), new File("Path"));
-		afterDeadlineManuscript = new Manuscript("Intro to Crytography", submissionUserID, manuscriptAuthors,
+		afterDeadlineManuscript = new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
 				ZonedDateTime.of(2017, 12, 2, 0, 0, 0, 0, zoneId), new File("Path"));
 
 	}
@@ -129,18 +137,18 @@ public class ConferenceAuthorSubmissionTests {
 	@Test
 	public void testAuthorSubmitsManuscriptAfterCoAuthoringAndAuthoringMaxNumManuscriptsMinusNumManuscriptsLessThanMaxReturnsTrue() {
 		for(int i = 0; i < 2; i++) {
-			conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUserID, manuscriptAuthors,
+			conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
 				ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")));
 		}
 		
 	
 		for(int i = 0; i < 2; i++) {
-			conference.submitManuscript(new Manuscript("Intro to Crytography", coAuthorUserID, secondCoAuthorList,
+			conference.submitManuscript(new Manuscript("Intro to Crytography", coAuthornUser, secondCoAuthorList,
 				ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")));
 		}
 		
 		assertTrue("Testing that submit manuscript returns true after the author has submitted " + (MAX_NUM_AUTHOR_SUBMISSIONS - NUM_AUTHOR_SUBMISSIONS_LESS_THAN_MAX) + "manuscripts.", 
-				conference.submitManuscript((new Manuscript("Intro to Crytography", coAuthorUserID, secondCoAuthorList,
+				conference.submitManuscript((new Manuscript("Intro to Crytography", coAuthornUser, secondCoAuthorList,
 				ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")))));
 	}
 	
@@ -152,12 +160,12 @@ public class ConferenceAuthorSubmissionTests {
 	@Test
 	public void testAuthorSubmitsManuiscriptsAfterCoAuthoringMaxNumManuscriptsMinusOneReturnsTrue() {
 		for(int i = 0; i < 4; i++) {
-			conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUserID, manuscriptAuthors,
+			conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
 					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")));
 		}
 		
 		assertTrue("Testings that submit manuscript returns true after the author has co authored " + (MAX_NUM_AUTHOR_SUBMISSIONS - NUM_AUTHOR_SUBMISSIONS_LESS_THAN_MAX) + "manuscripts.",
-				conference.submitManuscript((new Manuscript("Intro to Crytography", coAuthorUserID, secondCoAuthorList,
+				conference.submitManuscript((new Manuscript("Intro to Crytography", coAuthornUser, secondCoAuthorList,
 				ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")))));
 	}
 	
@@ -169,12 +177,12 @@ public class ConferenceAuthorSubmissionTests {
 	@Test
 	public void testAuthorSubmitsManuscriptAfterSubmittingMaxNumManuscriptsMinusOneReturnsTrue() {
 		for(int i = 0; i  < 4; i++) { 
-			conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUserID, manuscriptAuthors,
+			conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
 					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")));
 		}
 		
 		assertTrue("Testing that submit manuscript returns true after the author submits " + (MAX_NUM_AUTHOR_SUBMISSIONS -1) + "manuscripts.", 
-				conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUserID, manuscriptAuthors,
+				conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
 					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path"))));
 	}
 	
@@ -186,10 +194,10 @@ public class ConferenceAuthorSubmissionTests {
 	@Test(expected = IllegalArgumentException.class)
 	public void testAuthorSubmitsManuscriptAfterCoAuthoringMaxNumManuscriptsThrowsIllegalArgumentException() {
 		for(int i = 0; i  < MAX_NUM_AUTHOR_SUBMISSIONS ; i++) { 
-			conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUserID, manuscriptAuthors,
+			conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
 					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")));
 		}
-		conference.submitManuscript(new Manuscript("Intro to Crytography", coAuthorUserID, secondCoAuthorList,
+		conference.submitManuscript(new Manuscript("Intro to Crytography", coAuthornUser, secondCoAuthorList,
 					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")));
 	}
 	
@@ -201,10 +209,10 @@ public class ConferenceAuthorSubmissionTests {
 	@Test(expected=IllegalArgumentException.class)
 	public void testAuthorSubmitsFiveManuscriptsAfterAuthoringMaxNumManuscriptsThrowsIllegalArgumentException() {
 		for(int i = 0; i  < MAX_NUM_AUTHOR_SUBMISSIONS ; i++) { 
-			conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUserID, manuscriptAuthors,
+			conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
 					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")));
 		}
-				conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUserID, manuscriptAuthors,
+				conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
 					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")));
 	}
 	
@@ -218,16 +226,16 @@ public class ConferenceAuthorSubmissionTests {
 	@Test(expected = IllegalArgumentException.class)
 	public void testAuthorSubmitsMaxNumManuscriptsMinusThreeTheyAuthoredAndHasCoAuthoredMaxNumManuscriptsMinusTwoReturnsFalse() {
 		for(int i = 0; i < MAX_NUM_AUTHOR_SUBMISSIONS  - 2; i++) {
-			conference.submitManuscript(new Manuscript("Intro to Crytography", coAuthorUserID, secondCoAuthorList,
+			conference.submitManuscript(new Manuscript("Intro to Crytography", coAuthornUser, secondCoAuthorList,
 					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")));
 		}
 		
 		for(int i = 0; i < MAX_NUM_AUTHOR_SUBMISSIONS - 3; i++) {
-			conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUserID, manuscriptAuthors,
+			conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
 					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")));
 		}
 
-			conference.submitManuscript(new Manuscript("Intro to Crytography", coAuthorUserID, secondCoAuthorList,
+			conference.submitManuscript(new Manuscript("Intro to Crytography", coAuthornUser, secondCoAuthorList,
 					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")));
 	}
 
