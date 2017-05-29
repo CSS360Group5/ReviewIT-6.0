@@ -145,32 +145,6 @@ public class UserController implements Serializable {
     }
 
     /**
-     * Creates a List of users who are eligible to review a
-     * manuscript based on the relations assessed in the method.
-     *
-     * (Currently, the method fills a List of users who perform
-     * the Reviewer Role for the specified conference, and whose
-     * names are not identical to any of the manuscripts coauthors'
-     * names.)
-     *
-     * @param theConferenceName
-     * @param theManuscript
-     * @return
-     */
-    public List<UserProfile> getEligibleReviewers(final String theConferenceName,
-                                                  final Manuscript theManuscript) {
-        List<UserProfile> Reviewers = getUsersByRole(Role.REVIEWER, theConferenceName);
-        List<UserProfile> eligibleReviewers = new ArrayList<>();
-        // TODO: Improve logic to check more than just author names
-        for (UserProfile up : Reviewers) {
-            if (!theManuscript.getAuthors().contains(up.getName())){
-                eligibleReviewers.add(up);
-            }  
-        }
-        return eligibleReviewers;
-    }
-
-    /**
      * Assigns a Role to a user for the designated Conference.
      * @param theConferenceName The designated Conference
      * @param theRole The appointed Role
