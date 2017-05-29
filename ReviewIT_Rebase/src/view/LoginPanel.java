@@ -17,13 +17,12 @@ import java.util.Collection;
  */
 public class LoginPanel extends AutoSizeablePanel {
 
-    private static final String INCORRECT_USERID_FORMAT_MESSAGE = "UserID format must match";
+    private static final String INCORRECT_USERID_FORMAT_MESSAGE = "UserID format must match exampleID@uw.edu";
     private static final String EXAMPLE_USERID_TEXT = "exampleID@uw.edu";
-    private static final String EXAMPLE_USER_NAME_TEXT = "John Deer";
     private static final Dimension DEFAULT_TEXT_FIELD_SIZE = new Dimension(250, 20);
     private static final String DEFAULT_EMAIL_REGEX_PATTERN =
-            "^[_A-Za-z0-9-\\\\+]+(\\\\.[_A-Za-z0-9-]+)*\n"
-            + "@[A-Za-z0-9-]+(\\\\.[A-Za-z0-9]+)*(\\\\.[A-Za-z]{2,})$;";
+            "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+                    + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
     private final JTextField myLoginInputField;
     private final JTextField myNewUserIDInputField;
@@ -42,6 +41,9 @@ public class LoginPanel extends AutoSizeablePanel {
             @Override
             public void run()
             {
+                UserProfile userKevin = new UserProfile("kev@uw.edu", "Kevin");
+                UserProfileStateManager.getInstance().addUserProfile(userKevin);
+
                 final JFrame window = new JFrame();
                 final JPanel mainPanel = new LoginPanel(1, 1, new Dimension(750, 550));
 
@@ -62,7 +64,7 @@ public class LoginPanel extends AutoSizeablePanel {
         super(theXRatio, theYRatio, theStartingSize);
         myLoginInputField = new JTextField(EXAMPLE_USERID_TEXT);
         myNewUserIDInputField = new JTextField(EXAMPLE_USERID_TEXT);
-        myNewUserNameInputField = new JTextField("John Smith");
+        myNewUserNameInputField = new JTextField();
         myErrorMessageLabel = new JLabel("Error");
         myErrorMessageLabel.setForeground(Color.red);
         try {
@@ -158,6 +160,7 @@ public class LoginPanel extends AutoSizeablePanel {
 
     private void successfulLogin(final UserProfile theUser) {
         UserProfileStateManager.getInstance().setCurrentUser(theUser);
+        myErrorMessageLabel.setText("Successful Login");
     }
 
     private void successfulRegistration() {
@@ -174,7 +177,6 @@ public class LoginPanel extends AutoSizeablePanel {
         myErrorMessageLabel.setText(theFailureMessage);
         myLoginInputField.setText(EXAMPLE_USERID_TEXT);
         myNewUserIDInputField.setText(EXAMPLE_USERID_TEXT);
-        myNewUserNameInputField.setText(EXAMPLE_USER_NAME_TEXT);
     }
 
     private class LoginListener implements ActionListener {
