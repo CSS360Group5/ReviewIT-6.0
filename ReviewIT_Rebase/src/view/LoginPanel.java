@@ -29,7 +29,7 @@ public class LoginPanel extends AutoSizeablePanel {
     private final JTextField myLoginInputField;
     private final JTextField myNewUserIDInputField;
     private final JTextField myNewUserNameInputField;
-    private final JLabel myErrorMessageLabel;
+    private final JTextArea myErrorMessageLabel;
 
 
     /**
@@ -67,7 +67,7 @@ public class LoginPanel extends AutoSizeablePanel {
         myLoginInputField = new JTextField(EXAMPLE_USERID_TEXT);
         myNewUserIDInputField = new JTextField(EXAMPLE_USERID_TEXT);
         myNewUserNameInputField = new JTextField();
-        myErrorMessageLabel = new JLabel("Error");
+        myErrorMessageLabel = new JTextArea("Error");
         myErrorMessageLabel.setForeground(Color.red);
         try {
             initialize();
@@ -160,29 +160,54 @@ public class LoginPanel extends AutoSizeablePanel {
         return registerBtn;
     }
 
+    /**
+     * Sets the current user and opens a prompt for the user
+     * to select a Conference and Role.
+     * @param theUser A UserProfile Object that will be
+     *                used as the current user.
+     */
     private void successfulLogin(final UserProfile theUser) {
         UserProfileStateManager.getInstance().setCurrentUser(theUser);
         myErrorMessageLabel.setText("Successful Login");
     }
 
+    /**
+     * Creates and adds a new UserProfile Object to UserProfileStateManager
+     */
     private void successfulRegistration() {
         UserProfileStateManager.getInstance().addUserProfile(
                 new UserProfile(myNewUserIDInputField.getText(),
                         myNewUserNameInputField.getText()));
+        myErrorMessageLabel.setText("Successfully Registered.\nPlease login to continue.");
     }
 
+    /**
+     * Checks to ensure that the UserID entered by the user is
+     * correctly formatted as an email address should be.
+     * @param theUserID The UserID entered by the user.
+     * @return true if theUserID matches DEFAULT_EMAIL_REGEX_PATTERN.
+     */
     private boolean isProperUserIDFormat(final String theUserID) {
         Pattern ptrn = Pattern.compile(DEFAULT_EMAIL_REGEX_PATTERN);
         Matcher matcher = ptrn.matcher(theUserID);
         return matcher.matches();
     }
 
+    /**
+     * Sets myErrorMessageLabel's text in the event of a failed attempt at
+     * either logging in or registering.
+     * @param theFailureMessage A String used as the message to the user.
+     */
     private void failedAttempt(final String theFailureMessage) {
         myErrorMessageLabel.setText(theFailureMessage);
         myLoginInputField.setText(EXAMPLE_USERID_TEXT);
         myNewUserIDInputField.setText(EXAMPLE_USERID_TEXT);
     }
 
+    /**
+     * Private Inner Class that implements ActionListener -
+     * Performs login actions based on user input.
+     */
     private class LoginListener implements ActionListener {
 
         private final String myFailureMessage;
@@ -210,6 +235,10 @@ public class LoginPanel extends AutoSizeablePanel {
         }
     }
 
+    /**
+     * Private Inner Class that implements ActionListener -
+     * Performs registration related actions based on user input.
+     */
     private class RegisterListener implements ActionListener {
 
         private final String myFailureMessage;
@@ -240,5 +269,4 @@ public class LoginPanel extends AutoSizeablePanel {
             }
         }
     }
-
 }
