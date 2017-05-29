@@ -2,10 +2,12 @@ package view;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Observable;
 import java.util.Observer;
@@ -24,8 +26,8 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 	private static final long serialVersionUID = 8098693823655450146L;
 
 	private final JTextArea titleHeaderArea;
-	private final JTextArea authorsHeaderArea;
-	private final JTextArea submitDateHeaderArea;
+	private final JTextArea reviewersAssignedHeaderArea;
+	private final JTextArea recommendedHeaderArea;
 
 	private final Collection<Collection<JTextArea>> rowTextAreas;
 	public static void main(String[] args){
@@ -68,23 +70,65 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 			){
 		super(theXRatio, theYRatio, theStartingSize);
 		titleHeaderArea = new JTextArea();
-		authorsHeaderArea = new JTextArea();
-		submitDateHeaderArea = new JTextArea();
+		reviewersAssignedHeaderArea = new JTextArea();
+		recommendedHeaderArea = new JTextArea();
 		rowTextAreas = new ArrayList<>();
 		initialize();
 	}
 
 	private void initialize() {
 		setLayout(new GridBagLayout());
-		initTable();
+		createTable();
+		formatTextAreas();
 		initObservers();
-		addLabels();
 	}
 	
-	private void initTable() {
-		titleHeaderArea.setText("Title");
-		authorsHeaderArea.setText("Authors");
-		submitDateHeaderArea.setText("Date Submitted");
+	private void formatTextAreas() {
+		final Collection<JTextArea> headerAreas = new ArrayList<>(Arrays.asList(
+				titleHeaderArea,
+				reviewersAssignedHeaderArea,
+				recommendedHeaderArea
+				));
+		for(final JTextArea currentArea: headerAreas){
+			currentArea.setFont(new Font("Times New Roman", Font.BOLD, 25));
+			currentArea.setEditable(false);
+			currentArea.setHighlighter(null);
+			currentArea.setWrapStyleWord(true);
+			currentArea.setLineWrap(true);
+		}
+	}
+
+	private void createTable() {
+		titleHeaderArea.setText("Manuscript Title");
+		reviewersAssignedHeaderArea.setText("Reviewers Assigned");
+		recommendedHeaderArea.setText("Recommended?");
+		
+		final GridBagConstraints constraints = new GridBagConstraints();
+		constraints.weightx = 0.9;
+		constraints.weighty = 0.9;
+		
+		constraints.gridwidth = 1600;
+		constraints.gridheight = 50;
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+		titleHeaderArea.setSize(750, 50);
+		add(titleHeaderArea, constraints);
+		
+		constraints.gridwidth = 250;
+		constraints.gridheight = 50;
+		constraints.gridx = 1600;
+		constraints.gridy = 0;
+		reviewersAssignedHeaderArea.setSize(200, 50);
+		add(reviewersAssignedHeaderArea, constraints);
+		
+		constraints.gridwidth = 250;
+		constraints.gridheight = 50;
+		constraints.gridx = 1850;
+		constraints.gridy = 0;
+		recommendedHeaderArea.setSize(200, 50);
+		add(recommendedHeaderArea, constraints);
+		
+		
 	}
 	
 	private void initObservers(){
@@ -94,14 +138,7 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 	}
 	
 	private void addLabels(){
-		final GridBagConstraints constraints = new GridBagConstraints();
-		constraints.weightx = 0.9;
-		constraints.weighty = 0.9;
 		
-		constraints.gridwidth = 100;
-		constraints.gridheight = 40;
-		constraints.gridx = 0;
-		constraints.gridy = 0;
 //		add(myReviewITTextArea, constraints);
 		
 	}
