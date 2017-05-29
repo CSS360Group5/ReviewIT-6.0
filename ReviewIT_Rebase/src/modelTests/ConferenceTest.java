@@ -81,9 +81,9 @@ public class ConferenceTest {
 		manuscriptAuthors = new ArrayList<String>();
 		manuscriptAuthorsTwo = new ArrayList<String>();
 		manuscriptAuthorsThree = new ArrayList<String>();
-		manuscriptAuthors.add(coAuthorUserName);
-		manuscriptAuthorsTwo.add(secondCoAuthorName);
-		manuscriptAuthorsThree.add(subProgramChairUserName);
+		manuscriptAuthors.add(coAuthorUser.getName());
+		manuscriptAuthorsTwo.add(secondCoAuthor.getName());
+		manuscriptAuthorsThree.add(subProgramChairUser.getName());
 		conference = new Conference(conferenceName, conferenceSubmissionDeadline);
 		manuscript = new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
 				ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path"));

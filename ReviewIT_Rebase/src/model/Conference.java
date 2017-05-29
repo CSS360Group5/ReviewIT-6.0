@@ -34,10 +34,10 @@ public class Conference implements Serializable {
 	 */
 	private Collection<Manuscript> myConferenceManuscripts;
 
-	/**
-	 * Map of an Author's name to a List of Manuscripts that the author has submitted to this Conference.
-	 */
-	private Map<String, Collection<Manuscript>> myAuthorManuscriptMap;
+//	/**
+//	 * Map of an Author's name to a List of Manuscripts that the author has submitted to this Conference.
+//	 */
+//	private Map<String, Collection<Manuscript>> myAuthorManuscriptMap;
 
 	/**
 	 * Map of a Subprogram Chair's user ID to a List of Manuscripts for which they have been designated responsible
@@ -63,7 +63,7 @@ public class Conference implements Serializable {
 		
 		this.myConferenceName = theConferenceName;
 		this.myConferenceManuscripts = new ArrayList<>();
-		this.myAuthorManuscriptMap = new HashMap<>();
+//		this.myAuthorManuscriptMap = new HashMap<>();
 		this.mySubprogramChairAssignmentMap = new HashMap<>();
 //		this.myActiveReviewerAssignmentMap = new HashMap<>();
 		
@@ -153,11 +153,20 @@ public class Conference implements Serializable {
 	
 	/**
 	 * Returns a non-null Collection of Manuscript associate with theAuthorName for this Conference.
+	 * @author Dongsheng Han
+	 * could be improved by holding info in a map while submission
 	 */
 	public Collection<Manuscript> getManuscriptsByName(final String theAuthorName) {
-		if(myAuthorManuscriptMap.containsKey(theAuthorName))
-			return myAuthorManuscriptMap.get(theAuthorName);
-		return new ArrayList<>();
+		Collection<Manuscript> AuthorManuscripts = new ArrayList<>();
+		for(Manuscript manuscript:myConferenceManuscripts){
+			if(manuscript.getAuthors().contains(theAuthorName)){
+				AuthorManuscripts.add(manuscript);
+			}
+		}
+//		if(myAuthorManuscriptMap.containsKey(theAuthorName))
+//			return myAuthorManuscriptMap.get(theAuthorName);
+//		return new ArrayList<>();
+		return AuthorManuscripts;
 	}
 
 	public void assignManuscriptToSubprogramChair(
