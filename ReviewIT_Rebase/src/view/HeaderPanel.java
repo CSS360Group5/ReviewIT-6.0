@@ -1,17 +1,28 @@
 package view;
 
-import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.Action;
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
+import cotroller.SampleActionListener;
 import model.Conference;
 import model.ConferenceStateManager;
 import model.Role;
@@ -21,12 +32,45 @@ import model.UserProfileStateManager;
 public class HeaderPanel extends AutoSizeablePanel implements Observer{
 	private static final long serialVersionUID = 8098693823655450146L;
 
-	final JLabel myReviewitLabel;
-	private final JLabel myConferenceLabel;
-	private final JLabel myUserIDLabel;
-	private final JLabel myUserNameLabel;
-	private final JLabel myUserRoleLabel;
+	final JTextArea myReviewITTextArea;
+	private final JTextArea myConferenceTextArea;
+	private final JTextArea myUserIDTextArea;
+	private final JTextArea myUserNameTextArea;
+	private final JTextArea myUserRoleTextArea;
 
+	public static void main(String[] args){
+		
+		//Add some data:
+		final Conference aConference = new Conference(
+				"39th International Conference on Software Engineering",
+				ZonedDateTime.parse("2017-06-12T10:15:30+01:00[Europe/Paris]")
+			);
+		ConferenceStateManager.getInstance().addConference(aConference);
+		ConferenceStateManager.getInstance().setCurrentConference(aConference);
+		
+		final UserProfile aUser = new UserProfile("eric17@uw.edu", "Eric Vanroy");
+		UserProfileStateManager.getInstance().addUserProfile(aUser);
+		UserProfileStateManager.getInstance().setCurrentUser(aUser);
+		
+		UserProfileStateManager.getInstance().setCurrentRole(Role.AUTHOR);
+		
+		//Set up a JFrame to test our panel in:
+		EventQueue.invokeLater(new Runnable() 
+        {
+            @Override
+            public void run() 
+            {
+                final JFrame window = new JFrame();
+                final JPanel mainPanel = new HeaderPanel(0.6, 0.4, new Dimension(2100, 700));
+
+                window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                window.setContentPane(mainPanel);
+                window.pack();
+                window.setLocationRelativeTo(null);
+                window.setVisible(true);
+            }
+        });
+	}
 	
 	public HeaderPanel(
 			final double theXRatio,
@@ -34,92 +78,130 @@ public class HeaderPanel extends AutoSizeablePanel implements Observer{
 			final Dimension theStartingSize
 			){
 		super(theXRatio, theYRatio, theStartingSize);
-		myReviewitLabel = new JLabel();
-		myConferenceLabel = new JLabel();
-		myUserIDLabel = new JLabel();
-		myUserNameLabel = new JLabel();
-		myUserRoleLabel = new JLabel();
+		myReviewITTextArea = new JTextArea();
+		myConferenceTextArea = new JTextArea();
+		myUserIDTextArea = new JTextArea();
+		myUserNameTextArea = new JTextArea();
+		myUserRoleTextArea = new JTextArea();
 		initialize();
+		
+		
+		//Example of Observer pattern in action:
+		final UserProfile aUserProfile = new UserProfile("jill32@uw.edu", "Jill Howard");
+		UserProfileStateManager.getInstance().addUserProfile(aUserProfile);
+		
+		JButton tempButton = new JButton("Change current user!"); 
+		tempButton.addActionListener(new SampleActionListener(aUserProfile));
+		this.add(tempButton);
 	}
 
 	private void initialize() {
 		setLayout(new GridBagLayout());
-		myReviewitLabel.setText("placeholder ReviewIT");
-		myConferenceLabel.setText("placeholder myConferenceLabel");
-		myUserIDLabel.setText("placeholder myUserIDLabel");
-		myUserNameLabel.setText("placeholder myUserNameLabel");
-		myUserRoleLabel.setText("placeholder myUserRoleLabel");
-		addLabels();
-		formatLabels();
+		initObservers();
+		addTextAreas();
+		formatTextAreas();
+		updateText();
 	}
 	
-	private void addLabels(){
+	private void initObservers(){
+		ConferenceStateManager.getInstance().addObserver(this);
+		UserProfileStateManager.getInstance().addObserver(this);
+	}
+	
+	private void addTextAreas(){
 		final GridBagConstraints constraints = new GridBagConstraints();
 		constraints.weightx = 0.9;
 		constraints.weighty = 0.9;
 		
-		constraints.gridwidth = 100;
+		constraints.gridwidth = 25;
 		constraints.gridheight = 40;
 		constraints.gridx = 0;
 		constraints.gridy = 0;
-		add(myReviewitLabel, constraints);
+		add(myReviewITTextArea, constraints);
 		
 		constraints.gridwidth = 200;
 		constraints.gridheight = 40;
-		constraints.gridx = 100;
+		constraints.gridx = 25;
 		constraints.gridy = 0;
-		add(myConferenceLabel, constraints);
+		add(myConferenceTextArea, constraints);
 		
-		constraints.gridwidth = 100;
+		constraints.gridwidth = 150;
 		constraints.gridheight = 30;
 		constraints.gridx = 0;
 		constraints.gridy = 40;
-		add(myUserIDLabel, constraints);
+		add(myUserIDTextArea, constraints);
 		
-		constraints.gridwidth = 100;
+		constraints.gridwidth = 150;
 		constraints.gridheight = 30;
 		constraints.gridx = 0;
 		constraints.gridy = 70;
-		add(myUserNameLabel, constraints);
+		add(myUserNameTextArea, constraints);
 		
 		constraints.gridwidth = 200;
 		constraints.gridheight = 45;
 		constraints.gridx = 200;
 		constraints.gridy = 50;
-		add(myUserRoleLabel, constraints);
+		add(myUserRoleTextArea, constraints);
 	}
 
-	private void formatLabels(){
-		myReviewitLabel.setFont(new Font("Times New Roman", Font.BOLD + Font.ITALIC, 35));
-		myConferenceLabel.setFont(new Font("Times New Roman", Font.BOLD, 40));
-		myUserIDLabel.setFont(new Font("Times New Roman", Font.BOLD, 25));
-		myUserNameLabel.setFont(new Font("Times New Roman", Font.BOLD, 25));
-		myUserRoleLabel.setFont(new Font("Times New Roman", Font.BOLD, 25));
+	private void formatTextAreas(){
+		Collection<JTextArea> textAreas = new ArrayList<>(Arrays.asList(
+				myReviewITTextArea,
+				myConferenceTextArea,
+				myUserIDTextArea,
+				myUserNameTextArea,
+				myUserRoleTextArea
+				));
+		myReviewITTextArea.setFont(new Font("Times New Roman", Font.BOLD + Font.ITALIC, 35));
+		myReviewITTextArea.setSize(200, 200);
+		myConferenceTextArea.setFont(new Font("Times New Roman", Font.BOLD, 40));
+		myConferenceTextArea.setSize(1000, 200);
+		myUserIDTextArea.setFont(new Font("Times New Roman", Font.BOLD, 25));
+		myUserIDTextArea.setSize(650, 200);
+		myUserNameTextArea.setFont(new Font("Times New Roman", Font.BOLD, 25));
+		myUserNameTextArea.setSize(650, 200);
+		myUserRoleTextArea.setFont(new Font("Times New Roman", Font.BOLD, 25));
+		myUserRoleTextArea.setSize(200, 200);
+		
+		for(final JTextArea currentArea: textAreas){
+			currentArea.setEditable(false);
+			currentArea.setHighlighter(null);
+			currentArea.setWrapStyleWord(true);
+			currentArea.setLineWrap(true);
+		}
 	}
 	
 	@Override
 	public void update(final Observable theObservable, final Object theObject) {
 		if(theObservable instanceof UserProfileStateManager){
 			if(theObject instanceof UserProfile){
-				updateLabelsText();
+				updateText();
 			}
 		}else if(theObservable instanceof ConferenceStateManager){
 			if(theObject instanceof Conference){
-				updateLabelsText();
+				updateText();
 			}
 		}	
 	}
 
-	private void updateLabelsText() {
+	private void updateText() {
+		myReviewITTextArea.setText("ReviewIT");
 		if(ConferenceStateManager.getInstance().isCurrentConferenceSet()){
-			myConferenceLabel.setText("Conference: " + ConferenceStateManager.getInstance().getCurrentConference().getName());
+			myConferenceTextArea.setText("Conference: " + ConferenceStateManager.getInstance().getCurrentConference().getName());
+		}else{
+			myConferenceTextArea.setText("No Conference selected.");
 		}
 		if(UserProfileStateManager.getInstance().isCurrentUserProfileSet()){
-			myUserIDLabel.setText("ID: " + UserProfileStateManager.getInstance().getCurrentUserProfile().getUserID());
-			myUserNameLabel.setText("Name: " + UserProfileStateManager.getInstance().getCurrentUserProfile().getName());
+			myUserIDTextArea.setText("User ID: " + UserProfileStateManager.getInstance().getCurrentUserProfile().getUserID());
+			myUserNameTextArea.setText("Name: " + UserProfileStateManager.getInstance().getCurrentUserProfile().getName());
+		}else{
+			myUserIDTextArea.setText("No UserID; No User logged in.");
+			myUserNameTextArea.setText("No User Name; No user logged in.");
 		}
 		if(UserProfileStateManager.getInstance().isCurrentRoleSet()){
-			myUserRoleLabel.setText("as: " + ConferenceStateManager.getInstance().getCurrentConference().getName());
+			myUserRoleTextArea.setText("as: " + UserProfileStateManager.getInstance().getCurrentRole().getRoleName());
+		}else{
+			myUserRoleTextArea.setText("No Role selected.");
 		}
 	}
 }

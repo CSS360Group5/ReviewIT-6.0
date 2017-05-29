@@ -52,7 +52,7 @@ public class UserProfileStateManager extends Observable implements Serializable 
     
     public void addUserProfile(final UserProfile theUserProfile){
     	myUserProfiles.add(theUserProfile);
-    	this.hasChanged();
+    	this.setChanged();
         this.notifyObservers(myUserProfiles);
     }
     
@@ -77,7 +77,7 @@ public class UserProfileStateManager extends Observable implements Serializable 
         	throw new IllegalArgumentException("UserProfile must be added first!");
         }
         myCurrentUserProfile = theCurrentUserProfile;
-        this.hasChanged();
+        this.setChanged();
         this.notifyObservers(myCurrentUserProfile);
     }
     

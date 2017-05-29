@@ -182,6 +182,13 @@ public class Conference implements Serializable {
 		return assignedManuscript;
 	}
 
+	public Collection<Manuscript> getManuscriptAssignedToSubprogram(final UserProfile theSubprogramUser){
+		if(mySubprogramChairAssignmentMap.containsKey(theSubprogramUser)){
+			return mySubprogramChairAssignmentMap.get(theSubprogramUser);
+		}
+		return new ArrayList<>();
+	}
+	
 	/**
 	 * @author Lorenzo Pacis
 	 * @param theManuscript - the manuscript to be assigned to the Subprogram Chair.

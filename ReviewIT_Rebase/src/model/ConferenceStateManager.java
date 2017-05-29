@@ -64,13 +64,13 @@ public class ConferenceStateManager extends Observable implements Serializable {
 			throw new IllegalArgumentException("Can set theCurrentConference to a Conference not added.");
 		}
         myCurrentConference = theCurrentConference;
-        this.hasChanged();
+        this.setChanged();
         this.notifyObservers(myCurrentConference);
 	}
 
 	public void addConference(Conference theConference) {
 		myConferences.add(Objects.requireNonNull(theConference));
-		this.hasChanged();
+		this.setChanged();
         this.notifyObservers(myConferences);
     }
 
@@ -79,7 +79,7 @@ public class ConferenceStateManager extends Observable implements Serializable {
 	 */
 	public void removeAllConferences() {
 		myConferences = new ArrayList<>();
-		this.hasChanged();
+		this.setChanged();
         this.notifyObservers(myConferences);
 	}
 
