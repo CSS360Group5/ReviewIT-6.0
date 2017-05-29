@@ -8,6 +8,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * LoginPanel allows users to either login with an existing
@@ -17,7 +19,7 @@ import java.util.Collection;
  */
 public class LoginPanel extends AutoSizeablePanel {
 
-    private static final String INCORRECT_USERID_FORMAT_MESSAGE = "UserID format must match exampleID@uw.edu";
+    private static final String INCORRECT_USERID_FORMAT_MESSAGE = "UserID must resemble 'exampleID@uw.edu'.";
     private static final String EXAMPLE_USERID_TEXT = "exampleID@uw.edu";
     private static final Dimension DEFAULT_TEXT_FIELD_SIZE = new Dimension(250, 20);
     private static final String DEFAULT_EMAIL_REGEX_PATTERN =
@@ -170,7 +172,9 @@ public class LoginPanel extends AutoSizeablePanel {
     }
 
     private boolean isProperUserIDFormat(final String theUserID) {
-        return theUserID.matches(DEFAULT_EMAIL_REGEX_PATTERN);
+        Pattern ptrn = Pattern.compile(DEFAULT_EMAIL_REGEX_PATTERN);
+        Matcher matcher = ptrn.matcher(theUserID);
+        return matcher.matches();
     }
 
     private void failedAttempt(final String theFailureMessage) {
@@ -192,7 +196,7 @@ public class LoginPanel extends AutoSizeablePanel {
             boolean userIDExists = false;
             Collection<UserProfile> allUserProfiles =
                     UserProfileStateManager.getInstance().getAllUserProfiles();
-            if (isProperUserIDFormat(myNewUserIDInputField.getText())) {
+            if (isProperUserIDFormat(myLoginInputField.getText())) {
                 for (UserProfile up : allUserProfiles) {
                     if (up.getUserID().equals(myLoginInputField.getText())) {
                         userIDExists = true;
@@ -232,7 +236,7 @@ public class LoginPanel extends AutoSizeablePanel {
             } else if (userNameIsProperlyFormatted) {
                 failedAttempt(INCORRECT_USERID_FORMAT_MESSAGE);
             } else {
-                failedAttempt("A name must contain at least one character.");
+                failedAttempt("Name must contain at least one character.");
             }
         }
     }
