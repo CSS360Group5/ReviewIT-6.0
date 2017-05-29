@@ -62,6 +62,10 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 				);
 		ConferenceStateManager.getInstance().getCurrentConference().submitManuscript(aManuscript);
 		
+		
+		ConferenceStateManager.getInstance().getCurrentConference().
+			assignManuscriptToSubprogramChair(aManuscript, aUser);
+		
 		//Set up a JFrame to test our panel in:
 		EventQueue.invokeLater(new Runnable() 
         {
@@ -149,8 +153,11 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 		Collection<Manuscript> assignedManuscripts = 
 				ConferenceStateManager.getInstance().getCurrentConference().getManuscriptAssignedToSubprogram(
 				UserProfileStateManager.getInstance().getCurrentUserProfile());
+//		System.out.println(ConferenceStateManager.getInstance().getCurrentConference().getManuscriptAssignedToSubprogram(
+//				UserProfileStateManager.getInstance().getCurrentUserProfile()).size());
 		for(final Manuscript currentManuscript: assignedManuscripts){
-			final JButton titleButton = new JButton((Action) new SubprogramSelectManuscriptActionListener(currentManuscript));
+			final JButton titleButton = new JButton();
+			titleButton.addActionListener(new SubprogramSelectManuscriptActionListener(currentManuscript));
 			constraints.gridwidth = 1600;
 			constraints.gridheight = 50;
 			constraints.gridx = 0;

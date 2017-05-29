@@ -5,6 +5,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -159,33 +160,14 @@ public class Conference implements Serializable {
 		return new ArrayList<>();
 	}
 
-	/**
-	 * PRECONDITION: The UserProfile of the intended Subprogram Chair must provide evidence
-	 * that the Subprogram Chair Role has been assigned for this Conference.
-	 *
-	 * @author Lorenzo Pacis
-	 * @param theManuscript - to assign to a subprogram chair
-	 * @param theUserProfile - who to assign manuscript to.
-	 * @return true if assignment succeeded, otherwise false.
-	 */
-	public boolean assignManuscriptToSubprogramChair(final Manuscript theManuscript,
-													 final UserProfile theUserProfile) {
-		final String userId = theUserProfile.getUserID();
-		
-		boolean assignedManuscript = false;
-		if(isValidSubChair(theManuscript, userId)) {
-			if(mySubprogramChairAssignmentMap.containsKey(userId)) {
-				if(!(mySubprogramChairAssignmentMap.get(userId).contains(theManuscript))) {
-					mySubprogramChairAssignmentMap.get(userId).add(theManuscript);
-					assignedManuscript = true;
-				}
-			} else {
-				mySubprogramChairAssignmentMap.put(theUserProfile, new ArrayList<>());
-				mySubprogramChairAssignmentMap.get(userId).add(theManuscript);
-				assignedManuscript = true;
-			}
+	public void assignManuscriptToSubprogramChair(
+			final Manuscript theManuscript,
+			final UserProfile theSubprogramUserProfile
+			) {
+		if(!mySubprogramChairAssignmentMap.containsKey(theSubprogramUserProfile)){
+			mySubprogramChairAssignmentMap.put(theSubprogramUserProfile, new HashSet<>());
 		}
-		return assignedManuscript;
+		mySubprogramChairAssignmentMap.get(theSubprogramUserProfile).add(theManuscript);
 	}
 
 	public Collection<Manuscript> getManuscriptAssignedToSubprogram(final UserProfile theSubprogramUser){
@@ -194,25 +176,7 @@ public class Conference implements Serializable {
 		}
 		return new ArrayList<>();
 	}
-	
-	/**
-	 * @author Lorenzo Pacis
-	 * @param theManuscript - the manuscript to be assigned to the Subprogram Chair.
-	 * @param theId - The Subprogram Chair's user Id.
-	 * @return true If the subprogram chair was assigned the manuscript, otherwise returns false.
-	 */
-	private boolean isValidSubChair(Manuscript theManuscript, String theId) {
-		boolean validSubChair = true;
-		if(theManuscript.getSubmissionUser().equals(theId)) {
-			validSubChair = false;
-		}
-		if(myAuthorManuscriptMap.containsKey(theId)) {
-			if(myAuthorManuscriptMap.get(theId).contains(theManuscript)) {
-				validSubChair = false;
-			}
-		}
-		return validSubChair;
-	}
+
 	
 	public String getName() {
 		return myConferenceName;
