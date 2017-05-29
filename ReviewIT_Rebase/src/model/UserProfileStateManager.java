@@ -2,6 +2,7 @@ package model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -21,7 +22,7 @@ public class UserProfileStateManager implements Serializable {
     /*
     List of all registered UserProfiles
      */
-    private List<UserProfile> myUserProfiles;
+    private Collection<UserProfile> myUserProfiles;
 
 
     public UserProfileStateManager() {
