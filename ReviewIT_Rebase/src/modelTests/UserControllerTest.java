@@ -28,7 +28,8 @@ public class UserControllerTest {
 	
 	@Before
 	public void setUp() {
-		testUserController = new UserProfileStateManager();
+		UserProfileStateManager.destroy();
+		testUserController = UserProfileStateManager.getInstance();
 		testUserID = "testUserID";
     	testUserName = "testUserName";
     	testUserID1 = "testUserID1";

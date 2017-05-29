@@ -23,11 +23,22 @@ public class UserProfileStateManager implements Serializable {
      */
     private List<UserProfile> myUserProfiles;
 
+    private static UserProfileStateManager myInstance;
 
-    public UserProfileStateManager() {
+    private UserProfileStateManager() {
         myUserProfiles = new ArrayList<>();
     }
+    
+    public static UserProfileStateManager getInstance(){
+    	if(myInstance == null)
+    		myInstance = new UserProfileStateManager();
+    	return myInstance;
+    }
 
+    public static void destroy(){
+    	myInstance = null;
+    }
+    
     /**
      *
      * @return UserProfile of the currently logged in user
