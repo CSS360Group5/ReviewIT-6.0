@@ -20,14 +20,14 @@ import model.Role;
 import model.UserProfile;
 import model.UserProfileStateManager;
 
-public class AuthorTablePanel extends AutoSizeablePanel implements Observer{
+public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 	private static final long serialVersionUID = 8098693823655450146L;
 
 	private final JTextArea titleHeaderArea;
 	private final JTextArea authorsHeaderArea;
 	private final JTextArea submitDateHeaderArea;
 
-	private final Collection<JTextArea> rowTextAreas;
+	private final Collection<Collection<JTextArea>> rowTextAreas;
 	public static void main(String[] args){
 		
 		//Add some data:
@@ -51,7 +51,7 @@ public class AuthorTablePanel extends AutoSizeablePanel implements Observer{
             public void run() 
             {
                 final JFrame window = new JFrame();
-                final JPanel mainPanel = new AuthorTablePanel(0.6, 0.4, new Dimension(2100, 1600));
+                final JPanel mainPanel = new SubprogramTablePanel(0.6, 0.4, new Dimension(2100, 1600));
                 window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 window.setContentPane(mainPanel);
                 window.pack();
@@ -61,7 +61,7 @@ public class AuthorTablePanel extends AutoSizeablePanel implements Observer{
         });
 	}
 	
-	public AuthorTablePanel(
+	public SubprogramTablePanel(
 			final double theXRatio,
 			final double theYRatio,
 			final Dimension theStartingSize
@@ -85,12 +85,6 @@ public class AuthorTablePanel extends AutoSizeablePanel implements Observer{
 		titleHeaderArea.setText("Title");
 		authorsHeaderArea.setText("Authors");
 		submitDateHeaderArea.setText("Date Submitted");
-	}
-
-	private void formatTableTextAreas(){
-		for (JTextArea currentTextArea: rowTextAreas){
-//			currentTextArea.setFont();
-		}
 	}
 	
 	private void initObservers(){
