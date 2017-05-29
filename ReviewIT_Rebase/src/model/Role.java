@@ -1,11 +1,18 @@
 package model;
 
-/**
- * Enum specifying strings for
- */
 public enum Role {
-    AUTHOR,
-    SUBPROGRAM,
-    PROGRAM_CHAIR,
-    REVIEWER;
+    AUTHOR("Author"),
+    SUBPROGRAM("Subprogram Chair"),
+    PROGRAM_CHAIR("Program Chair"),
+    REVIEWER("Reviewer");
+	
+	private final String myRoleName;
+	
+	Role(final String theRoleName){
+		myRoleName = theRoleName;
+	}
+	
+	public String getRoleName(){
+		return myRoleName;
+	}
 }

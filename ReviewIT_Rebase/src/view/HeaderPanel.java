@@ -7,6 +7,8 @@ import java.awt.GridBagConstraints;
 
 import javax.swing.JLabel;
 
+import model.Role;
+
 public class HeaderPanel extends AutoSizeablePanel {
 	private static final long serialVersionUID = 8098693823655450146L;
 
@@ -38,6 +40,10 @@ public class HeaderPanel extends AutoSizeablePanel {
 //		sampleLabel.setForeground(new Color(Integer.parseInt("BAFF29", 16)));
 //		sampleLabel.setFont(new Font("Times New Roman", 1, 40));
 //		add(sampleLabel);
+	}
+	
+	private void updateUserAndRole(final String currentUser, final Role currentRole){
+		
 	}
 }
 
