@@ -1,33 +1,11 @@
 package view;
 
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeListener;
+import model.*;
+
+import javax.swing.*;
+import java.awt.*;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Observable;
-import java.util.Observer;
-
-import javax.swing.Action;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-
-import cotroller.SampleActionListener;
-import model.Conference;
-import model.ConferenceStateManager;
-import model.Role;
-import model.UserProfile;
-import model.UserProfileStateManager;
+import java.util.*;
 
 public class HeaderPanel extends AutoSizeablePanel implements Observer{
 	private static final long serialVersionUID = 8098693823655450146L;
@@ -101,6 +79,7 @@ public class HeaderPanel extends AutoSizeablePanel implements Observer{
 		addTextAreas();
 		formatTextAreas();
 		updateText();
+
 	}
 	
 	private void initObservers(){
@@ -142,6 +121,52 @@ public class HeaderPanel extends AutoSizeablePanel implements Observer{
 		constraints.gridx = 200;
 		constraints.gridy = 50;
 		add(myUserRoleTextArea, constraints);
+
+		constraints.gridwidth = 250;
+		constraints.gridheight = 0;
+		constraints.gridx = 150;
+		constraints.gridy = 70;
+		JButton reselectBtn = (new JButton("Reselect Conference and Role..."));
+		reselectBtn.addActionListener(e -> reselectConferenceAndRole());
+		add(reselectBtn, constraints);
+
+		constraints.gridwidth = 300;
+		constraints.gridheight = 0;
+		constraints.gridx = 300;
+		constraints.gridy = 70;
+		JButton logoutBtn = (new JButton("Logout"));
+		logoutBtn.addActionListener(e -> logout());
+		add(logoutBtn, constraints);
+	}
+
+	private void reselectConferenceAndRole() {
+		JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+		final JFrame window = new JFrame();
+		final JPanel mainPanel = new ConfRoleSelectPanel(1, 1, new Dimension(1350, 450));
+
+
+		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		window.setContentPane(mainPanel);
+		window.pack();
+		window.setLocationRelativeTo(frame);
+		window.setVisible(true);
+		window.setSize(new Dimension(1350, 450));
+		frame.dispose();
+	}
+
+	private void logout() {
+		JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+		final JFrame window = new JFrame();
+		final JPanel mainPanel = new LoginPanel(1, 1, new Dimension(1350, 450));
+
+
+		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		window.setContentPane(mainPanel);
+		window.pack();
+		window.setLocationRelativeTo(frame);
+		window.setVisible(true);
+		window.setSize(new Dimension(1350, 450));
+		frame.dispose();
 	}
 
 	private void formatTextAreas(){

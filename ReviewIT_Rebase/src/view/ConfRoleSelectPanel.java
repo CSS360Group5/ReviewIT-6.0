@@ -1,12 +1,14 @@
 package view;
 
-import model.*;
+import model.Conference;
+import model.ConferenceStateManager;
+import model.Role;
+import model.UserProfileStateManager;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -19,45 +21,9 @@ public class ConfRoleSelectPanel extends AutoSizeablePanel {
 
     private JComboBox<Conference> myConferenceComboBox;
     private JComboBox<Role> myRoleComboBox;
+    private JButton myContinueButton;
 
     private static final Dimension DEFAULT_COMBO_BOX_SIZE = new Dimension(250, 20);
-
-    /**
-     * Sample main used to set up this Panel
-     * and initialize it and put it into a JFrame.
-     */
-    public static void main(String[] args){
-
-        EventQueue.invokeLater(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                Conference con1 = new Conference("First Conference",
-                        ZonedDateTime.now());
-                Conference con2 = new Conference("Second Conference",
-                        ZonedDateTime.now());
-                ConferenceStateManager.getInstance().addConference(con1);
-                ConferenceStateManager.getInstance().addConference(con2);
-
-                UserProfile userKevin = new UserProfile("kev@uw.edu", "Kevin");
-                UserProfileStateManager.getInstance().addUserProfile(userKevin);
-                UserProfileStateManager.getInstance().setCurrentUser(userKevin);
-                userKevin.addRole(Role.AUTHOR, con1);
-                userKevin.addRole(Role.SUBPROGRAM, con1);
-                userKevin.addRole(Role.AUTHOR, con2);
-
-                final JFrame window = new JFrame();
-                final JPanel mainPanel = new ConfRoleSelectPanel(1, 1, new Dimension(750, 550));
-
-                window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                window.setContentPane(mainPanel);
-                window.pack();
-                window.setLocationRelativeTo(null);
-                window.setVisible(true);
-            }
-        });
-    }
 
     public ConfRoleSelectPanel(final double theXRatio,
                       final double theYRatio,
@@ -89,6 +55,7 @@ public class ConfRoleSelectPanel extends AutoSizeablePanel {
         myConferenceComboBox.addActionListener(new ConferenceSelectorListener());
         myConferenceComboBox.setPreferredSize(DEFAULT_COMBO_BOX_SIZE);
         add(myConferenceComboBox, gbc);
+        myConferenceComboBox.setSelectedIndex(-1);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -101,6 +68,46 @@ public class ConfRoleSelectPanel extends AutoSizeablePanel {
         myRoleComboBox.setPreferredSize(DEFAULT_COMBO_BOX_SIZE);
         myRoleComboBox.setEnabled(false);
         add(myRoleComboBox, gbc);
+
+
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        myContinueButton = continueButton();
+        myContinueButton.setEnabled(false);
+        add(myContinueButton, gbc);
+    }
+
+    private JButton continueButton() {
+        JButton continueBtn = new JButton("Continue...");
+        continueBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                continueToRolePanel();
+            }
+        });
+        return continueBtn;
+    }
+
+    private void continueToRolePanel() {
+        JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        final JFrame window = new JFrame();
+        final PanelManager mainPanel = new PanelManager(window);
+
+
+        if(UserProfileStateManager.getInstance().getCurrentRole().equals(Role.AUTHOR)){
+            mainPanel.setNavigationPanel(new AuthorPanel(0.6, 0.4, new Dimension(2100, 700)));
+        }else if(UserProfileStateManager.getInstance().getCurrentRole().equals(Role.SUBPROGRAM)){
+            mainPanel.setNavigationPanel(new SubprogramPanel(mainPanel, 0.6, 0.4, new Dimension(2100, 700)));
+        }
+
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setContentPane(mainPanel);
+        window.pack();
+        window.setMinimumSize(new Dimension(750, 350));
+        window.setLocationRelativeTo(frame);
+        window.setVisible(true);
+        window.setSize(new Dimension(1350, 450));
+        frame.dispose();
     }
 
     private JComboBox<Conference> conferenceSelectorBox() {
@@ -153,9 +160,15 @@ public class ConfRoleSelectPanel extends AutoSizeablePanel {
         myRoleComboBox.removeAllItems();
         Collection<Role> userRoles =
                 UserProfileStateManager.getInstance().getCurrentUserProfile().getRolesForConference(theConference);
-        for (final Role role : userRoles) {
-            myRoleComboBox.addItem(role);
+        if (userRoles.isEmpty()) {
+            UserProfileStateManager.getInstance().getCurrentUserProfile().addRole(Role.AUTHOR, theConference);
+            myRoleComboBox.addItem(Role.AUTHOR);
+        } else {
+            for (final Role role : userRoles) {
+                myRoleComboBox.addItem(role);
+            }
         }
+        myRoleComboBox.setSelectedIndex(-1);
     }
 
     private class ConferenceSelectorListener implements ActionListener {
@@ -163,10 +176,12 @@ public class ConfRoleSelectPanel extends AutoSizeablePanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             JComboBox jcb = (JComboBox) e.getSource();
-            Conference selectedConference = (Conference) jcb.getSelectedItem();
-            ConferenceStateManager.getInstance().setCurrentConference(selectedConference);
-            fillRoleSelectorBox(selectedConference);
-            myRoleComboBox.setEnabled(true);
+            if (jcb.getSelectedItem() instanceof Conference) {
+                Conference selectedConference = (Conference) jcb.getSelectedItem();
+                ConferenceStateManager.getInstance().setCurrentConference(selectedConference);
+                fillRoleSelectorBox(selectedConference);
+                myRoleComboBox.setEnabled(true);
+            }
 //            System.out.print(ConferenceStateManager.getInstance().getCurrentConference().getName());
         }
     }
@@ -177,9 +192,12 @@ public class ConfRoleSelectPanel extends AutoSizeablePanel {
         public void actionPerformed(ActionEvent e) {
             if (myRoleComboBox.isEnabled()) {
                 JComboBox jcb = (JComboBox) e.getSource();
-                Role selectedRole = (Role) jcb.getSelectedItem();
-                UserProfileStateManager.getInstance().setCurrentRole(selectedRole);
+                if (jcb.getSelectedItem() instanceof Role) {
+                    Role selectedRole = (Role) jcb.getSelectedItem();
+                    UserProfileStateManager.getInstance().setCurrentRole(selectedRole);
 //                System.out.print(UserProfileStateManager.getInstance().getCurrentRole().getRoleName());
+                    myContinueButton.setEnabled(true);
+                }
             }
         }
     }
