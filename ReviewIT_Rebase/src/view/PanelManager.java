@@ -42,22 +42,7 @@ public class PanelManager extends JPanel {
 	 * Changes the main navigation panel to thePanel
 	 */
 	public void setNavigationPanel(final JPanel thePanel){
-//		this.remove(navigationPanel);
-//		
-//		final GridBagConstraints constraints = new GridBagConstraints();
-//		constraints.weightx = 0.05;
-//		constraints.weighty = 0.05;
-//		
-//		constraints.gridwidth = 80;
-//		constraints.gridheight = 80;
-//		constraints.gridx = 20;
-//		constraints.gridy = 20;
-//		
-//
-//		add(thePanel, constraints);
-//		this.addPropertyChangeListener((PropertyChangeListener) thePanel);
-//		this.add(thePanel);
-//		navigationPanel = thePanel;
+		this.removeAll();
 		navigationPanel = thePanel;
 		initialize();
 	}

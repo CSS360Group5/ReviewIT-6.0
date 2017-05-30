@@ -40,7 +40,7 @@ public class GUIMain {
             {
                 final JFrame window = new JFrame();
                 final PanelManager mainPanel = new PanelManager(window);
-                mainPanel.setNavigationPanel(new SubprogramTablePanel(mainPanel, 0.6, 0.4, new Dimension(2100, 700)));
+                mainPanel.setNavigationPanel(new SubprogramTablePanel(mainPanel, 0.6, 0.4, new Dimension(2100, 1200)));
 
                 window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 window.setContentPane(mainPanel);
