@@ -25,25 +25,27 @@ public class Manuscript implements Serializable {
 	private static final long serialVersionUID = -154138662878164818L;
 
 	/** Title of the paper*/
-	private String myTitle;
+	private final String myTitle;
 
 	/* The date and time of the submission.*/
-	private ZonedDateTime mySubmissionDate;
+	private final ZonedDateTime mySubmissionDate;
 
 	/*File holding the myManuscript*/
-	private File myManuscript;
+	private final File myManuscript;
 
 	/*The list of myAuthors.*/
-	private Collection<String> myAuthors;
+	private final Collection<String> myAuthors;
 	
 	/*The user who submitted the myManuscript.*/
-	private UserProfile mySubmitter;
+	private final UserProfile mySubmitter;
 	
 	/* The list of myReviews assigned to the myManuscript.*/
-	private Collection<UserProfile> myReviewers;
+	private final Collection<UserProfile> myReviewers;
 	
-//	/* The list of myReviews assigned to the myManuscript.*/
-//	private Collection<Review> myReviews;
+	/* The list of myReviews assigned to this Manuscript.*/
+	private final Collection<Review> myReviews;
+	
+	private final Collection<Recommendation> myRecommendations;
 	
 	/* The list of of persons who are assigned as reviewers to this manuscript. */
 	
@@ -71,9 +73,10 @@ public class Manuscript implements Serializable {
 	public Manuscript(String theTitle, UserProfile theSubmitter, List<String> theAuthors,
 					  ZonedDateTime theSubmissionDate, File theManuscript ) {
 		myReviewers = new HashSet<>();
-//		myReviews = new ArrayList<>();
+		myReviews = new HashSet<>();
 		mySubmitter = theSubmitter;
 		myAuthors = new HashSet<>();
+		myRecommendations = new HashSet<>();
 		
 		myAuthors.add(theSubmitter.getName());
 		for(String co : theAuthors) {
@@ -142,6 +145,13 @@ public class Manuscript implements Serializable {
 		return reviewers;
 	}
 	
+	public void addReview(final Review theReview){
+		myReviews.add(theReview);
+	}
+	
+	public Collection<Review> getReviews(){
+		return myReviews;
+	}
 	
 	public boolean hasReviewer(UserProfile theReviewerProfile) {
 		return myReviewers.contains(theReviewerProfile);
@@ -162,5 +172,27 @@ public class Manuscript implements Serializable {
 	 */
 	public String getTitle() {
 		return myTitle;
+	}
+	
+	public void addRecommendation(final Recommendation theRecommendation){
+		myRecommendations.add(theRecommendation);
+	}
+	
+	public Collection<Recommendation> getRecommendations(){
+		return myRecommendations;
+	}
+	
+	/**
+	 * @return true iff this.add() was used with a Recommendation from theSubprogramUserProfile
+	 * @param theSubprogramUserProfile
+	 * @return
+	 */
+	public boolean isRecommendedBy(final UserProfile theSubprogramUserProfile){
+		for(final Recommendation currentRecommendation: myRecommendations){
+			if(currentRecommendation.getRecommender().equals(theSubprogramUserProfile)){
+				return true;
+			}
+		}
+		return false;
 	}
 }

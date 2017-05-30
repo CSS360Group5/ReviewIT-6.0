@@ -5,6 +5,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -32,11 +33,11 @@ public class Conference implements Serializable {
 	 * List of all Manuscripts submitted to this Conference.
 	 */
 	private Collection<Manuscript> myConferenceManuscripts;
-
-	/**
-	 * Map of an Author's name to a List of Manuscripts that the author has submitted to this Conference.
-	 */
-	private Map<String, Collection<Manuscript>> myAuthorManuscriptMap;
+//
+//	/**
+//	 * Map of an Author's name to a List of Manuscripts that the author has submitted to this Conference.
+//	 */
+//	private Map<String, Collection<Manuscript>> myAuthorManuscriptMap;
 
 	/**
 	 * Map of a Subprogram Chair's user ID to a List of Manuscripts for which they have been designated responsible
@@ -62,7 +63,7 @@ public class Conference implements Serializable {
 		
 		this.myConferenceName = theConferenceName;
 		this.myConferenceManuscripts = new ArrayList<>();
-		this.myAuthorManuscriptMap = new HashMap<>();
+//		this.myAuthorManuscriptMap = new HashMap<>();
 		this.mySubprogramChairAssignmentMap = new HashMap<>();
 //		this.myActiveReviewerAssignmentMap = new HashMap<>();
 		
@@ -86,13 +87,19 @@ public class Conference implements Serializable {
 	 * 		* Cannot be submitted more than once.
 	 * @author Lorenzo Pacis
 	 * @author Dimitar Kumanov
+	 * @author Dongsheng Han
 	 */
-	public boolean submitManuscript(final Manuscript theManuscript) {
-		if (theManuscript != null && isManuscriptSubmittable(theManuscript)) {
+	public void submitManuscript(final Manuscript theManuscript) {
+		//This needs to check bus. rules not just null fields of theManuscript
+		//This should be a void method, to check if a manuscript is submitted use the getters methods!
+		if (theManuscript.getAuthors() != null 
+				&& theManuscript.getManuscript() != null 
+				&& theManuscript.getMySubmissionDate() != null 
+				&& theManuscript.getSubmissionUser() != null 
+				&& theManuscript.getTitle() != null 
+				&& isManuscriptSubmittable(theManuscript)) {
 			myConferenceManuscripts.add(theManuscript);
-			return true;
 		}
-		return false;
 	}
 
 //	/
@@ -143,43 +150,40 @@ public class Conference implements Serializable {
 		return myManuscriptSubmissionDeadline;
 	}
 	
+	/**
+	 * Returns a non-null Collection of Manuscript submitted by theSubmitterUserProfile to this Conference.
+	 */
+	public Collection<Manuscript> getManuscriptsSubmittedBy(final UserProfile theSubmitterUserProfile){
+		Collection<Manuscript> manuscriptsSubmitted = new HashSet<>();
+		for(final Manuscript currentManuscript: myConferenceManuscripts){
+			if(currentManuscript.getSubmissionUser().equals(theSubmitterUserProfile)){
+				manuscriptsSubmitted.add(currentManuscript);}
+			
+		}
+		return manuscriptsSubmitted;
+	}
 	
 	/**
-	 * Returns a non-null Collection of Manuscript associate with theAuthorName for this Conference.
+	 * Returns a non-null Collection of Manuscript associated with theAuthorName for this Conference.
 	 */
 	public Collection<Manuscript> getManuscriptsByName(final String theAuthorName) {
-		if(myAuthorManuscriptMap.containsKey(theAuthorName))
-			return myAuthorManuscriptMap.get(theAuthorName);
-		return new ArrayList<>();
-	}
-
-	/**
-	 * PRECONDITION: The UserProfile of the intended Subprogram Chair must provide evidence
-	 * that the Subprogram Chair Role has been assigned for this Conference.
-	 *
-	 * @author Lorenzo Pacis
-	 * @param theManuscript - to assign to a subprogram chair
-	 * @param theUserProfile - who to assign manuscript to.
-	 * @return true if assignment succeeded, otherwise false.
-	 */
-	public boolean assignManuscriptToSubprogramChair(final Manuscript theManuscript,
-													 final UserProfile theUserProfile) {
-		final String userId = theUserProfile.getUserID();
-		
-		boolean assignedManuscript = false;
-		if(isValidSubChair(theManuscript, userId)) {
-			if(mySubprogramChairAssignmentMap.containsKey(userId)) {
-				if(!(mySubprogramChairAssignmentMap.get(userId).contains(theManuscript))) {
-					mySubprogramChairAssignmentMap.get(userId).add(theManuscript);
-					assignedManuscript = true;
-				}
-			} else {
-				mySubprogramChairAssignmentMap.put(theUserProfile, new ArrayList<>());
-				mySubprogramChairAssignmentMap.get(userId).add(theManuscript);
-				assignedManuscript = true;
+		Collection<Manuscript> manuscriptsSubmitted = new HashSet<>();
+		for(final Manuscript currentManuscript: myConferenceManuscripts){
+			if(currentManuscript.getAuthors().contains(theAuthorName)){
+				manuscriptsSubmitted.add(currentManuscript);
 			}
 		}
-		return assignedManuscript;
+		return manuscriptsSubmitted;
+	}
+
+	public void assignManuscriptToSubprogramChair(
+			final Manuscript theManuscript,
+			final UserProfile theSubprogramUserProfile
+			) {
+		if(!mySubprogramChairAssignmentMap.containsKey(theSubprogramUserProfile)){
+			mySubprogramChairAssignmentMap.put(theSubprogramUserProfile, new HashSet<>());
+		}
+		mySubprogramChairAssignmentMap.get(theSubprogramUserProfile).add(theManuscript);
 	}
 
 	public Collection<Manuscript> getManuscriptAssignedToSubprogram(final UserProfile theSubprogramUser){
@@ -188,25 +192,7 @@ public class Conference implements Serializable {
 		}
 		return new ArrayList<>();
 	}
-	
-	/**
-	 * @author Lorenzo Pacis
-	 * @param theManuscript - the manuscript to be assigned to the Subprogram Chair.
-	 * @param theId - The Subprogram Chair's user Id.
-	 * @return true If the subprogram chair was assigned the manuscript, otherwise returns false.
-	 */
-	private boolean isValidSubChair(Manuscript theManuscript, String theId) {
-		boolean validSubChair = true;
-		if(theManuscript.getSubmissionUser().equals(theId)) {
-			validSubChair = false;
-		}
-		if(myAuthorManuscriptMap.containsKey(theId)) {
-			if(myAuthorManuscriptMap.get(theId).contains(theManuscript)) {
-				validSubChair = false;
-			}
-		}
-		return validSubChair;
-	}
+
 	
 	public String getName() {
 		return myConferenceName;
