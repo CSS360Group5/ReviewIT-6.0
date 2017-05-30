@@ -46,8 +46,9 @@ public class ConferenceSubprogramChairAssignReviewerTests {
 	private static UserProfile reviewerUser = new UserProfile(reviewerUserID, "Reviewer John Doe");
 	
 	private static String coAuthorUserID = "Samuel034";
+	private static String coAuthorUserName = "CoAuthor John Doe";
 	
-	private static UserProfile coAuthorUser = new UserProfile(coAuthorUserID, "CoAuthor John Doe");
+	private static UserProfile coAuthorUser = new UserProfile(coAuthorUserID, coAuthorUserName);
 	
 	private Conference conference;
 	
@@ -62,7 +63,7 @@ public class ConferenceSubprogramChairAssignReviewerTests {
 	public void setup() {
 		manuscriptAuthors = new ArrayList<String>();
 
-		manuscriptAuthors.add(coAuthorUserID);
+		manuscriptAuthors.add(coAuthorUserName);
 
 		conference = new Conference(conferenceName, conferenceSubmissionDeadline);
 		manuscript = new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
@@ -105,7 +106,6 @@ public class ConferenceSubprogramChairAssignReviewerTests {
 	@Test(expected = IllegalArgumentException.class)
 	public void assignReviewerThrowsIllegalArgumentExceptionIfTheReviewerIsCoAuthorOfTheManuscript() {
 		conference.submitManuscript(manuscript);
-
 //		conference.assignManuscriptToReviewer(manuscript, coAuthorUser);
 		manuscript.addReviewer(coAuthorUser,conference);
 	}
@@ -167,7 +167,7 @@ public class ConferenceSubprogramChairAssignReviewerTests {
 	public void assignReviewerThrowsIllegalArgumentExceptionIfTheReviewerHasBeenAssignedMaxNumOfManuscripts() {
 		for(int i = 0; i < MAX_NUM_REVIEWER_MANUSCRIPT_ASSIGNMENTS + 1; i++) {
 			new Manuscript(
-					"Intro to Crytography",
+					"Intro to Crytography" + Integer.toString(i),
 					submissionUser,
 					manuscriptAuthors,
 					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId),

@@ -160,9 +160,9 @@ public class ConferenceTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void submitManuscriptFailsFromManuscriptAlreadyBeingSubmitted() {
 		conference.submitManuscript(manuscript);
-		int size = conference.getManuscript().size();
+		int size = conference.getManuscripts().size();
 		conference.submitManuscript(manuscript);
-		assertEquals(conference.getManuscript().size(),size);
+		assertEquals(conference.getManuscripts().size(),size);
 	}
 	
 	
@@ -338,17 +338,18 @@ public class ConferenceTest {
 		assertTrue(conference.getManuscriptsByName(submissionUser.getName()).contains(manuscript));
 	}
 	
-//	/**
-//	 * @author Lorenzo Pacis
-//	 * This method tests that getAllSubmittedManuscripts will return an array list of manuscripts containing
-//	 * the manuscript that the sub program chair has been assigned to.
-//	 */
-//	@Test
-//	public void testSubProgramChairAssignedManuscriptsForPopulatedArrayListContainingOneAssignedManuscript() {
-//		conference.submitManuscript(manuscript);
-//		conference.assignManuscriptToSubprogramChair(manuscript, subProgramChairUserID);
-//		assertTrue(conference.getAllSubmittedManuscripts(subProgramChairUserID).size() == 1);
-//	}
+	/**
+	 * @author Lorenzo Pacis
+	 * @author Dongsheng Han
+	 * This method tests that getManuscripts will return an array list of manuscripts containing
+	 * the manuscript that the sub program chair has been assigned to.
+	 */
+	@Test
+	public void testSubProgramChairAssignedManuscriptsForPopulatedArrayListContainingOneAssignedManuscript() {
+		conference.submitManuscript(manuscript);
+		conference.assignManuscriptToSubprogramChair(manuscript, subProgramChairUser);
+		assertTrue(conference.getSubprogramChairAssignment(subProgramChairUser).size() == 1);
+	}
 //	
 //	/**
 //	 * @author Lorenzo Pacis

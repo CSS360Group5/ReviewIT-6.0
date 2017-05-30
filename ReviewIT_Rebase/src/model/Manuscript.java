@@ -131,7 +131,7 @@ public class Manuscript implements Serializable {
 		if(myReviewers.contains(theReviewerProfile)){
 			throw new IllegalArgumentException("Reviewer already assigned to this manuscript.");
 		}
-		if(myReviewers.size() > MAX_REVIEWERS) {
+		if(myReviewers.size() >= MAX_REVIEWERS) {
 			throw new IllegalArgumentException("Maximum of reviewers already assigned.");
 		}
 		if(myAuthors.contains(theReviewerProfile.getName())){
@@ -139,6 +139,8 @@ public class Manuscript implements Serializable {
 		}
 		if(conference.isLegalReviewer(theReviewerProfile)){
 			myReviewers.add(theReviewerProfile);
+		}else{
+			throw new IllegalArgumentException("Reviewer cannot review more than 8 manuscript");
 		}
 		
 	}

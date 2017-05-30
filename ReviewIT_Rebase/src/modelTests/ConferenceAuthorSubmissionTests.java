@@ -135,13 +135,13 @@ public class ConferenceAuthorSubmissionTests {
 	@Test
 	public void testAuthorSubmitsManuscriptAfterCoAuthoringAndAuthoringMaxNumManuscriptsMinusNumManuscriptsLessThanMaxReturnsTrue() {
 		for(int i = 0; i < 2; i++) {
-			conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
+			conference.submitManuscript(new Manuscript("Intro to Crytography" + Integer.toString(i), submissionUser, manuscriptAuthors,
 				ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")));
 		}
 		
 	
 		for(int i = 0; i < 2; i++) {
-			conference.submitManuscript(new Manuscript("Intro to Crytography", coAuthornUser, secondCoAuthorList,
+			conference.submitManuscript(new Manuscript("Intro to Crytography 1" + Integer.toString(i), coAuthornUser, secondCoAuthorList,
 				ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")));
 		}
 		
@@ -157,7 +157,7 @@ public class ConferenceAuthorSubmissionTests {
 	@Test
 	public void testAuthorSubmitsManuiscriptsAfterCoAuthoringMaxNumManuscriptsMinusOneReturnsTrue() {
 		for(int i = 0; i < 4; i++) {
-			conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
+			conference.submitManuscript(new Manuscript("Intro to Crytography" + Integer.toString(i), submissionUser, manuscriptAuthors,
 					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")));
 		}
 		
@@ -173,7 +173,7 @@ public class ConferenceAuthorSubmissionTests {
 	@Test
 	public void testAuthorSubmitsManuscriptAfterSubmittingMaxNumManuscriptsMinusOneReturnsTrue() {
 		for(int i = 0; i  < 4; i++) { 
-			conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
+			conference.submitManuscript(new Manuscript("Intro to Crytography" + Integer.toString(i), submissionUser, manuscriptAuthors,
 					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")));
 		}
 		

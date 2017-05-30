@@ -223,8 +223,17 @@ public class Conference implements Serializable {
 	 * @author Dongsheng Han
 	 * @return myConferenceManuscripts
 	 */
-	public Collection<Manuscript> getManuscript() {
+	public Collection<Manuscript> getManuscripts() {
 		return myConferenceManuscripts;
+	}
+	
+	/**
+	 * getter for all the manuscripts assigned to specific subprogramchiar
+	 * @author Dongsheng Han
+	 * @return myConferenceManuscripts
+	 */
+	public Collection<Manuscript> getSubprogramChairAssignment(UserProfile subProgramChairUser) {
+		return mySubprogramChairAssignmentMap.get(subProgramChairUser);
 	}
 
 
