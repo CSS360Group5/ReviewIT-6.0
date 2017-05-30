@@ -108,6 +108,17 @@ public class Conference implements Serializable {
 			throw new IllegalArgumentException("Failed submission of manuscript");
 		}
 	}
+	
+	/**
+	 * This method will delete the chosen manuscript from the conference manuscript collection.
+	 * @param theManuscript
+	 * @author Harlan Stewart
+	 */
+	public void deleteManuscript(final Manuscript theManuscript) {
+		if(myConferenceManuscripts.contains(theManuscript)){
+			myConferenceManuscripts.remove(theManuscript);
+		}
+	}
 
 //	/
 	/**
