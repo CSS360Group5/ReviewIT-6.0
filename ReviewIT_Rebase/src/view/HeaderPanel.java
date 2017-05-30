@@ -86,13 +86,13 @@ public class HeaderPanel extends AutoSizeablePanel implements Observer{
 		initialize();
 		
 		
-		//Example of Observer pattern in action:
-		final UserProfile aUserProfile = new UserProfile("jill32@uw.edu", "Jill Howard");
-		UserProfileStateManager.getInstance().addUserProfile(aUserProfile);
-		
-		JButton tempButton = new JButton("Change current user!"); 
-		tempButton.addActionListener(new SampleActionListener(aUserProfile));
-		this.add(tempButton);
+//		//Example of Observer pattern in action:
+//		final UserProfile aUserProfile = new UserProfile("jill32@uw.edu", "Jill Howard");
+//		UserProfileStateManager.getInstance().addUserProfile(aUserProfile);
+//		
+//		JButton tempButton = new JButton("Change current user!"); 
+//		tempButton.addActionListener(new SampleActionListener(aUserProfile));
+//		this.add(tempButton);
 	}
 
 	private void initialize() {
@@ -164,6 +164,7 @@ public class HeaderPanel extends AutoSizeablePanel implements Observer{
 		myUserRoleTextArea.setSize(200, 200);
 		
 		for(final JTextArea currentArea: textAreas){
+			currentArea.setBackground(this.getBackground());
 			currentArea.setEditable(false);
 			currentArea.setHighlighter(null);
 			currentArea.setWrapStyleWord(true);

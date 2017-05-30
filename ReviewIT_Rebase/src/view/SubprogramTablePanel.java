@@ -43,6 +43,9 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 	private final JLabel recommendedHeaderArea;
 
 	private final Collection<JTextArea> rowTextAreas;
+
+	private final PanelManager myPanelManager;
+	
 	public static void main(String[] args){
 		
 		//Add some data:
@@ -92,7 +95,7 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
             public void run() 
             {
                 final JFrame window = new JFrame();
-                final JPanel mainPanel = new SubprogramTablePanel(0.6, 0.4, new Dimension(2100, 700));
+                final JPanel mainPanel = new SubprogramTablePanel(null, 0.6, 0.4, new Dimension(2100, 700));
                 window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 window.setContentPane(mainPanel);
                 window.pack();
@@ -103,11 +106,13 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 	}
 	
 	public SubprogramTablePanel(
+			final PanelManager thePanelManager,
 			final double theXRatio,
 			final double theYRatio,
 			final Dimension theStartingSize
 			){
 		super(theXRatio, theYRatio, theStartingSize);
+		myPanelManager = thePanelManager;
 		titleHeaderArea = new JLabel();
 		reviewersAssignedHeaderArea = new JLabel();
 		recommendedHeaderArea = new JLabel();
@@ -188,72 +193,80 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
 		add(recommendedHeaderArea, constraints);
 		
 		//for row add row...
-		Collection<Manuscript> assignedManuscripts = 
-				ConferenceStateManager.getInstance().getCurrentConference().getManuscriptAssignedToSubprogram(
-				UserProfileStateManager.getInstance().getCurrentUserProfile());
-//		
-		int i = 0;
-		for(final Manuscript currentManuscript: assignedManuscripts){
-			final JButton titleButton = new JButton(formatTitleName(currentManuscript.getTitle()));
-			titleButton.addActionListener(new SubprogramSelectManuscriptActionListener(currentManuscript));
-			constraints.gridwidth = 1500;
-			constraints.gridheight = 50;
-			constraints.gridx = 0;
-			constraints.gridy = 50 + i * 50;
-			titleButton.setSize(750, 50);
-			Font buttonFont = new Font("Times New Roman", Font.PLAIN, 25);
-			final Map attributes = buttonFont.getAttributes();
-			attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
-			titleButton.setFont(buttonFont.deriveFont(attributes));
-			titleButton.setSize(750, 50);
-			titleButton.setFocusPainted(false);
-			titleButton.setMargin(new Insets(0, 0, 0, 0));
-			titleButton.setContentAreaFilled(false);
-			titleButton.setBorderPainted(false);
-			titleButton.setOpaque(false);
-			add(titleButton, constraints);
-			
-			
-			final JTextArea reviewersAssignedArea = new JTextArea();
-			rowTextAreas.add(reviewersAssignedArea);
-			reviewersAssignedArea.setText(
-					currentManuscript.getReviewers().size() +
-					" / " + 
-					ConferenceStateManager.getInstance().getCurrentConference().MIN_NUM_REVIEWS);
-			constraints.gridwidth = 200;
-			constraints.gridheight = 50;
-			constraints.gridx = 1500;
-			constraints.gridy = 50 + i * 50;
-			reviewersAssignedArea.setSize(200, 50);
-			this.add(reviewersAssignedArea, constraints);
-			
-			final JTextArea reviewsSubmittedArea = new JTextArea();
-			rowTextAreas.add(reviewsSubmittedArea);
-			reviewsSubmittedArea.setText(
-					currentManuscript.getReviews().size() +
-					" / " + 
-					currentManuscript.getReviewers().size());
-			constraints.gridwidth = 200;
-			constraints.gridheight = 50;
-			constraints.gridx = 1700;
-			constraints.gridy = 50 + i * 50;
-			reviewsSubmittedArea.setSize(200, 50);
-			this.add(reviewsSubmittedArea, constraints);
-			
-			
-			final JTextArea recommendationArea = new JTextArea();
-			rowTextAreas.add(recommendationArea);
-			recommendationArea.setText(
-					currentManuscript.isRecommendedBy(
-							UserProfileStateManager.getInstance().getCurrentUserProfile()
-							) ? "Yes" : "No");
-			constraints.gridwidth = 200;
-			constraints.gridheight = 50;
-			constraints.gridx = 1900;
-			constraints.gridy = 50 + i * 50;
-			recommendationArea.setSize(200, 50);
-			this.add(recommendationArea, constraints);
-			++i;
+		if(ConferenceStateManager.getInstance().isCurrentConferenceSet()){
+			Collection<Manuscript> assignedManuscripts = 
+					ConferenceStateManager.getInstance().getCurrentConference().getManuscriptAssignedToSubprogram(
+					UserProfileStateManager.getInstance().getCurrentUserProfile());
+	//		
+			int i = 0;
+			for(final Manuscript currentManuscript: assignedManuscripts){
+				final JButton titleButton = new JButton(formatTitleName(currentManuscript.getTitle()));
+				titleButton.addActionListener(
+						new SubprogramSelectManuscriptActionListener(
+								myPanelManager,
+								ConferenceStateManager.getInstance().getCurrentConference(),
+								UserProfileStateManager.getInstance().getCurrentUserProfile(),
+								currentManuscript
+								));
+				constraints.gridwidth = 1500;
+				constraints.gridheight = 50;
+				constraints.gridx = 0;
+				constraints.gridy = 50 + i * 50;
+				titleButton.setSize(750, 50);
+				Font buttonFont = new Font("Times New Roman", Font.PLAIN, 25);
+				final Map attributes = buttonFont.getAttributes();
+				attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+				titleButton.setFont(buttonFont.deriveFont(attributes));
+				titleButton.setSize(750, 50);
+				titleButton.setFocusPainted(false);
+				titleButton.setMargin(new Insets(0, 0, 0, 0));
+				titleButton.setContentAreaFilled(false);
+				titleButton.setBorderPainted(false);
+				titleButton.setOpaque(false);
+				add(titleButton, constraints);
+				
+				
+				final JTextArea reviewersAssignedArea = new JTextArea();
+				rowTextAreas.add(reviewersAssignedArea);
+				reviewersAssignedArea.setText(
+						currentManuscript.getReviewers().size() +
+						" / " + 
+						ConferenceStateManager.getInstance().getCurrentConference().MIN_NUM_REVIEWS);
+				constraints.gridwidth = 200;
+				constraints.gridheight = 50;
+				constraints.gridx = 1500;
+				constraints.gridy = 50 + i * 50;
+				reviewersAssignedArea.setSize(200, 50);
+				this.add(reviewersAssignedArea, constraints);
+				
+				final JTextArea reviewsSubmittedArea = new JTextArea();
+				rowTextAreas.add(reviewsSubmittedArea);
+				reviewsSubmittedArea.setText(
+						currentManuscript.getReviews().size() +
+						" / " + 
+						currentManuscript.getReviewers().size());
+				constraints.gridwidth = 200;
+				constraints.gridheight = 50;
+				constraints.gridx = 1700;
+				constraints.gridy = 50 + i * 50;
+				reviewsSubmittedArea.setSize(200, 50);
+				this.add(reviewsSubmittedArea, constraints);
+				
+				
+				final JTextArea recommendationArea = new JTextArea();
+				rowTextAreas.add(recommendationArea);
+				recommendationArea.setText(
+						currentManuscript.isRecommendedBy(
+								UserProfileStateManager.getInstance().getCurrentUserProfile()
+								) ? "Yes" : "No");
+				constraints.gridwidth = 200;
+				constraints.gridheight = 50;
+				constraints.gridx = 1900;
+				constraints.gridy = 50 + i * 50;
+				recommendationArea.setSize(200, 50);
+				this.add(recommendationArea, constraints);
+				++i;
+			}
 		}
 	}
 	
