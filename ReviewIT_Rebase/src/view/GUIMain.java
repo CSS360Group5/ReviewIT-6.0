@@ -40,8 +40,13 @@ public class GUIMain {
             {
                 final JFrame window = new JFrame();
                 final PanelManager mainPanel = new PanelManager(window);
-                mainPanel.setNavigationPanel(new SubprogramPanel(mainPanel, 0.6, 0.4, new Dimension(2100, 700)));
 
+                if(UserProfileStateManager.getInstance().getCurrentRole().equals(Role.AUTHOR)){
+                	mainPanel.setNavigationPanel(new AuthorPanel(0.6, 0.4, new Dimension(2100, 700)));
+                }else if(UserProfileStateManager.getInstance().getCurrentRole().equals(Role.AUTHOR)){
+                	mainPanel.setNavigationPanel(new SubprogramPanel(mainPanel, 0.6, 0.4, new Dimension(2100, 700)));
+                }
+                
                 window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 window.setContentPane(mainPanel);
                 window.pack();

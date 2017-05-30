@@ -16,7 +16,7 @@ import model.Conference;
 import model.Manuscript;
 import model.UserProfile;
 import model.UserProfileStateManager;
-import view.AuthorSubmitPanel;
+import view.AuthorPanel;
 import view.NavigationPanel;
 import view.PanelManager;
 import view.TemplatePanel;
@@ -74,10 +74,10 @@ public class SubprogramSelectManuscriptActionListener implements ActionListener 
 					);
 			switch(returnValue){
 			case OPTION_RECOMMEND:
-				myPanelManager.setNavigationPanel(new AuthorSubmitPanel(0.6, 0.4, new Dimension(2100, 700)));
+				myPanelManager.setNavigationPanel(new AuthorPanel(0.6, 0.4, new Dimension(2100, 700)));
 				break;
 			case OPTION_ASSIGN_REVIEWER:
-				myPanelManager.setNavigationPanel(new AuthorSubmitPanel(0.6, 0.4, new Dimension(2100, 700)));
+				myPanelManager.setNavigationPanel(new AuthorPanel(0.6, 0.4, new Dimension(2100, 700)));
 				break;
 			}
 		}else{
