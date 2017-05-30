@@ -1,13 +1,7 @@
 package model;
 
 import java.io.Serializable;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Observable;
+import java.util.*;
 
 /**
  * Notifies all Observers w/ a Conference when the current conference changes and
@@ -27,7 +21,7 @@ public class ConferenceStateManager extends Observable implements Serializable {
 	 */
 	private static final long serialVersionUID = -778163843425439777L;
 
-	private Conference myCurrentConference;
+	private transient Conference myCurrentConference;
 	
 	private Collection<Conference> myConferences;
 
