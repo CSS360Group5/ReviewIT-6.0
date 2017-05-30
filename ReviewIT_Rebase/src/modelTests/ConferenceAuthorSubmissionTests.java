@@ -91,8 +91,7 @@ public class ConferenceAuthorSubmissionTests {
 	 */
 	@Test
 	public void testAuthorSubmitsManuscriptBeforeSubmissionDeadlineReturnsTrue() {
-		assertTrue("Testing that submit manuscript returns true if the submission is before the deadline." ,
-				conference.submitManuscript(manuscript));
+		conference.submitManuscript(manuscript);
 		
 	}
 	
@@ -103,8 +102,7 @@ public class ConferenceAuthorSubmissionTests {
 	 */
 	@Test
 	public void testAuthorSubmitsManuscriptJustBeforeSubmissionDeadlineReturnsTrue() {
-		assertTrue("Testing that submit manuscript returns true if the submission is JUST before the deadline.",
-				conference.submitManuscript(justBeforeDeadlineManuscript));
+		conference.submitManuscript(justBeforeDeadlineManuscript);
 
 		
 	}
@@ -147,9 +145,8 @@ public class ConferenceAuthorSubmissionTests {
 				ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")));
 		}
 		
-		assertTrue("Testing that submit manuscript returns true after the author has submitted " + (MAX_NUM_AUTHOR_SUBMISSIONS - NUM_AUTHOR_SUBMISSIONS_LESS_THAN_MAX) + "manuscripts.", 
-				conference.submitManuscript((new Manuscript("Intro to Crytography", coAuthornUser, secondCoAuthorList,
-				ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")))));
+		conference.submitManuscript((new Manuscript("Intro to Crytography", coAuthornUser, secondCoAuthorList,
+				ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path"))));
 	}
 	
 	/**
@@ -164,9 +161,8 @@ public class ConferenceAuthorSubmissionTests {
 					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")));
 		}
 		
-		assertTrue("Testings that submit manuscript returns true after the author has co authored " + (MAX_NUM_AUTHOR_SUBMISSIONS - NUM_AUTHOR_SUBMISSIONS_LESS_THAN_MAX) + "manuscripts.",
-				conference.submitManuscript((new Manuscript("Intro to Crytography", coAuthornUser, secondCoAuthorList,
-				ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")))));
+		conference.submitManuscript((new Manuscript("Intro to Crytography", coAuthornUser, secondCoAuthorList,
+				ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path"))));
 	}
 	
 	/**
@@ -181,9 +177,8 @@ public class ConferenceAuthorSubmissionTests {
 					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")));
 		}
 		
-		assertTrue("Testing that submit manuscript returns true after the author submits " + (MAX_NUM_AUTHOR_SUBMISSIONS -1) + "manuscripts.", 
-				conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
-					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path"))));
+		conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
+					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")));
 	}
 	
 	/**

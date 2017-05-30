@@ -3,6 +3,7 @@ package modelTests;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import model.Conference;
 import model.Manuscript;
 import model.Review;
 import model.UserProfile;
@@ -23,6 +25,15 @@ import model.UserProfile;
  * @version 4/30/2017
  */
 public class ManuscriptTest {
+	
+	// Fields for Conference class
+	private static String conferenceName = "Computer Science";
+	private static ZoneId zoneId = ZoneId.of("UTC+1");
+	/** Year, Month, Day, Hour, Minute, Seconds, nano, zoneID */
+	private static ZonedDateTime conferenceSubmissionDeadline = ZonedDateTime.of(2017, 11, 30, 23, 45, 59, 1234,
+				zoneId);
+	private Conference conference;
+	
 	
 	private static String manuscriptTitle = "Technology";
 	
@@ -48,6 +59,8 @@ public class ManuscriptTest {
 		coAuthors.add(coAuthorUserID);
 		testManuscript = new Manuscript(manuscriptTitle, submissionUser, coAuthors, submissionDate, manuscript);
 		testNullCoAuthorManuscript = new Manuscript(manuscriptTitle, submissionUser, new ArrayList<>(), submissionDate, manuscript);
+		
+		conference = new Conference(conferenceName, conferenceSubmissionDeadline);
 		
 	}
 	/**
@@ -75,7 +88,7 @@ public class ManuscriptTest {
     public void ReveiwersAreSetToCorrectValues() {
     	UserProfile aReviewer = new UserProfile("Bob", "Bob Reviewer");
     	UserProfile aNonReviewer = new UserProfile("John", "John Not Reviewer");
-    	testManuscript.addReviewer(aReviewer);
+    	testManuscript.addReviewer(aReviewer,conference);
     	assertTrue(testManuscript.hasReviewer(aReviewer));
     	assertFalse(testManuscript.hasReviewer(aNonReviewer));
     	
@@ -90,7 +103,7 @@ public class ManuscriptTest {
     @Test(expected = IllegalArgumentException.class)
     public void manuscriptAddReviewerMAX_REVIEWERSThrowsException() {
     	for(int i = 0; i < Manuscript.MAX_REVIEWERS; ++i){
-    		testManuscript.addReviewer(new UserProfile("Bob" + String.valueOf(i), "Bob Reviewer"+ String.valueOf(i)));
+    		testManuscript.addReviewer(new UserProfile("Bob" + String.valueOf(i), "Bob Reviewer"+ String.valueOf(i)),conference);
     	}
     }
     
@@ -101,7 +114,7 @@ public class ManuscriptTest {
     @Test(expected = IllegalArgumentException.class)
     public void manuscriptAddReviewerLessThenMAX_REVIEWERSThrowsException() {
     	for(int i = 0; i < Manuscript.MAX_REVIEWERS - 1; ++i){
-    		testManuscript.addReviewer(new UserProfile("Bob" + String.valueOf(i), "Bob Reviewer"+ String.valueOf(i)));
+    		testManuscript.addReviewer(new UserProfile("Bob" + String.valueOf(i), "Bob Reviewer"+ String.valueOf(i)),conference);
     	}
     	assertEquals(testManuscript.getReviewers().size(), Manuscript.MAX_REVIEWERS - 1);
     }
@@ -113,7 +126,7 @@ public class ManuscriptTest {
     @Test(expected = IllegalArgumentException.class)
     public void manuscriptAddReviewerMoreThenMAX_REVIEWERSThrowsException() {
     	for(int i = 0; i < Manuscript.MAX_REVIEWERS + 2; ++i){
-    		testManuscript.addReviewer(new UserProfile("Bob" + String.valueOf(i), "Bob Reviewer"+ String.valueOf(i)));
+    		testManuscript.addReviewer(new UserProfile("Bob" + String.valueOf(i), "Bob Reviewer"+ String.valueOf(i)),conference);
     	}
     }
     
@@ -123,7 +136,7 @@ public class ManuscriptTest {
      */
     @Test (expected = IllegalArgumentException.class)
     public void manuscriptAddReviewerFailsWhenReviewerIsTheSubmitter() {
-    	testManuscript.addReviewer(submissionUser);
+    	testManuscript.addReviewer(submissionUser,conference);
     }
     
     /**
@@ -161,9 +174,9 @@ public class ManuscriptTest {
     	UserProfile aReviewer2 = new UserProfile("John", "John Reviewer");
     	UserProfile aReviewer3 = new UserProfile("Billy", "Billy Reviewer");
     	
-    	testManuscript.addReviewer(aReviewer1);
-    	testManuscript.addReviewer(aReviewer2);
-    	testManuscript.addReviewer(aReviewer3);
+    	testManuscript.addReviewer(aReviewer1,conference);
+    	testManuscript.addReviewer(aReviewer2,conference);
+    	testManuscript.addReviewer(aReviewer3,conference);
     	assertTrue(testManuscript.getReviewers().contains(aReviewer1));
     	assertTrue(testManuscript.getReviewers().contains(aReviewer2));
     	assertTrue(testManuscript.getReviewers().contains(aReviewer3));
@@ -185,7 +198,7 @@ public class ManuscriptTest {
      */
     @Test
     public void testGetReviewerReturnsAnArrayListContainingTheReviewer() {
-    	testManuscript.addReviewer(reviewerUser);
+    	testManuscript.addReviewer(reviewerUser,conference);
     	assertTrue(testManuscript.getReviewers().contains(reviewerUserID));
     }
     
@@ -195,8 +208,8 @@ public class ManuscriptTest {
      */
     @Test (expected = IllegalArgumentException.class)
     public void addReviewerReviewerAlreadyAddedThrowsException() {
-    	testManuscript.addReviewer(reviewerUser);
-    	testManuscript.addReviewer(reviewerUser);
+    	testManuscript.addReviewer(reviewerUser,conference);
+    	testManuscript.addReviewer(reviewerUser,conference);
     }
     
 

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,6 +20,10 @@ import java.util.Map;
  * @version 1.5
  */
 
+/**
+ * @author Dongsheng Han
+ *
+ */
 public class Conference implements Serializable {
 	
 	private static final long serialVersionUID = 8924081621903486980L;
@@ -43,6 +46,8 @@ public class Conference implements Serializable {
 	 * for this Conference.
 	 */
 	private Map<UserProfile, Collection<Manuscript>> mySubprogramChairAssignmentMap;
+	
+	private Map<UserProfile, Integer> myReviewerMap;
 
 	/**
 	 * This Conference's designated deadline for Manuscript submissions.
@@ -62,6 +67,7 @@ public class Conference implements Serializable {
 		
 		this.myConferenceName = theConferenceName;
 		this.myConferenceManuscripts = new ArrayList<>();
+		this.myReviewerMap = new HashMap<>();
 //		this.myAuthorManuscriptMap = new HashMap<>();
 		this.mySubprogramChairAssignmentMap = new HashMap<>();
 //		this.myActiveReviewerAssignmentMap = new HashMap<>();
@@ -98,6 +104,8 @@ public class Conference implements Serializable {
 				&& theManuscript.getTitle() != null 
 				&& isManuscriptSubmittable(theManuscript)) {
 			myConferenceManuscripts.add(theManuscript);
+		}else{
+			throw new IllegalArgumentException("Failed submission of manuscript");
 		}
 	}
 
@@ -115,6 +123,12 @@ public class Conference implements Serializable {
 		}
 		for(final String currentAuthorName: theManuscript.getAuthors()){
 			if(!isAuthorUnderManuscriptSubmissionLimit(currentAuthorName)){
+				return false;
+			}
+		}
+		for(Manuscript manuscript:myConferenceManuscripts){
+			if(manuscript.getTitle().equals(theManuscript.getTitle()) 
+					&& manuscript.getAuthors().equals(theManuscript.getAuthors())){
 				return false;
 			}
 		}
@@ -202,5 +216,33 @@ public class Conference implements Serializable {
 	
 	public String getName() {
 		return myConferenceName;
+	}
+	
+	/**
+	 * getter for all the manuscripts
+	 * @author Dongsheng Han
+	 * @return myConferenceManuscripts
+	 */
+	public Collection<Manuscript> getManuscript() {
+		return myConferenceManuscripts;
+	}
+
+
+	/**
+	 * @author Dongsheng Han
+	 * @param theReviewerProfile
+	 * @return true if reviewer has less that 8 manuscript assigned.
+	 */
+	public boolean isLegalReviewer(UserProfile theReviewerProfile) {
+		if(myReviewerMap.containsKey(theReviewerProfile) 
+				&& myReviewerMap.get(theReviewerProfile) < MAX_NUMBER_OF_MANUSCRIPTS_ASSIGNED){
+			myReviewerMap.put(theReviewerProfile, myReviewerMap.get(theReviewerProfile) + 1);
+			return true;
+		}
+		if(!myReviewerMap.containsKey(theReviewerProfile) ){
+			myReviewerMap.put(theReviewerProfile, 1);
+			return true;
+		}
+		return false;
 	}
 }

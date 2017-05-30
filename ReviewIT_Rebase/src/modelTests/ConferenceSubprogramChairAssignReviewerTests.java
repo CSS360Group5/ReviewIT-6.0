@@ -79,7 +79,7 @@ public class ConferenceSubprogramChairAssignReviewerTests {
 	@Test
 	public void assignReviewerReturnsTrueIfTheReviewerIsNotTheAuthorOfTheManuscript() {
 		conference.submitManuscript(manuscript);
-		manuscript.addReviewer(reviewerUser);
+		manuscript.addReviewer(reviewerUser,conference);
 		assertTrue(manuscript.getReviewers().contains(reviewerUser));
 	}
 	
@@ -93,7 +93,7 @@ public class ConferenceSubprogramChairAssignReviewerTests {
 	public void assignReviewerThrowsIllegalArgumentExceptionIfTheReviewerIsTheAuthorOfTheManuscript() {
 		conference.submitManuscript(manuscript);
 //		conference.assignManuscriptToReviewer(manuscript, submissionUser);
-		manuscript.addReviewer(submissionUser);
+		manuscript.addReviewer(submissionUser,conference);
 	}
 	
 	/**
@@ -107,7 +107,7 @@ public class ConferenceSubprogramChairAssignReviewerTests {
 		conference.submitManuscript(manuscript);
 
 //		conference.assignManuscriptToReviewer(manuscript, coAuthorUser);
-		manuscript.addReviewer(coAuthorUser);
+		manuscript.addReviewer(coAuthorUser,conference);
 	}
 	
 	/**
@@ -125,10 +125,10 @@ public class ConferenceSubprogramChairAssignReviewerTests {
 					manuscriptAuthors,
 					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId),
 					new File("Path")
-					).addReviewer(reviewerUser);
+					).addReviewer(reviewerUser,conference);
 			
 		}
-		manuscript.addReviewer(reviewerUser);
+		manuscript.addReviewer(reviewerUser,conference);
 		assertTrue(
 				"Testing that assign reviewer returns true if the reviewer has been assigned " + (MAX_NUM_REVIEWER_MANUSCRIPT_ASSIGNMENTS - NUM_REVIEWER_MANUSCRIPT_ASSIGNMENTS_LESS_THAN_MAX) + "manuscripts.",
 				manuscript.getReviewers().contains(reviewerUser));
@@ -148,10 +148,10 @@ public class ConferenceSubprogramChairAssignReviewerTests {
 					manuscriptAuthors,
 					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId),
 					new File("Path")
-					).addReviewer(reviewerUser);
+					).addReviewer(reviewerUser,conference);
 			
 		}
-		manuscript.addReviewer(reviewerUser);
+		manuscript.addReviewer(reviewerUser,conference);
 		assertTrue(
 				"Testing that assign reviewer returns true if the reviewer has been assigned " + (MAX_NUM_REVIEWER_MANUSCRIPT_ASSIGNMENTS - NUM_REVIEWER_MANUSCRIPT_ASSIGNMENTS_LESS_THAN_MAX) + "manuscripts.",
 				manuscript.getReviewers().contains(reviewerUser));
@@ -172,10 +172,10 @@ public class ConferenceSubprogramChairAssignReviewerTests {
 					manuscriptAuthors,
 					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId),
 					new File("Path")
-					).addReviewer(reviewerUser);
+					).addReviewer(reviewerUser,conference);
 			
 		}
-		manuscript.addReviewer(reviewerUser);
+		manuscript.addReviewer(reviewerUser,conference);
 		assertTrue(
 				"Testing that assign reviewer returns true if the reviewer has been assigned " + (MAX_NUM_REVIEWER_MANUSCRIPT_ASSIGNMENTS - NUM_REVIEWER_MANUSCRIPT_ASSIGNMENTS_LESS_THAN_MAX) + "manuscripts.",
 				manuscript.getReviewers().contains(reviewerUser));

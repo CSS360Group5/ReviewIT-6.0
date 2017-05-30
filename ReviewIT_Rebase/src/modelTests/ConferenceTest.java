@@ -29,6 +29,7 @@ public class ConferenceTest {
 	private static ZonedDateTime conferenceSubmissionDeadline = ZonedDateTime.of(2017, 11, 30, 23, 45, 59, 1234,
 			zoneId);
 	
+	
 	private static ArrayList<String> manuscriptAuthors;
 	
 	private static String submissionUserID = "John117";
@@ -125,18 +126,17 @@ public class ConferenceTest {
 	/**
 	 * @author Lorenzo Pacis
 	 * @author Dimitar Kumanov
-	 * This method tests the submitManuscript will return true if the manuscript author
-	 * has less than 5 submissions.
+	 * @author Dongsheng Han
+	 * This method tests the submitManuscript will not success if the manuscript author
+	 * has 5 submissions.
 	 */
-	@Test
-	public void submitManuscriptReturnsTrueUnderSubmissionLimit() {
-		for(int i = 0; i < 4; i++) {
-			conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
+	@Test(expected = IllegalArgumentException.class)
+	public void submitManuscriptFailedWhenOverSubmissionLimit() {
+		for(int i = 0; i < 10; i++) {
+			conference.submitManuscript(new Manuscript("Intro to Crytography" + Integer.toString(i), submissionUser, manuscriptAuthors,
 					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")));
 		}
-		assertTrue(conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
-				ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path"))));
-	
+		assertEquals(conference.getManuscriptsByName(submissionUser.getName()).size(),5);
 	}
 	
 	/**
@@ -154,35 +154,31 @@ public class ConferenceTest {
 	/**
 	 * @author Lorenzo Pacis
 	 * @author Dimitar Kumanov
-	 * This manuscript will return false if the manuscript being submitted
+	 * This manuscript will fail if the manuscript being submitted
 	 * has already been submitted.
 	 */
-	@Test
-	public void submitManuscriptReturnsFalseFromManuscriptAlreadyBeingSubmitted() {
+	@Test(expected = IllegalArgumentException.class)
+	public void submitManuscriptFailsFromManuscriptAlreadyBeingSubmitted() {
 		conference.submitManuscript(manuscript);
-
-		assertFalse(conference.submitManuscript(manuscript));
-
+		int size = conference.getManuscript().size();
+		conference.submitManuscript(manuscript);
+		assertEquals(conference.getManuscript().size(),size);
 	}
 	
 	
 	/**
 	 * @author Lorenzo Pacis
 	 * @author Dimitar Kumanov
+	 * @author Dongsheng Han
 	 * This method tests that submit manuscript will thorw an IllegalArgumentException
 	 * if the author has submitted 5 manuscripts.
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void submitManuscriptThrowsIllegalArgumentExceptionIfOverSubmissionLimit() {
-		for(int i = 0; i < 6; i++) {
-			conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
+		for(int i = 0; i < 10; i++) {
+			conference.submitManuscript(new Manuscript("Intro to Crytography" + Integer.toString(i), submissionUser, manuscriptAuthors,
 					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")));
-			
 		}
-		conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
-				ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")));
-
-		
 	}
 	
 	/**
@@ -197,76 +193,89 @@ public class ConferenceTest {
 		
 		for(int i = 0; i  < Conference.MAX_NUMBER_OF_MANUSCRIPTS_ASSIGNED - 1; i++) {
 			new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
-					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")).addReviewer(reviewerUser);
+					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")).addReviewer(reviewerUser,conference);
 		}
 		
 		Manuscript aManuscript = new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
 				ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path"));
-		aManuscript.addReviewer(reviewerUser);
+		aManuscript.addReviewer(reviewerUser,conference);
 		assertTrue(aManuscript.getReviewers().contains(reviewerUser));
 	}
 	
+// this is a manuscript test Integer.toString(i)
 	/**
 	 * @author Lorenzo Pacis
 	 * @author Dimitar Kumanov
+	 * @author Dongsheng Han
 	 * This method tests that assign reviewer throws an IllegalArgumentException if the reviewer
 	 * has 8 manuscripts assigned.
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testAssignReviewerThrowsIllegalArgumentExceptionWithEightManuscriptsAssigned() {
 		for(int i = 0; i < 9; i++) {
-			new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
-					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")).addReviewer(reviewerUser);;
+			Manuscript aManuscript = new Manuscript("Intro to Crytography" + Integer.toString(i), submissionUser, manuscriptAuthors,
+					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path"));
+			conference.submitManuscript(aManuscript);
+			aManuscript.addReviewer(reviewerUser,conference);
 		}
-		new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
-				ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")).addReviewer(reviewerUser);;
+		//new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
+		//		ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")).addReviewer(reviewerUser);;
 	}
 	
+// this is a manuscript test
 	/**
 	 * @author Lorenzo Pacis
 	 * @author Dimitar Kumanov
+	 * @author Dongsheng Han
 	 * This method tests that addReviewer adds the reviewer if the reviewer is not a reviewer already.
 	 */
 	@Test
 	public void testAddReviewerAddsTheReviewerForReviewerNotInReviewerList() {
-		manuscript.addReviewer(reviewerUser);
-		assertTrue(manuscript.getReviewers().contains(reviewerUserID));
+		manuscript.addReviewer(reviewerUser,conference);
+		assertTrue(manuscript.getReviewers().contains(reviewerUser));
 	}
 	
+	
+// this is a manuscript test
 	/**
 	 * @author Lorenzo Pacis
 	 * @author Dimitar Kumanov
+	 * @author Dongsheng Han
 	 * This method tests that addReviewer does not add the reviewer if the reviewer added to the conference
 	 * is already a reviewer for this conference.
 	 */
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void testAddReviewerDoesntAddReviewerForReviewerInReviewerList() {
-		manuscript.addReviewer(reviewerUser);
-		manuscript.addReviewer(reviewerUser);
+		manuscript.addReviewer(reviewerUser,conference);
+		manuscript.addReviewer(reviewerUser,conference);
 		assertEquals(manuscript.getReviewers().size(), 1);
 	}
 	
+// this is a manuscript test
 	/**
 	 * @author Lorenzo Pacis
 	 * @author Dimitar Kumanov
+	 * @author Dongsheng Han
 	 * This method tests that assignReviewerManuscript returns false if the reviewer
 	 * is the author of the manuscript.
 	 */
 	@Test (expected = IllegalArgumentException.class)
 	public void testAssignReviewerManuscriptThrowsIllegalArgumentExceptionOnThatTheyAuthored() {
-		conference.submitManuscript(manuscript);
-		manuscript.addReviewer(submissionUser);
+		//conference.submitManuscript(manuscript);
+		manuscript.addReviewer(submissionUser,conference);
 	}
 	
+// this is a manuscript test
 	/**
 	 * @author Lorenzo Pacis
 	 * @author Dimitar Kumanov
+	 * @author Dongsheng Han
 	 * This method tests that assignManuscriptToReviewer throws an IllegalArgumentException if the reviewer is a co author of the manuscript.
 	 */
 	@Test (expected = IllegalArgumentException.class)
 	public void testAssignReivewerThrowsIllegalArgumentExceptionOnManuscriptThatTheyCoAuthored() {
-		conference.submitManuscript(manuscript);
-		manuscript.addReviewer(coAuthorUser);
+		//conference.submitManuscript(manuscript);
+		manuscript.addReviewer(coAuthorUser,conference);
 	}
 	
 	/**
@@ -276,21 +285,22 @@ public class ConferenceTest {
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testAssignedReviewerHasBeenPreviouslyAssignedToThisManuscriptThrowsIllegalArgumentException() {
-		manuscript.addReviewer(reviewerUser);
-		manuscript.addReviewer(reviewerUser);
+		manuscript.addReviewer(reviewerUser,conference);
+		manuscript.addReviewer(reviewerUser,conference);
 
 	}
 	
 	/**
 	 * @author Lorenzo Pacis
 	 * @author Dimitar Kumanov
+	 * @author Dongsheng Han
 	 * This method tests that getNumSubmissions will return the correct number of manuscript
 	 * submissions for the author.
 	 */
 	@Test
 	public void testGetNumSubmissionsReturnsFourForAuthor() {
 		for(int i = 0; i < 4; i++) { 
-			conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
+			conference.submitManuscript(new Manuscript("Intro to Crytography" + Integer.toString(i), submissionUser, manuscriptAuthors,
 					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")));
 		}
 		assertEquals(conference.getManuscriptsByName(submissionUser.getName()).size(), 4);
@@ -303,7 +313,7 @@ public class ConferenceTest {
 	@Test
 	public void testGetNumSubmissionsReturnsFourForCoAuthor() {
 		for(int i = 0; i < 4; i++) {
-			conference.submitManuscript(new Manuscript("Intro to Crytography", submissionUser, manuscriptAuthors,
+			conference.submitManuscript(new Manuscript("Intro to Crytography" + Integer.toString(i), submissionUser, manuscriptAuthors,
 					ZonedDateTime.of(2017, 10, 30, 23, 45, 59, 1234, zoneId), new File("Path")));
 		}
 		assertEquals(conference.getManuscriptsByName(coAuthorUser.getName()).size(), 4);
