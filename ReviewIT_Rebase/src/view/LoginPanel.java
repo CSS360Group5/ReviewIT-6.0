@@ -1,12 +1,12 @@
 package view;
 
-import model.UserProfile;
-import model.UserProfileStateManager;
+import model.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,7 +43,17 @@ public class LoginPanel extends AutoSizeablePanel {
             @Override
             public void run()
             {
+                Conference con1 = new Conference("First Conference",
+                        ZonedDateTime.now());
+                Conference con2 = new Conference("Second Conference",
+                        ZonedDateTime.now());
+                ConferenceStateManager.getInstance().addConference(con1);
+                ConferenceStateManager.getInstance().addConference(con2);
+
                 UserProfile userKevin = new UserProfile("kev@uw.edu", "Kevin");
+                userKevin.addRole(Role.AUTHOR, con1);
+                userKevin.addRole(Role.SUBPROGRAM, con1);
+                userKevin.addRole(Role.AUTHOR, con2);
                 UserProfileStateManager.getInstance().addUserProfile(userKevin);
 
                 final JFrame window = new JFrame();
@@ -90,6 +100,7 @@ public class LoginPanel extends AutoSizeablePanel {
         // Add Error Label
         gbc.gridx = 1;
         gbc.gridy = 0;
+        myErrorMessageLabel.setEditable(false);
         add(myErrorMessageLabel, gbc);
 
         // Add Login Label
@@ -168,7 +179,10 @@ public class LoginPanel extends AutoSizeablePanel {
      */
     private void successfulLogin(final UserProfile theUser) {
         UserProfileStateManager.getInstance().setCurrentUser(theUser);
-        myErrorMessageLabel.setText("Successful Login");
+        JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        frame.getContentPane().removeAll();
+        frame.getContentPane().add(new ConfRoleSelectPanel(1, 1, new Dimension(750, 550)));
+        frame.revalidate();
     }
 
     /**

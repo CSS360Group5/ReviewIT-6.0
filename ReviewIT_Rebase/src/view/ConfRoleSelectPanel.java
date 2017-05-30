@@ -17,7 +17,6 @@ import java.util.List;
  */
 public class ConfRoleSelectPanel extends AutoSizeablePanel {
 
-    private boolean myConferenceIsSelected;
     private JComboBox<Conference> myConferenceComboBox;
     private JComboBox<Role> myRoleComboBox;
 
@@ -44,9 +43,9 @@ public class ConfRoleSelectPanel extends AutoSizeablePanel {
                 UserProfile userKevin = new UserProfile("kev@uw.edu", "Kevin");
                 UserProfileStateManager.getInstance().addUserProfile(userKevin);
                 UserProfileStateManager.getInstance().setCurrentUser(userKevin);
-                UserProfileStateManager.getInstance().getCurrentUserProfile().addRole(Role.AUTHOR, con1);
-                UserProfileStateManager.getInstance().getCurrentUserProfile().addRole(Role.SUBPROGRAM, con1);
-                UserProfileStateManager.getInstance().getCurrentUserProfile().addRole(Role.AUTHOR, con2);
+                userKevin.addRole(Role.AUTHOR, con1);
+                userKevin.addRole(Role.SUBPROGRAM, con1);
+                userKevin.addRole(Role.AUTHOR, con2);
 
                 final JFrame window = new JFrame();
                 final JPanel mainPanel = new ConfRoleSelectPanel(1, 1, new Dimension(750, 550));
@@ -77,7 +76,6 @@ public class ConfRoleSelectPanel extends AutoSizeablePanel {
         final JLabel pleaseSelectConferenceLabel = new JLabel("Successfully logged in! Please selected a Conference: ");
         final JLabel pleaseSelectRoleLabel = new JLabel("Select your preferred Role for the selected Conference: ");
 
-        myConferenceIsSelected = false;
 
         gbc.insets = new Insets(0, 5, 5, 0);
 
@@ -128,7 +126,6 @@ public class ConfRoleSelectPanel extends AutoSizeablePanel {
         Conference[] confArray = conferences.toArray(new Conference[conferences.size()]);
         JComboBox<Conference> conferenceDisplay = new JComboBox<>(confArray);
         conferenceDisplay.setRenderer(lsr);
-        myConferenceIsSelected = true;
         return conferenceDisplay;
     }
 
