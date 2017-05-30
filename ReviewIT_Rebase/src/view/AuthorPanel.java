@@ -1,11 +1,16 @@
 package view;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -21,6 +26,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -34,7 +40,7 @@ import model.Role;
 import model.UserProfile;
 import model.UserProfileStateManager;
 
-public class AuthorSubmitPanel extends AutoSizeablePanel implements Observer{
+public class AuthorPanel extends AutoSizeablePanel implements Observer{
 /**
 	 * 
 	 */
@@ -90,7 +96,7 @@ public static void main(String[] args){
             	//authorPanel.authorTable.setPreferredSize(new Dimension(750, 550));
             	
                 final JFrame window = new JFrame();
-                final JPanel authorPanel = new AuthorSubmitPanel(0.6, 0.4, new Dimension(2100, 700));
+                final JPanel authorPanel = new AuthorPanel(0.6, 0.4, new Dimension(2100, 700));
                 //final JPanel mainPanel = new TemplatePanel(0.6, 0.4, new Dimension(1500, 800));
                 
                 window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -102,7 +108,7 @@ public static void main(String[] args){
         });
 	}
 
-public AuthorSubmitPanel(double theXRatio, double theYRatio, Dimension theStartingSize) {
+public AuthorPanel(double theXRatio, double theYRatio, Dimension theStartingSize) {
 	super(theXRatio, theYRatio, theStartingSize);
 	myTitleLbl = new JLabel();
 	mySubDateLbl = new JLabel();
@@ -170,7 +176,9 @@ public AuthorSubmitPanel(double theXRatio, double theYRatio, Dimension theStarti
 		constraints.gridx = 0;
 		constraints.gridy = 50;
 		for(Manuscript m: authorManuscripts){
-			add(new JLabel(m.getTitle()),constraints);
+			JLabel theTitle = new JLabel(m.getTitle());
+			theTitle.addMouseListener(new TitleListener());
+			add(theTitle,constraints);
 			constraints.gridy += 300;
 		}
 		
@@ -204,7 +212,26 @@ public AuthorSubmitPanel(double theXRatio, double theYRatio, Dimension theStarti
 		constraints.gridx = 900;
 		constraints.gridy = 50;
 		for(Manuscript m: authorManuscripts){
-			add(new JButton("Remove"),constraints);
+			JButton removeButton = new JButton("Remove");
+			removeButton.addActionListener(new ActionListener(){
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					int userReply = JOptionPane.showConfirmDialog(null, "Do you really want to remove this manuscript?",
+							"Remove Manuscript", JOptionPane.YES_NO_OPTION);
+					if(userReply == JOptionPane.YES_OPTION){
+						ConferenceStateManager.getInstance().getCurrentConference().deleteManuscript(m);
+						removeAll();
+						initialize();
+						revalidate();
+						repaint();
+						
+					}
+					
+				}
+				
+			});
+			add(removeButton, constraints);
 			constraints.gridy += 300;
 		}
 		
@@ -242,6 +269,72 @@ public AuthorSubmitPanel(double theXRatio, double theYRatio, Dimension theStarti
 		
 	}
 	
+
+	public class RemoveListener implements ActionListener {
+
+		private final Manuscript manuscriptToRemove;
+		
+		RemoveListener(Manuscript theManuscript){
+			manuscriptToRemove = theManuscript;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent theEvent) {
+			int userReply = JOptionPane.showConfirmDialog(null, "Do you really want to remove this manuscript?",
+					"Remove Manuscript", JOptionPane.YES_NO_OPTION);
+			if(userReply == JOptionPane.YES_OPTION){
+				ConferenceStateManager.getInstance().getCurrentConference().deleteManuscript(manuscriptToRemove);
+				
+			}
+		}
+		
+	}
 	
+	
+	/**
+	 * Public inner class that handles what action happens when a user clicks a manuscripts title
+	 * @author Harlan Stewart
+	 *
+	 */
+	public class TitleListener implements MouseListener {
+
+		@Override
+		public void mouseClicked(MouseEvent theEvent) {
+			Object[] options = {"Submit Manuscript", "Cancel"};
+			int n = JOptionPane.showOptionDialog(theEvent.getComponent(), "What would you like to do with this manuscript?", 
+					"Manuscript Options", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options,null);
+			
+			
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseExited(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mousePressed(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		
+
+		
+		
+	}
 	
 }
