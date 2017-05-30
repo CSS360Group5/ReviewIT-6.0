@@ -77,7 +77,7 @@ public class LoginPanel extends AutoSizeablePanel {
         myLoginInputField = new JTextField(EXAMPLE_USERID_TEXT);
         myNewUserIDInputField = new JTextField(EXAMPLE_USERID_TEXT);
         myNewUserNameInputField = new JTextField();
-        myErrorMessageLabel = new JTextArea("Error");
+        myErrorMessageLabel = new JTextArea();
         myErrorMessageLabel.setForeground(Color.red);
         try {
             initialize();
