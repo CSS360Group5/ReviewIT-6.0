@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -44,6 +45,8 @@ public class PanelManager extends JPanel {
 	public void setNavigationPanel(final JPanel thePanel){
 		this.removeAll();
 		navigationPanel = thePanel;
+		
+//		thePanel.setBackground(new Color(Integer.parseInt("FA7921", 16)));
 		initialize();
 	}
 
@@ -61,7 +64,8 @@ public class PanelManager extends JPanel {
 //		constraints.gridx = 0;
 //		constraints.gridy = 0;
 		
-		final JPanel mainPanel = new HeaderPanel(0.6, 0.4, new Dimension(2100, 700));
+		final JPanel headerPanel = new HeaderPanel(0.6, 0.4, new Dimension(2100, 700));
+//		headerPanel.setBackground(new Color(Integer.parseInt("0C4767", 16)));
 //		final JPanel headerPanel = (JPanel) new HeaderPanel(
 //				constraints.gridwidth / 100.0,
 //				constraints.gridheight / 100.0,
@@ -69,7 +73,7 @@ public class PanelManager extends JPanel {
 //				);
 //		add(headerPanel, constraints);
 //		this.addPropertyChangeListener((PropertyChangeListener) headerPanel);
-		this.add(mainPanel);
+		this.add(headerPanel);
 		this.add(navigationPanel);
 //		constraints.gridwidth = 20;
 //		constraints.gridheight = 80;
