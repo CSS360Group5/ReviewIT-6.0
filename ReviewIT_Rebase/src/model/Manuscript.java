@@ -122,19 +122,25 @@ public class Manuscript implements Serializable {
 	
 	/**
 	 * Adds a Reviewer to this manuscript.
+	 * @author Dongsheng Han
+	 * theReviewerProfile.getName() instead of theReviewerProfile
+	 * @param conference 
 	 * @throws IllegalArgumentException if this.getReviewers().contains(theReviewerProfile) || this.getReviewers().size() > this.MAX_REVIEWERS || this.getAuthors().contains(theReviewerProfile.getName())
 	 */
-	public void addReviewer(final UserProfile theReviewerProfile) throws IllegalArgumentException {
+	public void addReviewer(final UserProfile theReviewerProfile, Conference conference) throws IllegalArgumentException {
 		if(myReviewers.contains(theReviewerProfile)){
 			throw new IllegalArgumentException("Reviewer already assigned to this manuscript.");
 		}
 		if(myReviewers.size() > MAX_REVIEWERS) {
 			throw new IllegalArgumentException("Maximum of reviewers already assigned.");
 		}
-		if(myAuthors.contains(theReviewerProfile)) 
+		if(myAuthors.contains(theReviewerProfile.getName())){
 			throw new IllegalArgumentException("Reviewer cannot be author.");
+		}
+		if(conference.isLegalReviewer(theReviewerProfile)){
+			myReviewers.add(theReviewerProfile);
+		}
 		
-		myReviewers.add(theReviewerProfile);
 	}
 	
 	public Collection<UserProfile> getReviewers() {
