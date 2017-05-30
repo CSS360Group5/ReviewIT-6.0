@@ -64,17 +64,15 @@ public class ManuscriptTest {
 		
 	}
 	/**
-	 * @authorLorenzo Pacis
+	 * @author Lorenzo Pacis
 	 * This method tests that the constructor sets all of the fields properly.
 	 */
     @Test	
 	public void testConstructor() { 
-
-		
-		assertTrue("Testing Correct User Submitted the manuscript", testManuscript.getSubmissionUser().equals(submissionUserID));
+		assertTrue("Testing Correct User Submitted the manuscript", testManuscript.getSubmissionUser().equals(submissionUser));
 		assertTrue("Testing submission date and time", testManuscript.getMySubmissionDate().getChronology().equals(submissionDate.getChronology()));
 		assertTrue("Testing manuscript file is the one submitted", testManuscript.getManuscript().equals(manuscript));
-		assertTrue("Testing Co-submissionUserID Addition", testManuscript.getAuthors().equals(coAuthors));
+		assertTrue("Testing Co-submissionUserID Addition", testManuscript.getAuthors().contains(coAuthorUserID));
 		assertTrue("Testing get title", testManuscript.getTitle().equals(manuscriptTitle));
 	}
      
@@ -102,7 +100,7 @@ public class ManuscriptTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void manuscriptAddReviewerMAX_REVIEWERSThrowsException() {
-    	for(int i = 0; i < Manuscript.MAX_REVIEWERS; ++i){
+    	for(int i = 0; i < Manuscript.MAX_REVIEWERS + 1; i++){
     		testManuscript.addReviewer(new UserProfile("Bob" + String.valueOf(i), "Bob Reviewer"+ String.valueOf(i)),conference);
     	}
     }
@@ -111,9 +109,9 @@ public class ManuscriptTest {
      * @author Dimitar Kumanov
      * This method tests that the manuscript can be assigned Manuscript.MAX_REVIEWERS - 1 reviewers.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void manuscriptAddReviewerLessThenMAX_REVIEWERSThrowsException() {
-    	for(int i = 0; i < Manuscript.MAX_REVIEWERS - 1; ++i){
+    	for(int i = 0; i < Manuscript.MAX_REVIEWERS - 1; i++){
     		testManuscript.addReviewer(new UserProfile("Bob" + String.valueOf(i), "Bob Reviewer"+ String.valueOf(i)),conference);
     	}
     	assertEquals(testManuscript.getReviewers().size(), Manuscript.MAX_REVIEWERS - 1);
@@ -125,7 +123,7 @@ public class ManuscriptTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void manuscriptAddReviewerMoreThenMAX_REVIEWERSThrowsException() {
-    	for(int i = 0; i < Manuscript.MAX_REVIEWERS + 2; ++i){
+    	for(int i = 0; i < Manuscript.MAX_REVIEWERS + 2; i++){
     		testManuscript.addReviewer(new UserProfile("Bob" + String.valueOf(i), "Bob Reviewer"+ String.valueOf(i)),conference);
     	}
     }
@@ -147,7 +145,7 @@ public class ManuscriptTest {
     @Test
     public void getAuthorsReturnsArrayListContainingAllAuthors() {
     	assertTrue(testManuscript.getAuthors().contains(coAuthorUserID));
-    	assertTrue(testManuscript.getAuthors().contains(submissionUserID));
+    	assertTrue(testManuscript.getAuthors().contains(submissionUser.getName()));
     
     }
     
@@ -158,7 +156,7 @@ public class ManuscriptTest {
      */
     @Test
     public void getAuthorsReturnsAnArrayListWithOnlyTheAuthorIfCoAuthorsListIsNull() {
-    	assertTrue(testNullCoAuthorManuscript.getAuthors().contains(submissionUserID));
+    	assertTrue(testNullCoAuthorManuscript.getAuthors().size()==1);
     	
     }
     
@@ -199,7 +197,7 @@ public class ManuscriptTest {
     @Test
     public void testGetReviewerReturnsAnArrayListContainingTheReviewer() {
     	testManuscript.addReviewer(reviewerUser,conference);
-    	assertTrue(testManuscript.getReviewers().contains(reviewerUserID));
+    	assertTrue(testManuscript.getReviewers().contains(reviewerUser));
     }
     
     /**
