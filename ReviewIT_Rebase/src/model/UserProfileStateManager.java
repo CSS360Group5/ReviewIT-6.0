@@ -1,11 +1,8 @@
 package model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Observable;
 
 /**
@@ -21,9 +18,9 @@ public class UserProfileStateManager extends Observable implements Serializable 
     /*
     Current User's UserProfile
      */
-    private UserProfile myCurrentUserProfile;
+    private transient UserProfile myCurrentUserProfile;
     
-    private Role myCurrentRole;
+    private transient Role myCurrentRole;
 
     /*
     List of all registered UserProfiles
