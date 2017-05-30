@@ -34,7 +34,7 @@ import model.Role;
 import model.UserProfile;
 import model.UserProfileStateManager;
 
-public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
+public class SubprogramPanel extends AutoSizeablePanel implements Observer{
 	private static final long serialVersionUID = 8098693823655450146L;
 
 	private final JLabel titleHeaderArea;
@@ -95,7 +95,7 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
             public void run() 
             {
                 final JFrame window = new JFrame();
-                final JPanel mainPanel = new SubprogramTablePanel(null, 0.6, 0.4, new Dimension(2100, 700));
+                final JPanel mainPanel = new SubprogramPanel(null, 0.6, 0.4, new Dimension(2100, 700));
                 window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 window.setContentPane(mainPanel);
                 window.pack();
@@ -105,7 +105,7 @@ public class SubprogramTablePanel extends AutoSizeablePanel implements Observer{
         });
 	}
 	
-	public SubprogramTablePanel(
+	public SubprogramPanel(
 			final PanelManager thePanelManager,
 			final double theXRatio,
 			final double theYRatio,
