@@ -43,7 +43,7 @@ public class GUIMain {
 
                 if(UserProfileStateManager.getInstance().getCurrentRole().equals(Role.AUTHOR)){
                 	mainPanel.setNavigationPanel(new AuthorPanel(0.6, 0.4, new Dimension(2100, 700)));
-                }else if(UserProfileStateManager.getInstance().getCurrentRole().equals(Role.AUTHOR)){
+                }else if(UserProfileStateManager.getInstance().getCurrentRole().equals(Role.SUBPROGRAM)){
                 	mainPanel.setNavigationPanel(new SubprogramPanel(mainPanel, 0.6, 0.4, new Dimension(2100, 700)));
                 }
                 
@@ -73,7 +73,7 @@ public class GUIMain {
 		UserProfileStateManager.getInstance().addUserProfile(aUser);
 		UserProfileStateManager.getInstance().setCurrentUser(aUser);
 		
-		UserProfileStateManager.getInstance().setCurrentRole(Role.AUTHOR);
+		UserProfileStateManager.getInstance().setCurrentRole(Role.SUBPROGRAM);
 		
 		
 		final Manuscript aManuscript1 = new Manuscript(
