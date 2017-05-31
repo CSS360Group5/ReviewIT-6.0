@@ -282,6 +282,18 @@ public static void main(String[] args){
 		
 		myCancelSubmitBtn = new JButton("Cancel");
 		myCancelSubmitBtn.setPreferredSize(new Dimension(100,40));
+		myCancelSubmitBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				removeAll();
+				initialize();
+				revalidate();
+				repaint();
+				
+			}
+			
+		});
 		constraints.gridx = 2;
 		constraints.gridy = 1;
 		buttonPane.add(myCancelSubmitBtn,constraints);
@@ -305,7 +317,7 @@ public static void main(String[] args){
 				for(String s: coAuthorInput){
 					coAuthorSplit.add(s);
 				}
-				Manuscript submission = new Manuscript(myTitleTextField.getSelectedText(),
+				Manuscript submission = new Manuscript(myTitleTextField.getText(),
 						UserProfileStateManager.getInstance().getCurrentUserProfile(), coAuthorSplit, ZonedDateTime.now(), fileToUpload);
 				ConferenceStateManager.getInstance().getCurrentConference().submitManuscript(submission);
 				removeAll();
@@ -383,7 +395,7 @@ public static void main(String[] args){
 				public void actionPerformed(ActionEvent e) {
 					int userReply = JOptionPane.showConfirmDialog(null, "Do you really want to remove this manuscript?",
 							"Remove Manuscript", JOptionPane.YES_NO_OPTION);
-					if(userReply == JOptionPane.YES_OPTION){
+					if(userReply == JOptionPane.YES_OPTION) {
 						ConferenceStateManager.getInstance().getCurrentConference().deleteManuscript(m);
 						removeAll();
 						initialize();

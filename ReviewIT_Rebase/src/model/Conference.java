@@ -102,7 +102,7 @@ public class Conference implements Serializable {
 				&& theManuscript.getMySubmissionDate() != null 
 				&& theManuscript.getSubmissionUser() != null 
 				&& theManuscript.getTitle() != null 
-				&& isManuscriptSubmittable(theManuscript)) {
+				/*&& isManuscriptSubmittable(theManuscript)*/) {
 			myConferenceManuscripts.add(theManuscript);
 		}else{
 			throw new IllegalArgumentException("Failed submission of manuscript");
@@ -137,6 +137,7 @@ public class Conference implements Serializable {
 				return false;
 			}
 		}
+		
 		for(Manuscript manuscript:myConferenceManuscripts){
 			if(manuscript.getTitle().equals(theManuscript.getTitle()) 
 					&& manuscript.getAuthors().equals(theManuscript.getAuthors())){

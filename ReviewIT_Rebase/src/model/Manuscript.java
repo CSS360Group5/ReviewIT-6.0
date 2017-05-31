@@ -179,6 +179,15 @@ public class Manuscript implements Serializable {
 	}
 
 	/**
+	 * Checks whether or not this manuscript has any reviewers assigned to it.
+	 * @return 
+	 */
+	public boolean hasAnyReviewer() {
+		return myReviewers.isEmpty();
+	}
+	
+	
+	/**
 	 * Gets the author name
 	 * 
 	 * @return the author

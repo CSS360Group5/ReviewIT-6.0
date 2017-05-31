@@ -18,7 +18,7 @@ public class GUIMain {
 
     
     /**
-     * The main method for starting up a JFrame containg the drawing application.
+     * The main method for starting up a JFrame containing the drawing application.
      * @param theArgs Command line arguments.
      */
     public static void main(final String[] theArgs){
