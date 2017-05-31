@@ -140,12 +140,12 @@ public class Conference implements Serializable {
 				return false;
 			}
 		}
-		for(Manuscript manuscript:myConferenceManuscripts){
+		/*for(Manuscript manuscript:myConferenceManuscripts){
 			if(manuscript.getTitle().equals(theManuscript.getTitle()) 
 					&& manuscript.getAuthors().equals(theManuscript.getAuthors())){
 				return false;
 			}
-		}
+		}*/
 		return true;
 	}
 

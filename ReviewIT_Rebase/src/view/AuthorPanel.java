@@ -50,6 +50,7 @@ public class AuthorPanel extends AutoSizeablePanel implements Observer{
 	private JLabel mySubmitTitleLbl;
 	private JLabel mySubmitCoAuthLbl;
 	private JLabel mySubmitHeaderLbl;
+	private JLabel numSubmits;
 	private File fileToUpload;
 	private String filePath;
 	private String fileName;
@@ -68,6 +69,7 @@ public static void main(String[] args){
 			zoneId);
 	Conference testCon = new Conference("testCon", conferenceSubmissionDeadline);
 	UserProfile testUser = new UserProfile("id123", "Author One");
+	UserProfile testUser2 = new UserProfile("id1234", "Reviewer One");
 	
 	ConferenceStateManager.getInstance().addConference(testCon);
 	ConferenceStateManager.getInstance().setCurrentConference(testCon);
@@ -85,13 +87,14 @@ public static void main(String[] args){
 	Manuscript test2 = new Manuscript("Object Oriented Operations", testUser, testAuthors2, manuscriptSubTime, new File("BLANK"));
 	Manuscript test3 = new Manuscript("Java Coffee and Life", testUser, testAuthors3, manuscriptSubTime, new File("BLANK"));
 	Manuscript test4 = new Manuscript("Refactor Reform Relief", testUser, testAuthors4, manuscriptSubTime, new File("BLANK"));
-	Manuscript test5 = new Manuscript("Testing for testing Tests", testUser, testAuthors5, manuscriptSubTime, new File("BLANK"));
+	//Manuscript test5 = new Manuscript("Testing for testing Tests", testUser, testAuthors5, manuscriptSubTime, new File("BLANK"));
+	test4.addReviewer(testUser2, testCon);
 	
 	ConferenceStateManager.getInstance().getCurrentConference().submitManuscript(test1);
 	ConferenceStateManager.getInstance().getCurrentConference().submitManuscript(test2);
 	ConferenceStateManager.getInstance().getCurrentConference().submitManuscript(test3);
 	ConferenceStateManager.getInstance().getCurrentConference().submitManuscript(test4);
-	ConferenceStateManager.getInstance().getCurrentConference().submitManuscript(test5);
+	//ConferenceStateManager.getInstance().getCurrentConference().submitManuscript(test5);
 		EventQueue.invokeLater(new Runnable() 
         {
             @Override
@@ -136,6 +139,16 @@ public static void main(String[] args){
     	addManuscriptRow();
 	}
 
+	private void updateSubCountLabel() {
+		if(ConferenceStateManager.getInstance().getCurrentConference().
+				isAuthorUnderManuscriptSubmissionLimit(UserProfileStateManager.getInstance().getCurrentUserProfile().getName())) {
+			numSubmits.setForeground(Color.GREEN);
+			mySubmitManuscriptBtn.setEnabled(true);
+		}else {
+			numSubmits.setForeground(Color.RED);
+			mySubmitManuscriptBtn.setEnabled(false);
+		}
+	}
 	/**
 	 * Private helper method to add the labels and establish columns for the author panel
 	 * that will display all of an authors manuscripts, the manuscripts co authors, the submission time,
@@ -161,24 +174,45 @@ public static void main(String[] args){
 			}			
 		});
 		add(mySubmitManuscriptBtn, constraints);
+		constraints.gridx = 0;
+		constraints.gridy = 25;
+		numSubmits = new JLabel();
+		numSubmits.setText("Allowed Submissions: "+ConferenceStateManager.getInstance().getCurrentConference().
+				getManuscriptsSubmittedBy(UserProfileStateManager.getInstance().getCurrentUserProfile()).size() + "/" +
+				ConferenceStateManager.getInstance().getCurrentConference().MAX_NUMBER_OF_MANUSCRIPT_SUBMISSIONS);
+		updateSubCountLabel();
+/*		if(ConferenceStateManager.getInstance().getCurrentConference().
+				isAuthorUnderManuscriptSubmissionLimit(UserProfileStateManager.getInstance().getCurrentUserProfile().getName())) {
+			numSubmits.setForeground(Color.GREEN);
+		}else {
+			numSubmits.setForeground(Color.RED);
+			mySubmitManuscriptBtn.setEnabled(false);
+		}*/
+		add(numSubmits, constraints);
 		
 		constraints.gridwidth = 100;
 		constraints.gridheight = 25;
 		constraints.gridx = 0;
-		constraints.gridy = 25;
+		constraints.gridy = 50;
 		add(myTitleLbl, constraints);
 		
 		constraints.gridwidth = 100;
 		constraints.gridheight = 25;
 		constraints.gridx = 300;
-		constraints.gridy = 25;
+		constraints.gridy = 50;
 		add(myCoAuthorLbl, constraints);
 		
 		constraints.gridwidth = 100;
 		constraints.gridheight = 25;
 		constraints.gridx = 600;
-		constraints.gridy = 25;
-		add(mySubDateLbl, constraints);		
+		constraints.gridy = 50;
+		add(mySubDateLbl, constraints);	
+		
+		constraints.gridwidth = 100;
+		constraints.gridheight = 25;
+		constraints.gridx = 900;
+		constraints.gridy = 50;
+		add(myRemoveLbl, constraints);	
 	}
 	
 	/**
@@ -352,7 +386,7 @@ public static void main(String[] args){
 		constraints.gridwidth = 100;
 		constraints.gridheight = 25;
 		constraints.gridx = 0;
-		constraints.gridy = 50;
+		constraints.gridy = 75;
 		for(Manuscript m: authorManuscripts){
 			JLabel theTitle = new JLabel(m.getTitle());
 			theTitle.addMouseListener(new TitleListener());
@@ -363,7 +397,7 @@ public static void main(String[] args){
 		constraints.gridwidth = 100;
 		constraints.gridheight = 25;
 		constraints.gridx = 300;
-		constraints.gridy = 50;
+		constraints.gridy = 75;
 		
 		for(Manuscript m: authorManuscripts){
 			JComboBox<String> manCoAuthors = new JComboBox<String>();
@@ -378,33 +412,57 @@ public static void main(String[] args){
 		constraints.gridwidth = 100;
 		constraints.gridheight = 25;
 		constraints.gridx = 600;
-		constraints.gridy = 50;
+		constraints.gridy = 75;
 		for(Manuscript m: authorManuscripts){
 			add(new JLabel(m.getMySubmissionDate().toString()),constraints);
 			constraints.gridy += 300;
 		}
-		
 		constraints.gridwidth = 100;
 		constraints.gridheight = 25;
 		constraints.gridx = 900;
-		constraints.gridy = 50;
-		for(Manuscript m: authorManuscripts){
-			JButton removeButton = new JButton("Remove");
-			removeButton.addActionListener(new ActionListener(){
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					int userReply = JOptionPane.showConfirmDialog(null, "Do you really want to remove this manuscript?",
-							"Remove Manuscript", JOptionPane.YES_NO_OPTION);
-					if(userReply == JOptionPane.YES_OPTION) {
-						ConferenceStateManager.getInstance().getCurrentConference().deleteManuscript(m);
-						removeAll();
-						initialize();
-						revalidate();
-						repaint();						
-					}					
-				}				
-			});
-			add(removeButton, constraints);
+		constraints.gridy = 75;
+		for(Manuscript m: authorManuscripts) {
+			if(m.getReviewers().isEmpty()) {
+				JLabel noReviewers = new JLabel("NO");
+				noReviewers.setForeground(Color.RED);
+				add(noReviewers, constraints);
+				constraints.gridy += 300;
+			}else {
+				JLabel hasReviewers = new JLabel("YES");
+				hasReviewers.setForeground(Color.GREEN);
+				add(hasReviewers, constraints);
+				constraints.gridy += 300;
+			}
+			
+		}
+		
+		
+		constraints.gridwidth = 100;
+		constraints.gridheight = 25;
+		constraints.gridx = 1200;
+		constraints.gridy = 75;
+		for(Manuscript m: authorManuscripts) {			
+			if(m.getReviewers().isEmpty()) {
+				JButton removeButton = new JButton("Remove");
+				removeButton.addActionListener(new ActionListener(){
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						int userReply = JOptionPane.showConfirmDialog(null, "Do you really want to remove this manuscript?",
+								"Remove Manuscript", JOptionPane.YES_NO_OPTION);
+						if(userReply == JOptionPane.YES_OPTION) {
+							ConferenceStateManager.getInstance().getCurrentConference().deleteManuscript(m);
+							removeAll();
+							initialize();
+							updateSubCountLabel();
+							revalidate();
+							repaint();						
+						}					
+					}				
+				});
+				add(removeButton, constraints);
+			}
+			
+			
 			constraints.gridy += 300;
 		}		
 	}
@@ -421,7 +479,7 @@ public static void main(String[] args){
 		mySubDateLbl.setFont(new Font("Times New Roman", Font.BOLD, 25));
 		mySubDateLbl.setText("Submission Date");		
 		myRemoveLbl.setFont(new Font("Times New Roman", Font.BOLD, 25));
-		myRemoveLbl.setText("Remove Option");
+		myRemoveLbl.setText("Reviewers");
 		
 	}
 	
