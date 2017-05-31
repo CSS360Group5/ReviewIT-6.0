@@ -3,6 +3,7 @@ package model;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Observable;
 
 /**
@@ -103,19 +104,4 @@ public class UserProfileStateManager extends Observable implements Serializable 
 //     * @param theManuscript
 //     * @return
 //     */
-//    public List<UserProfile> getEligibleReviewers(final String theConferenceName,
-//                                                  final Manuscript theManuscript) {
-//        List<UserProfile> eligibleReviewers = getUsersByRole(Role.REVIEWER,
-//                theConferenceName);
-//        // TODO: Improve logic to check more than just author names
-//        for (UserProfile up : myUserProfiles) {
-//            for (String author : theManuscript.getAuthors()) {
-//                if (!up.getName().equals(author)) {
-//                    eligibleReviewers.add(up);
-//                }
-//            }
-//        }
-//        return eligibleReviewers;
-//    }
-
 }
