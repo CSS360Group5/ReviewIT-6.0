@@ -19,6 +19,7 @@ import java.util.Observer;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
@@ -43,6 +44,7 @@ public class AssignReviewerPanel extends AutoSizeablePanel implements Observer{
 	private final JLabel titleHeaderArea;
 	private final JLabel selectReviewerHeaderArea;
 	private final Collection<JTextArea> rowTextAreas;
+	private final JList<String> reviewerSelectionList;
 
 	/**
 	 * 
@@ -54,6 +56,7 @@ public class AssignReviewerPanel extends AutoSizeablePanel implements Observer{
 		super(theXRatio, theYRatio, theStartingSize);
 		titleHeaderArea = new JLabel();
 		selectReviewerHeaderArea = new JLabel();
+		reviewerSelectionList = new JList<String>();
 		rowTextAreas = new ArrayList<>();
 		initialize();
 	}
@@ -77,30 +80,18 @@ public class AssignReviewerPanel extends AutoSizeablePanel implements Observer{
 				UserProfileStateManager.getInstance().setCurrentRole(Role.AUTHOR);
 				
 				
-				final Manuscript aManuscript1 = new Manuscript(
+				final Manuscript aManuscript = new Manuscript(
 						"Intro to Crytography",
 						new UserProfile("userid@uw.edu","Johny Mnemonic"),
 						new ArrayList<>(),
 						ZonedDateTime.now(),
 						new File("Path")
 						);
-				final Manuscript aManuscript2 = new Manuscript(
-						"Workload and Resource Aware Proactive Auto-scaler for PaaS Cloud",
-						new UserProfile("userid@uw.edu","Johny Mnemonic"),
-						new ArrayList<>(),
-						ZonedDateTime.now(),
-						new File("Path")
-						);
-				//System.out.println(formatTitleName(aManuscript1.getTitle()));
-				//System.out.println(formatTitleName(aManuscript2.getTitle()));
 				
-				ConferenceStateManager.getInstance().getCurrentConference().submitManuscript(aManuscript1);
-				ConferenceStateManager.getInstance().getCurrentConference().submitManuscript(aManuscript2);
+				ConferenceStateManager.getInstance().getCurrentConference().submitManuscript(aManuscript);
 				
 				ConferenceStateManager.getInstance().getCurrentConference().
-					assignManuscriptToSubprogramChair(aManuscript1, aUser);
-				ConferenceStateManager.getInstance().getCurrentConference().
-					assignManuscriptToSubprogramChair(aManuscript2, aUser);
+					assignManuscriptToSubprogramChair(aManuscript, aUser);
 				
 		EventQueue.invokeLater(new Runnable() 
         {
