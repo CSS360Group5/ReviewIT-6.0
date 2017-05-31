@@ -2,10 +2,13 @@ package model;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -264,5 +267,37 @@ public class Conference implements Serializable {
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * @author Danielle Lambion
+	 * Retrieves an arrayList of eligible reviewers for this manuscript
+	 * @param theManuscript
+	 * @return
+	 */
+	public List<UserProfile> getEligibleReviewers(Manuscript theManuscript) {
+			ArrayList<UserProfile> eligibleReviewers = new ArrayList<UserProfile>();	
+			
+			for (UserProfile key : myReviewerMap.keySet()) {
+			    if(isLegalReviewer(key) && isReviewerNotAuthor(theManuscript.getAuthors(), key))
+			    	eligibleReviewers.add(key);
+			}
+			return eligibleReviewers;
+	}
+	
+	/**
+	 * @author Danielle Lambion
+	 * Returns true if reviewer is not an author and is available to review on this manuscript
+	 * @param ManuscriptAuthors
+	 * @param theReviewer
+	 * @return
+	 */
+	public boolean isReviewerNotAuthor(Collection<String> ManuscriptAuthors, UserProfile theReviewer) {
+		
+		for (int i = 0; i < ManuscriptAuthors.size(); i++) {
+			if(((List<String>) ManuscriptAuthors).get(i).equals(theReviewer.getName()))
+				return false;
+		}
+		return true;
 	}
 }
