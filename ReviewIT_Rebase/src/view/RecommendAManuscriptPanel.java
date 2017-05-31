@@ -191,7 +191,7 @@ public class RecommendAManuscriptPanel extends AutoSizeablePanel {
 	 * @return legalManuscripts
 	 */
 	private List<Manuscript> getLegalManuscript() {
-		//get legal manuscript for recommend by sub program chair
+		//setting up a conference
 		coAuthors.add(coAuthorUserName);//--------------------------------------------------------------------------------------------------
 		coAuthors.add(anotherUserName);
 		conference = new Conference(conferenceName, conferenceSubmissionDeadline);
@@ -199,8 +199,10 @@ public class RecommendAManuscriptPanel extends AutoSizeablePanel {
 			manuscript = new Manuscript(manuscriptTitle + Integer.toString(i), submissionUser, coAuthors, submissionDate, manuscriptFile);
 			conference.submitManuscript(manuscript);
 			manuscript.addReviewer(new UserProfile(reviewerUserID + Integer.toString(i), reviewerUserName),conference);
+			//manuscript.addReview(new Reivew((new UserProfile(reviewerUserID + Integer.toString(i), reviewerUserName), manuscriptFile));
 		}
 		
+		//manuscript with 3 reviews(max number) is legal
 		//Manuscript[] manuscripts = (Manuscript[]) conference.getManuscripts().toArray();
 		List<Manuscript> legalManuscripts = new ArrayList<>();
 		for(Manuscript manuscript:conference.getManuscripts()){
@@ -218,44 +220,32 @@ public class RecommendAManuscriptPanel extends AutoSizeablePanel {
 	 *
 	 */
 	public class TitleListener implements MouseListener {
-
 		@Override
 		public void mouseClicked(MouseEvent theEvent) {
 			Object[] options = {"Submit Manuscript", "Cancel"};
 			int n = JOptionPane.showOptionDialog(theEvent.getComponent(), "What would you like to do with this manuscript?", 
 					"Manuscript Options", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options,null);
-			
-			
 		}
-
 		@Override
 		public void mouseEntered(MouseEvent arg0) {
 			// TODO Auto-generated method stub
 			
 		}
-
 		@Override
 		public void mouseExited(MouseEvent arg0) {
 			// TODO Auto-generated method stub
 			
 		}
-
 		@Override
 		public void mousePressed(MouseEvent arg0) {
 			// TODO Auto-generated method stub
 			
 		}
-
 		@Override
 		public void mouseReleased(MouseEvent arg0) {
 			// TODO Auto-generated method stub
 			
 		}
-
-		
-
-		
-		
 	}
 
 }
