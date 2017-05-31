@@ -154,7 +154,20 @@ public class Manuscript implements Serializable {
 	}
 	
 	public void addReview(final Review theReview){
-		myReviews.add(theReview);
+		Review[] reviews = (Review[]) myReviews.toArray();
+		boolean isLegalEeview = true;
+		for(Review review:reviews){
+			if(review.getUserID() == theReview.getUserID()){
+				isLegalEeview = false;
+			}
+		}
+		
+		if(isLegalEeview){
+			myReviews.add(theReview);
+		}else{
+			throw new IllegalArgumentException("Reviewer already sumbmit a review");
+		}
+		
 	}
 	
 	public Collection<Review> getReviews(){

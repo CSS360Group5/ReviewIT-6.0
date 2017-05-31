@@ -25,7 +25,7 @@ public class Review implements Serializable {
 	private File review;
 	
 	/**
-	 * Creates a new reviewe object using the myReviewerID.
+	 * Creates a new review object using the myReviewerID.
 	 * @param theUserID
 	 */
 	public Review(String theUserID) {
