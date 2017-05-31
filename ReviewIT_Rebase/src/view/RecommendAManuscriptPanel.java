@@ -54,7 +54,7 @@ public class RecommendAManuscriptPanel extends AutoSizeablePanel implements Acti
 	private JFileChooser fc;
 	private File file;
 	private JTextArea log;
-	private final static JFrame window = new JFrame();
+	
 
 	public static void main(String[] args){
 		EventQueue.invokeLater(new Runnable() 
@@ -63,6 +63,7 @@ public class RecommendAManuscriptPanel extends AutoSizeablePanel implements Acti
             public void run() 
             {
                 final JPanel mainPanel = new RecommendAManuscriptPanel(1, 1, new Dimension(300, 150));
+                final JFrame window = new JFrame();
                 window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 window.setContentPane(mainPanel);
                 window.pack();
@@ -115,8 +116,7 @@ public class RecommendAManuscriptPanel extends AutoSizeablePanel implements Acti
             }
         } else if (e.getSource() == submitButton) {
 //<<<<<<<<<<<<<<<<<<<<<<<<<submit File Here.
-        	JOptionPane.showMessageDialog(window,"Submittion finish.","Message", JOptionPane.PLAIN_MESSAGE);
-        	window.dispose();
+        	JOptionPane.showMessageDialog(null,"Submittion finish.","Message", JOptionPane.PLAIN_MESSAGE);
 		}
 	}
 	
