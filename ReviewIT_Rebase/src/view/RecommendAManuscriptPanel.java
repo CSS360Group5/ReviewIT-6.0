@@ -4,38 +4,25 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import org.junit.Before;
-
-import model.Conference;
-import model.ConferenceStateManager;
 import model.Manuscript;
-import model.Review;
+import model.Recommendation;
 import model.UserProfile;
-import model.UserProfileStateManager;
-import view.AuthorPanel.TitleListener;
 
 
 /**
@@ -54,7 +41,10 @@ public class RecommendAManuscriptPanel extends AutoSizeablePanel implements Acti
 	private JFileChooser fc;
 	private File file;
 	private JTextArea log;
-	
+	private int decision;
+	private final static JFrame window = new JFrame();
+	private Manuscript manuscript;
+	private UserProfile subProgramchair;
 
 	public static void main(String[] args){
 		EventQueue.invokeLater(new Runnable() 
@@ -62,8 +52,14 @@ public class RecommendAManuscriptPanel extends AutoSizeablePanel implements Acti
             @Override
             public void run() 
             {
-                final JPanel mainPanel = new RecommendAManuscriptPanel(1, 1, new Dimension(300, 150));
-                final JFrame window = new JFrame();
+            	String coAuthorUserName = "Samue Dinima";
+            	ArrayList<String> coAuthors = new ArrayList<String>();
+            	coAuthors.add(coAuthorUserName);
+            	ZonedDateTime submissionDate = ZonedDateTime.now();
+            	Manuscript AManuscript = new Manuscript("Title", new UserProfile("An135241","Don An"), coAuthors, submissionDate, new File("Some Path"));
+            	UserProfile ASubProgramchair = new UserProfile("Dong123","Dongsheng Han");
+            	
+            	final JPanel mainPanel = new RecommendAManuscriptPanel(1, 1, new Dimension(460, 200), AManuscript, ASubProgramchair);
                 window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 window.setContentPane(mainPanel);
                 window.pack();
@@ -73,24 +69,29 @@ public class RecommendAManuscriptPanel extends AutoSizeablePanel implements Acti
         });
 	}
 	
-	public RecommendAManuscriptPanel(double theXRatio,double theYRatio,Dimension theStartingSize) {
+	public RecommendAManuscriptPanel(double theXRatio,double theYRatio,Dimension theStartingSize, Manuscript manuscript, UserProfile subProgramchair) {
 		super(theXRatio, theYRatio, theStartingSize);
+		this.subProgramchair = subProgramchair;
+		this.manuscript = manuscript;
 		init();
 	}
 
 	/**
-	 * A private helper method for initializing all the components of this Panel. 
+	 * A private helper method for initializing all the components of this Panel. recommendation recommend
 	 */
 	private void init() {
 		//Create the log first, because the action listeners
         //need to refer to it.
-        log = new JTextArea(6,24);
+        log = new JTextArea(10,32);
         log.setMargin(new Insets(5,5,5,5));
         log.setEditable(false);
         log.setFont(new Font("Times New Roman", Font.BOLD, 12));
-        
         JScrollPane logScrollPane = new JScrollPane(log);
-		
+        log.setText("Role:Subprogramchair\n\n" + 
+        			manuscript.getTitle() + "\n" + 
+        			"By:" + manuscript.getAuthors() + "\n\n" + 
+        			"Please choose a recommendation file.\n");
+        
         fc = new JFileChooser();
 		
 		fileChooserButton = new JButton("Choose a File");
@@ -98,6 +99,7 @@ public class RecommendAManuscriptPanel extends AutoSizeablePanel implements Acti
 		
 		submitButton = new JButton("Submit");
 		submitButton.addActionListener(this);
+
 		
 		add(logScrollPane, BorderLayout.CENTER);
 		add(fileChooserButton);
@@ -110,14 +112,31 @@ public class RecommendAManuscriptPanel extends AutoSizeablePanel implements Acti
 			int returnVal = fc.showOpenDialog(RecommendAManuscriptPanel.this);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 file = fc.getSelectedFile();
-                log.append("File:" + file.getName() + "\n" + "Submit?" + "\n");
+                log.setText("Role:Subprogramchair\n\n" + 
+            			manuscript.getTitle() + "\n" + 
+            			"By:" + manuscript.getAuthors() + "\n\n");
+                log.append("File:           " + file.getName() + "\n");
                 fileChooserButton.setText("Change File");
-                add(submitButton);	
+                Object[] options = {"Yes, I recommend",
+                        "No, not recommend"};
+			    decision = JOptionPane.showOptionDialog(null,
+			        "What is your decision?",
+			        "Decision",
+			        JOptionPane.YES_NO_CANCEL_OPTION,
+			        JOptionPane.QUESTION_MESSAGE,
+			        null,
+			        options,
+			        options[1]);
+			    log.append("Decision:   " + options[decision] + "\n\n" + "Submit?" + "\n");
+                add(submitButton);
             }
-        } else if (e.getSource() == submitButton) {
-//<<<<<<<<<<<<<<<<<<<<<<<<<submit File Here.
+		} else if (e.getSource() == submitButton) {
+			manuscript.addRecommendation(new Recommendation(subProgramchair, decision != 1, file));
         	JOptionPane.showMessageDialog(null,"Submittion finish.","Message", JOptionPane.PLAIN_MESSAGE);
+        	window.dispose();
 		}
+		revalidate();
+		repaint();
 	}
 	
 }
