@@ -17,7 +17,7 @@ public class Review implements Serializable {
 	/**
 	 * The reviewers myReviewerID.
 	 */
-	private String myReviewerID;
+	private UserProfile myReviewerUserProfile;
 	
 	/**
 	 * The review file.
@@ -25,20 +25,20 @@ public class Review implements Serializable {
 	private File review;
 	
 	/**
-	 * Creates a new reviewe object using the myReviewerID.
+	 * Creates a new review object using the myReviewerID.
 	 * @param theUserID
 	 */
-	public Review(String theUserID) {
-		
-		myReviewerID = theUserID;
+	public Review(UserProfile theUserProfile, File review) {
+		myReviewerUserProfile = theUserProfile;
+		this.review = review;
 	}
 	
 	/**
 	 * Gets the reviewers user ID.
 	 * @return The myReviewerID of the reviewer.
 	 */
-	public String getUserID (){
-		return myReviewerID;
+	public UserProfile getUserProfile (){
+		return myReviewerUserProfile;
 	}
 	
 	/**
