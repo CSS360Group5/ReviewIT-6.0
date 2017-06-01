@@ -28,7 +28,7 @@ public class GUIMain {
             @Override
             public void run() 
             {
-				final JFrame window = new JFrame();
+				final JFrame window = new JFrame("ReviewIT");
 				final JPanel mainPanel = new LoginPanel(1, 1, new Dimension(2100, 700));
 
 
@@ -47,18 +47,59 @@ public class GUIMain {
 
 	private static void initData() {
 		//Add some data:
-		Conference con1 = new Conference("First Conference",
-				ZonedDateTime.now());
-		Conference con2 = new Conference("Second Conference",
-				ZonedDateTime.now());
+		Conference con1 = new Conference("Collab' on VR Food as Viable " +
+				"Placebic Nutritional Source",
+				ZonedDateTime.now().plusHours(24));
+		Conference con2 = new Conference("Right Scientists United Against Wrong Scientists 2017",
+				ZonedDateTime.now().plusHours(24));
+		Conference con3 = new Conference("Anti Everything TechPAC 2016 + 1 (F**K 7)",
+				ZonedDateTime.now().plusHours(24));
+
 		ConferenceStateManager.getInstance().addConference(con1);
 		ConferenceStateManager.getInstance().addConference(con2);
+		ConferenceStateManager.getInstance().addConference(con3);
 
 		UserProfile userKevin = new UserProfile("kev@uw.edu", "Kevin");
 		userKevin.addRole(Role.AUTHOR, con1);
 		userKevin.addRole(Role.SUBPROGRAM, con1);
 		userKevin.addRole(Role.AUTHOR, con2);
+		userKevin.addRole(Role.REVIEWER, con2);
+		userKevin.addRole(Role.AUTHOR, con3);
+		userKevin.addRole(Role.SUBPROGRAM, con3);
+		userKevin.addRole(Role.REVIEWER, con3);
+
+		UserProfile userTyson = new UserProfile("mikeT@uw.edu", "Mike Tyson");
+		userKevin.addRole(Role.AUTHOR, con1);
+		userKevin.addRole(Role.SUBPROGRAM, con1);
+		userKevin.addRole(Role.AUTHOR, con2);
+		userKevin.addRole(Role.REVIEWER, con2);
+		userKevin.addRole(Role.AUTHOR, con3);
+		userKevin.addRole(Role.SUBPROGRAM, con3);
+		userKevin.addRole(Role.REVIEWER, con3);
+
+		UserProfile userFrederic = new UserProfile("freddy81chops@uw.edu", "Frederic Chopin");
+		userKevin.addRole(Role.AUTHOR, con1);
+		userKevin.addRole(Role.AUTHOR, con2);
+		userKevin.addRole(Role.REVIEWER, con2);
+		userKevin.addRole(Role.AUTHOR, con3);
+		userKevin.addRole(Role.SUBPROGRAM, con3);
+		userKevin.addRole(Role.REVIEWER, con3);
+
+		UserProfile userStan = new UserProfile("stan@uw.edu", "Stanley :)");
+		userKevin.addRole(Role.AUTHOR, con1);
+		userKevin.addRole(Role.AUTHOR, con2);
+		userKevin.addRole(Role.REVIEWER, con2);
+		userKevin.addRole(Role.AUTHOR, con3);
+		userKevin.addRole(Role.REVIEWER, con3);
+
+
 		UserProfileStateManager.getInstance().addUserProfile(userKevin);
+		UserProfileStateManager.getInstance().addUserProfile(userTyson);
+		UserProfileStateManager.getInstance().addUserProfile(userFrederic);
+		UserProfileStateManager.getInstance().addUserProfile(userStan);
+
+
+
 //		final Conference aConference = new Conference(
 //				"39th International Conference on Software Engineering",
 //				ZonedDateTime.parse("2017-06-12T10:15:30+01:00[Europe/Paris]")
